@@ -34,7 +34,7 @@ const hours = [
       <a class="wordmark" href="#top">High Sweet Creamery</a>
       <nav aria-label="On this page">
         <a href="#about">About</a>
-        <a href="#treats">Treats</a>
+        <a href="#menu">Menu</a>
         <a href="#patio">Patio</a>
         <a href="#hours">Hours</a>
         <a href="#visit">Visit</a>
@@ -61,49 +61,67 @@ const hours = [
         </figure>
       </section>
 
-      <section id="treats" class="treats" aria-labelledby="treats-title">
-        <h2 id="treats-title" class="sr-only">Treats</h2>
-        <article class="tile tile-pink">
-          <img
-            src="/high-sweet/neapolitan.jpg"
-            alt="Neapolitan shake in a High Sweet Creamery cup, layered chocolate, vanilla, and strawberry, topped with whipped cream"
-            loading="lazy"
-          />
-          <div class="tile-copy">
-            <h3>Neapolitan shake</h3>
-            <p>Chocolate, vanilla, and strawberry, served in a High Sweet Creamery cup.</p>
-          </div>
-        </article>
-        <article class="tile tile-mint">
-          <img
-            src="/high-sweet/cinnamon-rolls.jpg"
-            alt="Tray of glazed cinnamon rolls with a caption that they are a Saturday and Sunday item"
-            loading="lazy"
-          />
-          <div class="tile-copy">
-            <h3>Cinnamon rolls, Saturday &amp; Sunday</h3>
-            <p>Glazed cinnamon rolls, Saturdays and Sundays.</p>
-          </div>
-        </article>
-        <article class="tile tile-lav">
-          <img
-            class="cow"
-            src="/high-sweet/highland-cow.jpg"
-            alt="Round cake decorated as a highland cow with tan frosting hair, horns, and a pink tongue"
-            loading="lazy"
-          />
-          <div class="tile-copy">
-            <h3>Highland cow cake</h3>
-            <p>A round cake dressed as a highland cow, with tan frosting hair, horns, and a little tongue.</p>
-          </div>
-        </article>
+      <section id="menu" aria-labelledby="menu-title">
+        <div class="treats">
+          <article class="tile tile-pink">
+            <img
+              src="/high-sweet/neapolitan.jpg"
+              alt="Neapolitan shake in a High Sweet Creamery cup, layered chocolate, vanilla, and strawberry, topped with whipped cream"
+              loading="lazy"
+            />
+          </article>
+          <article class="tile tile-mint">
+            <img
+              src="/high-sweet/cinnamon-rolls.jpg"
+              alt="Tray of glazed cinnamon rolls with a caption that they are a Saturday and Sunday item"
+              loading="lazy"
+            />
+          </article>
+          <article class="tile tile-lav">
+            <img
+              class="cow"
+              src="/high-sweet/highland-cow.jpg"
+              alt="Round cake decorated as a highland cow with tan frosting hair, horns, and a pink tongue"
+              loading="lazy"
+            />
+          </article>
+        </div>
+        <div class="menu-panel">
+          <h2 id="menu-title">Menu</h2>
+          <ul class="menu">
+            <li>
+              <span class="item">Soft serve</span>
+              <span class="price">$--</span><!-- Owner: add your price here -->
+            </li>
+            <li>
+              <span class="item">Neapolitan shake</span>
+              <span class="price">$--</span><!-- Owner: add your price here -->
+            </li>
+            <li>
+              <span class="item">Saturday and Sunday cinnamon rolls</span>
+              <span class="price">$--</span><!-- Owner: add your price here -->
+            </li>
+            <li>
+              <span class="item">Highland cow cake</span>
+              <span class="price">$--</span><!-- Owner: add your price here -->
+            </li>
+            <li>
+              <span class="item">Morning coffee with home-made syrups</span>
+              <span class="price">$--</span><!-- Owner: add your price here -->
+            </li>
+            <li>
+              <span class="item">Fresh pastries</span>
+              <span class="price">$--</span><!-- Owner: add your price here -->
+            </li>
+          </ul>
+        </div>
       </section>
 
       <section id="about" class="statement">
         <h2>Creativity, comfort, and something hand made.</h2>
         <p>Our bakery is built on a love for creativity and comfort, blending classic flavors with unique twists you won't find anywhere else. From our HOME-MADE coffee syrups to our fresh pastries, every detail is crafted in small batches with care and consistency.</p>
         <p>We're proud to be a welcoming space where the community can slow down, enjoy something hand made, and feel at home. Whether you're stopping in for your morning coffee or a sweet treat, we aim to make every visit memorable.</p>
-        <p class="note">Morning coffee with home-made syrups, fresh pastries, and soft-serve. What you see here is a taste of what we serve — not a full menu, and prices aren't listed.</p>
+        <p class="note">Morning coffee with home-made syrups, fresh pastries, and soft-serve.</p>
       </section>
 
       <section id="patio" class="feature">
@@ -116,7 +134,7 @@ const hours = [
         </figure>
         <div class="feature-copy">
           <h2>Four-legged friends</h2>
-          <p>Butters is our local loved mascot — a tabby who naps on the patio chairs.</p>
+          <p>Butters is our locally loved mascot — a tabby who naps on the patio chairs.</p>
         </div>
       </section>
 
@@ -410,7 +428,6 @@ const hours = [
     height: 380px;
     object-fit: cover;
     object-position: center 42%;
-    border-bottom: 1px solid var(--black);
   }
 
   .tile img.cow {
@@ -460,6 +477,46 @@ const hours = [
     font-size: 0.9rem;
     line-height: 1.45;
     max-width: 40rem;
+  }
+
+
+  .menu-panel {
+    background: var(--cream);
+    border-bottom: 1px solid var(--black);
+    padding: 2.4rem 1.15rem 2.5rem;
+  }
+
+  .menu-panel h2 {
+    font-size: clamp(2.8rem, 12vw, 3.6rem);
+    max-width: 14ch;
+    margin: 0 0 1.1rem;
+  }
+
+  .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 40rem;
+  }
+
+  .menu li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.72rem 0;
+    border-bottom: 1px dotted var(--black);
+  }
+
+  .menu .item {
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+
+  .menu .price {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    white-space: nowrap;
   }
 
   .feature {
@@ -665,7 +722,7 @@ const hours = [
   }
 
   #about,
-  #treats,
+  #menu,
   #patio,
   #hours,
   #visit,
@@ -773,6 +830,15 @@ const hours = [
 
     .statement .note {
       font-size: 0.82rem;
+    }
+
+    .menu-panel {
+      padding: clamp(2.5rem, 6vw, 5rem) clamp(1.4rem, 8vw, 8rem);
+    }
+
+    .menu-panel h2 {
+      font-size: clamp(3.2rem, 6.5vw, 6rem);
+      margin: 0 0 1.3rem;
     }
 
     .feature {
