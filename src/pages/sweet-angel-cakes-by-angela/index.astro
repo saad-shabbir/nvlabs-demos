@@ -1,0 +1,492 @@
+---
+import Demo from "../../layouts/Demo.astro";
+
+const smsBody = [
+  "Hi, I would like to place an order.",
+  "",
+  "Name and phone:",
+  "Date of interest:",
+  "Pickup or delivery time:",
+  "Delivery address if delivery:",
+  "Custom cake or other bake:",
+  "Theme colors and inspiration photos:",
+  "Number of servings:",
+  "Payment method (Zelle, Venmo, or CashApp):",
+].join("\n");
+
+const sms = `sms:+19154976661?body=${encodeURIComponent(smsBody)}`;
+const tel = "tel:+19154976661";
+const maps =
+  "https://www.google.com/maps/search/?api=1&query=Bauxite+Ave+El+Paso+TX+79932";
+
+const hours = [
+  ["Monday", "9:00 AM–5:00 PM"],
+  ["Tuesday", "10:00 AM–6:00 PM"],
+  ["Wednesday", "10:00 AM–6:00 PM"],
+  ["Thursday", "10:00 AM–6:00 PM"],
+  ["Friday", "10:00 AM–4:00 PM"],
+  ["Saturday", "10:00 AM–12:30 PM"],
+  ["Sunday", "Closed"],
+];
+---
+
+<Demo
+  businessName="Sweet Angel Cakes by Angela"
+  title="Sweet Angel Cakes by Angela"
+  description="Cottage bakery in El Paso specializing in custom cakes, cupcakes, and other sweet bakes. Call or text to order."
+  image="/sweet-angel-cakes-by-angela/hero.jpg"
+>
+  <div class="angel">
+    <header class="mast">
+      <h1 class="visually-hidden">Sweet Angel Cakes by Angela</h1>
+      <img
+        class="logo"
+        src="/sweet-angel-cakes-by-angela/logo.png"
+        alt="Sweet Angel Cakes by Angela. Custom Cakes and Bakes."
+        width="800"
+        height="798"
+      />
+    </header>
+
+    <img
+      class="hero"
+      src="/sweet-angel-cakes-by-angela/hero.jpg"
+      alt="Custom celebration cake with pink, blue, and purple layers"
+      width="1200"
+      height="1200"
+    />
+
+    <section class="intro">
+      <p>
+        Cottage bakery specializing in custom cakes, cupcakes and other sweet bakes
+        for any occasion or just because.
+      </p>
+      <p class="biscochos">Best Biscochos de anise in town.</p>
+      <p class="phone"><a href={tel}>(915) 497-6661</a></p>
+      <div class="actions">
+        <a href={tel}>Call</a>
+        <a class="ghost" href={sms}>Text to order</a>
+      </div>
+    </section>
+
+    <section class="custom">
+      <img
+        src="/sweet-angel-cakes-by-angela/army-cake.jpg"
+        alt="Three-tier custom celebration cake"
+        width="1400"
+        height="1400"
+        loading="lazy"
+      />
+      <div class="prose">
+        <h2>Custom cakes</h2>
+        <p>
+          Texas cottage food producer specializing in all occasion cakes, cupcakes
+          and other sweet bakes.
+        </p>
+        <p>Custom orders and large orders: message for pricing and availability.</p>
+        <p>Cupcakes: message for pricing.</p>
+      </div>
+    </section>
+
+    <section class="menu-wrap" id="menu">
+      <h2>Fall menu</h2>
+      <p class="note">Message for available dates and items.</p>
+
+      <h3>Bread, large loaf</h3>
+      <ul class="menu">
+        <li><span>Banana Bread</span><span>$11</span></li>
+        <li><span>Cinnamon Swirl Bread</span><span>$12</span></li>
+        <li><span>Pumpkin Bread</span><span>$12</span></li>
+      </ul>
+      <p class="addins">Add-ins +$1 each: Nuts, Chocolate Chips.</p>
+
+      <h3>Cinnamon Rolls, 1 dozen tray</h3>
+      <ul class="menu">
+        <li><span>Classic</span><span>$38</span></li>
+        <li><span>Apple</span><span>$42</span></li>
+        <li><span>Pumpkin &amp; Spice</span><span>$42</span></li>
+      </ul>
+
+      <h3>Fall-inspired cookies</h3>
+      <ul class="menu">
+        <li><span>Biscocho Cookies</span><span>$20 per 5 dozen</span></li>
+        <li><span>Polvorones</span><span>$25 per 2½ dozen</span></li>
+      </ul>
+      <p class="signoff">Small batch baking. Made with love.</p>
+    </section>
+
+    <section class="order" id="order">
+      <h2>How to order</h2>
+      <ul class="facts">
+        <li>48 hour notice.</li>
+        <li>50% non-refundable deposit, Zelle or CashApp.</li>
+        <li>Pickup at Bauxite Ave, El Paso, TX 79932.</li>
+        <li>Call or text to order. You can also message on Instagram or Facebook.</li>
+      </ul>
+      <p>There is a discount for using Zelle.</p>
+
+      <h3>For a quote, send</h3>
+      <ol>
+        <li>Name and phone</li>
+        <li>Date of interest</li>
+        <li>Pickup or delivery time, and delivery address if delivery (fee applies)</li>
+        <li>Custom cake or other bake</li>
+        <li>Theme colors and inspiration photos</li>
+        <li>Number of servings</li>
+        <li>Payment method: Zelle, Venmo, or CashApp</li>
+      </ol>
+      <a class="text-link" href={sms}>Text these details</a>
+    </section>
+
+    <section class="visit">
+      <h2>Pickup</h2>
+      <p>
+        Bauxite Ave, El Paso, TX 79932. Cottage bakery pickup, not a storefront.
+      </p>
+      <p><a href={maps}>Directions</a></p>
+
+      <h2>Hours</h2>
+      <dl>
+        {
+          hours.map(([day, time]) => (
+            <>
+              <dt>{day}</dt>
+              <dd>{time}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="reviews">
+      <h2>Reviews</h2>
+      <figure>
+        <blockquote>
+          <p>
+            Angela’s cocoa bombs were so beautiful and tasted just as delicious
+            also bought some banana bread and soooo good! Her pastries and
+            decorations are so wonderful!
+          </p>
+        </blockquote>
+        <figcaption>Sarah Vai, January 29, 2021</figcaption>
+      </figure>
+      <figure>
+        <blockquote>
+          <p>
+            One of the best birthday cakes I’ve ever had! Both tasting and
+            beautiful to look at.
+          </p>
+        </blockquote>
+        <figcaption>Laura Mendoza, July 1, 2019</figcaption>
+      </figure>
+    </section>
+
+    <footer>
+      <p>
+        Food Safe Certified. State registered to sell refrigerated homemade
+        desserts. DSHS Registered. Texas Homemade verified.
+      </p>
+      <p class="links">
+        <a href="https://www.instagram.com/sweetangelcakesbyangela/">Instagram</a>
+        <a href="https://www.facebook.com/sweetangelcakesbyangela">Facebook</a>
+        <a href="mailto:sweetangelcakesbyangela@yahoo.com">Email</a>
+        <a href={tel}>(915) 497-6661</a>
+      </p>
+    </footer>
+
+    <nav class="dock" aria-label="Order">
+      <a href={tel}>Call</a>
+      <a href={sms}>Text</a>
+    </nav>
+  </div>
+</Demo>
+
+<style>
+  :global(body) {
+    background: #f3c9cb;
+  }
+
+  .angel {
+    --ink: #1b1214;
+    --cream: #feeee6;
+    --blush: #fdb1b1;
+    --line: rgba(27, 18, 20, 0.22);
+    max-width: 40rem;
+    margin: 0 auto;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .mast {
+    padding: 0.35rem 1rem 0.15rem;
+  }
+
+  .logo {
+    display: block;
+    width: min(15.5rem, 68vw);
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .hero,
+  .custom img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .intro,
+  .prose,
+  .menu-wrap,
+  .order,
+  .visit,
+  .reviews,
+  footer {
+    padding: 1.25rem 1.15rem 0.35rem;
+  }
+
+  h2,
+  h3,
+  .biscochos {
+    font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    font-weight: 500;
+  }
+
+  h2 {
+    margin: 0 0 0.55rem;
+    font-size: 1.85rem;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  h3 {
+    margin: 1.15rem 0 0.35rem;
+    font-size: 1.2rem;
+    font-style: italic;
+  }
+
+  p {
+    margin: 0 0 0.75rem;
+  }
+
+  .biscochos {
+    font-size: 1.35rem;
+    line-height: 1.2;
+    margin: 0.15rem 0 0.2rem;
+  }
+
+  .phone {
+    margin: 0.15rem 0 0.7rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .phone a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+    margin: 0.35rem 0 0.4rem;
+  }
+
+  .actions a,
+  .text-link,
+  .dock a {
+    text-decoration: none;
+  }
+
+  .actions a,
+  .text-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--cream);
+    font-weight: 650;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .actions a.ghost {
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+
+  .text-link {
+    margin: 0.4rem 0 1rem;
+  }
+
+  .custom {
+    margin-top: 0.6rem;
+  }
+
+  .menu-wrap {
+    margin-top: 0.4rem;
+  }
+
+  .note,
+  .addins,
+  .signoff {
+    color: #5c4548;
+  }
+
+  .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.42rem 0;
+    border-bottom: 1px dotted var(--line);
+  }
+
+  .menu li span:last-child {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    font-weight: 650;
+  }
+
+  .signoff {
+    margin-top: 1rem;
+    font-family: "Iowan Old Style", Palatino, Georgia, serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--ink);
+  }
+
+  .facts,
+  ol {
+    margin: 0 0 0.85rem;
+    padding-left: 1.15rem;
+  }
+
+  .facts li,
+  ol li {
+    margin: 0.28rem 0;
+    padding-left: 0.15rem;
+  }
+
+  .visit a,
+  footer a {
+    color: inherit;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: 7.2rem 1fr;
+    gap: 0.28rem 0.75rem;
+    margin: 0 0 1.1rem;
+  }
+
+  dt,
+  dd {
+    margin: 0;
+  }
+
+  dt {
+    font-weight: 650;
+  }
+
+  dd:last-of-type {
+    color: #5c4548;
+  }
+
+  figure {
+    margin: 0 0 1.15rem;
+    padding-top: 0.15rem;
+  }
+
+  blockquote {
+    margin: 0;
+  }
+
+  blockquote p {
+    font-family: "Iowan Old Style", Palatino, Georgia, serif;
+    font-size: 1.22rem;
+    line-height: 1.35;
+  }
+
+  figcaption {
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+  }
+
+  footer {
+    padding-bottom: 1.4rem;
+  }
+
+  footer p:first-child {
+    font-size: 0.95rem;
+    color: #5c4548;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+    font-weight: 650;
+  }
+
+  .dock {
+    position: fixed;
+    z-index: 4;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(100%, 40rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--ink);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .dock a {
+    color: var(--cream);
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.92rem;
+    padding: 0.95rem 0.5rem;
+    min-height: 3.1rem;
+  }
+
+  .dock a + a {
+    box-shadow: inset 1px 0 0 rgba(254, 238, 230, 0.28);
+  }
+
+  @media (min-width: 380px) {
+    .actions {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
