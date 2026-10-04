@@ -1,2 +1,8 @@
 /*
   X-Robots-Tag: noindex
+
+/high-sweet
+  X-Robots-Tag: noindex
+
+/high-sweet/*
+  X-Robots-Tag: noindex

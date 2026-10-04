@@ -1,0 +1,854 @@
+---
+import Demo from "../../layouts/Demo.astro";
+
+const tel = "tel:+18052433111";
+const mapsShare = "https://share.google/gzFH1frofnzXPirU7";
+const mapsSearch =
+  "https://www.google.com/maps/search/?api=1&query=213+E+High+St+Moorpark+CA+93021";
+
+const hours = [
+  ["Monday", "Closed"],
+  ["Tuesday", "8:00 AM – 8:00 PM"],
+  ["Wednesday", "8:00 AM – 8:00 PM"],
+  ["Thursday", "8:00 AM – 8:00 PM"],
+  ["Friday", "8:00 AM – 10:00 PM"],
+  ["Saturday", "8:00 AM – 10:00 PM"],
+  ["Sunday", "8:00 AM – 8:00 PM"],
+];
+---
+
+<Demo
+  businessName="High Sweet Creamery"
+  title="High Sweet Creamery"
+  description="High Sweet Creamery on High Street in Moorpark. Soft-serve, shakes, pastries, and a pet-friendly patio."
+  image="/high-sweet/swirl.jpg"
+>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Yellowtail&display=swap"
+  />
+  <div class="hs">
+    <p class="topstrip">213 E High St, Moorpark</p>
+
+    <header class="site-header">
+      <a class="wordmark" href="#top">High Sweet Creamery</a>
+      <nav aria-label="On this page">
+        <a href="#about">About</a>
+        <a href="#treats">Treats</a>
+        <a href="#patio">Patio</a>
+        <a href="#hours">Hours</a>
+        <a href="#visit">Visit</a>
+      </nav>
+      <a class="header-call" href={tel}>Call</a>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Soft serve on High Street</h1>
+          <p class="lede">A classic taste of High Street history with some amazing treats for all ages.</p>
+          <div class="hero-actions">
+            <a class="btn fill" href="#hours">See hours</a>
+            <a class="btn" href={mapsShare}>Map</a>
+            <a class="btn" href={tel}>Call</a>
+          </div>
+        </div>
+        <figure class="hero-photo">
+          <img
+            src="/high-sweet/swirl.jpg"
+            alt="Chocolate and vanilla soft-serve swirl in a waffle cone, held in a gloved hand inside the shop"
+          />
+        </figure>
+      </section>
+
+      <section id="treats" class="treats" aria-labelledby="treats-title">
+        <h2 id="treats-title" class="sr-only">Treats</h2>
+        <article class="tile tile-pink">
+          <img
+            src="/high-sweet/neapolitan.jpg"
+            alt="Neapolitan shake in a High Sweet Creamery cup, layered chocolate, vanilla, and strawberry, topped with whipped cream"
+            loading="lazy"
+          />
+          <div class="tile-copy">
+            <h3>Neapolitan shake</h3>
+            <p>An Instagram post: “Have you had your Neapolitan shake today?” Chocolate, vanilla, and strawberry in a High Sweet Creamery cup.</p>
+          </div>
+        </article>
+        <article class="tile tile-mint">
+          <img
+            src="/high-sweet/cinnamon-rolls.jpg"
+            alt="Tray of glazed cinnamon rolls with a caption that they are a Saturday and Sunday item"
+            loading="lazy"
+          />
+          <div class="tile-copy">
+            <h3>Cinnamon rolls, Saturday &amp; Sunday</h3>
+            <p>An Instagram post: “Cinnamon roll SATURDAY &amp; SUNDAY is upon us.” A weekend thing they shared, not a year-round promise.</p>
+          </div>
+        </article>
+        <article class="tile tile-lav">
+          <img
+            class="cow"
+            src="/high-sweet/highland-cow.jpg"
+            alt="Round cake decorated as a highland cow with tan frosting hair, horns, and a pink tongue"
+            loading="lazy"
+          />
+          <div class="tile-copy">
+            <h3>Highland cow cake</h3>
+            <p>A cake from their photos: tan frosting hair, horns, and a little tongue. Not a standing menu item.</p>
+          </div>
+        </article>
+      </section>
+
+      <section id="about" class="statement">
+        <h2>Creativity, comfort, and something hand made.</h2>
+        <p>Our bakery is built on a love for creativity and comfort, blending classic flavors with unique twists you won't find anywhere else. From our HOME-MADE coffee syrups to our fresh pastries, every detail is crafted in small batches with care and consistency.</p>
+        <p>We're proud to be a welcoming space where the community can slow down, enjoy something hand made, and feel at home. Whether you're stopping in for your morning coffee or a sweet treat, we aim to make every visit memorable.</p>
+        <p class="note">Morning coffee with home-made syrups, fresh pastries, and soft-serve. The photos are things they've actually served and posted, not a full menu. No printed menu was confirmed for this page, so prices and a complete list aren't here.</p>
+      </section>
+
+      <section id="patio" class="feature">
+        <figure class="feature-photo">
+          <img
+            src="/high-sweet/butters.jpg"
+            alt="Tabby cat asleep on a black-and-white patio chair, with a caption introducing Butters"
+            loading="lazy"
+          />
+        </figure>
+        <div class="feature-copy">
+          <h2>Four-legged friends</h2>
+          <p>Their Instagram caption calls Butters “our local loved mascot.” A tabby who naps on the patio chairs.</p>
+          <p>Their post: “Love our four legged High Sweet friends.” Dogs stop by for a taste, and the patio is part of the visit.</p>
+          <figure class="pets-photo">
+            <img
+              src="/high-sweet/pets.jpg"
+              alt="Collage of dogs getting treats and a tabby cat on the patio, captioned for four-legged High Sweet friends"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="info">
+        <div id="hours" class="hours-col">
+          <h2>Hours</h2>
+          <ul class="hours">
+            {
+              hours.map(([day, time]) => (
+                <li>
+                  <span>{day}</span>
+                  <span class={time === "Closed" ? "closed" : undefined}>{time}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div id="visit" class="visit-col">
+          <h2>Visit</h2>
+          <p class="address">213 E High St<br />Moorpark, CA 93021</p>
+          <p class="phone"><a href={tel}>(805) 243-3111</a></p>
+          <div class="visit-actions">
+            <a class="btn fill" href={mapsShare}>Map</a>
+            <a class="text-link" href={mapsSearch}>Search the address</a>
+          </div>
+          <div class="social">
+            <a href="https://www.instagram.com/highsweetcreamery/">Instagram</a>
+            <a href="https://www.threads.com/@highsweetcreamery">Threads</a>
+            <a href="https://www.facebook.com/p/High-Sweet-Creamery-61591388506543/">Facebook</a>
+            <a href="https://www.yelp.com/biz/high-sweet-creamery-moorpark-2">Yelp</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="wordmark" href="#top">High Sweet Creamery</a>
+      <p class="address">213 E High St<br />Moorpark, CA 93021</p>
+      <p class="phone"><a href={tel}>(805) 243-3111</a></p>
+      <div class="social">
+        <a href="https://www.instagram.com/highsweetcreamery/">Instagram</a>
+        <a href="https://www.threads.com/@highsweetcreamery">Threads</a>
+        <a href="https://www.facebook.com/p/High-Sweet-Creamery-61591388506543/">Facebook</a>
+        <a href="https://www.yelp.com/biz/high-sweet-creamery-moorpark-2">Yelp</a>
+      </div>
+      <p class="fine">High Sweet Creamery · Moorpark</p>
+    </footer>
+
+    <nav class="dock" aria-label="Call or directions">
+      <a href={tel}>Call</a>
+      <a href={mapsShare}>Directions</a>
+    </nav>
+  </div>
+</Demo>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(html),
+  :global(body) {
+    background: #fff;
+  }
+
+  .hs {
+    --tan: #e4bf93;
+    --blush: #ecd5e0;
+    --pink: #f9e0ec;
+    --cream: #f9f3e4;
+    --butter: #ffefc5;
+    --mint: #a6c7bf;
+    --lavender: #c1a2c7;
+    --black: #111;
+    --white: #fff;
+    --display: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+    --script: "Yellowtail", "Segoe Script", "Brush Script MT", cursive;
+    --sans: Arial, Helvetica, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.45;
+    padding-bottom: calc(3.4rem + env(safe-area-inset-bottom));
+  }
+
+  .hs * {
+    min-width: 0;
+  }
+
+  .hs img {
+    max-width: 100%;
+    display: block;
+  }
+
+  .hs a {
+    color: var(--black);
+  }
+
+  .hs :focus-visible {
+    outline: 2px solid var(--black);
+    outline-offset: 3px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .topstrip {
+    margin: 0;
+    background: var(--black);
+    color: var(--cream);
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.38rem 1rem;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    flex-wrap: wrap;
+    background: var(--white);
+    border-bottom: 1px solid var(--black);
+    padding: 0.45rem 1rem 0.55rem;
+  }
+
+  .wordmark {
+    font-family: var(--script);
+    font-size: 2.15rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: 0;
+  }
+
+  .site-header nav {
+    display: none;
+  }
+
+  .header-call {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 0.85rem;
+    border: 2px solid var(--black);
+    border-radius: 999px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  h1,
+  h2,
+  .tile h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.86;
+    margin: 0;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--tan);
+    border-bottom: 1px solid var(--black);
+  }
+
+  .hero-copy {
+    background: var(--tan);
+    padding: 1.6rem 1.15rem 1.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.4rem, 16vw, 4.6rem);
+    max-width: 10ch;
+    margin: 0 0 0.9rem;
+  }
+
+  .lede {
+    margin: 0 0 1.2rem;
+    max-width: 28rem;
+    font-size: 1rem;
+    line-height: 1.45;
+    text-align: left;
+  }
+
+  .hero-actions,
+  .visit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem 0.85rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    border: 2px solid var(--black);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--black);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .btn.fill {
+    background: var(--cream);
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .hero-photo {
+    margin: 0;
+    background: var(--butter);
+    min-height: 78vw;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    position: absolute;
+    inset: 0;
+  }
+
+  .treats {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-bottom: 1px solid var(--black);
+    background: var(--white);
+  }
+
+  .tile {
+    border-bottom: 1px solid var(--black);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tile:last-child {
+    border-bottom: 0;
+  }
+
+  .tile-pink { background: var(--pink); }
+  .tile-mint { background: var(--mint); }
+  .tile-lav { background: var(--lavender); }
+
+  .tile img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    object-position: center 42%;
+    border-bottom: 1px solid var(--black);
+  }
+
+  .tile img.cow {
+    object-position: 28% center;
+  }
+
+  .tile-copy {
+    padding: 1rem 1.1rem 1.35rem;
+  }
+
+  .tile h3 {
+    font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.14em;
+    margin: 0 0 0.55rem;
+  }
+
+  .tile p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    max-width: 36rem;
+  }
+
+  .statement {
+    background: var(--cream);
+    border-bottom: 1px solid var(--black);
+    padding: 2.4rem 1.15rem 2.5rem;
+  }
+
+  .statement h2 {
+    font-size: clamp(2.8rem, 12vw, 3.6rem);
+    max-width: 14ch;
+    margin: 0 0 1.1rem;
+  }
+
+  .statement p {
+    margin: 0 0 1rem;
+    max-width: 40rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .statement .note {
+    margin: 1.25rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    max-width: 40rem;
+  }
+
+  .feature {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-bottom: 1px solid var(--black);
+    background: var(--mint);
+  }
+
+  .feature-photo {
+    margin: 0;
+    background: var(--butter);
+    border-bottom: 1px solid var(--black);
+    min-height: 420px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 32%;
+  }
+
+  .feature-copy {
+    background: var(--mint);
+    padding: 1.8rem 1.15rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .feature h2 {
+    font-size: clamp(3.2rem, 14vw, 4.4rem);
+    max-width: 8ch;
+    margin: 0 0 1rem;
+  }
+
+  .feature-copy p {
+    margin: 0 0 0.8rem;
+    max-width: 34rem;
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .pets-photo {
+    margin: 1.1rem 0 0;
+    border: 1px solid var(--black);
+    background: var(--cream);
+  }
+
+  .pets-photo img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: center 40%;
+  }
+
+  .info {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-bottom: 1px solid var(--black);
+  }
+
+  .hours-col {
+    background: var(--lavender);
+    padding: 2rem 1.15rem 2.1rem;
+  }
+
+  .visit-col {
+    background: var(--tan);
+    border-top: 1px solid var(--black);
+    padding: 2rem 1.15rem 2.2rem;
+  }
+
+  .hours-col h2,
+  .visit-col h2 {
+    font-size: clamp(3.2rem, 12vw, 4.2rem);
+    margin: 0 0 1rem;
+  }
+
+  .hours {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 32rem;
+  }
+
+  .hours li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--black);
+    font-size: 1rem;
+  }
+
+  .hours li:last-child {
+    border-bottom: 0;
+  }
+
+  .hours .closed {
+    font-weight: 700;
+  }
+
+  .address {
+    margin: 0 0 0.7rem;
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+
+  .phone {
+    margin: 0 0 1.1rem;
+    font-size: 1.05rem;
+  }
+
+  .phone a {
+    color: var(--black);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+
+  .text-link,
+  .social a {
+    color: var(--black);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 1.15rem;
+    margin-top: 1rem;
+  }
+
+  .social a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .site-footer {
+    background: var(--blush);
+    padding: 2.2rem 1.15rem calc(2rem + env(safe-area-inset-bottom));
+  }
+
+  .site-footer .wordmark {
+    display: inline-block;
+    margin-bottom: 0.85rem;
+  }
+
+  .site-footer .address {
+    margin-bottom: 0.45rem;
+  }
+
+  .site-footer .phone {
+    margin-bottom: 0.2rem;
+  }
+
+  .site-footer .social {
+    margin-top: 0.6rem;
+  }
+
+  .fine {
+    margin: 1.4rem 0 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+
+  .dock {
+    position: fixed;
+    z-index: 8;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--black);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .dock a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    color: var(--cream);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.92rem;
+  }
+
+  .dock a + a {
+    box-shadow: inset 1px 0 0 rgba(249, 243, 228, 0.28);
+  }
+
+  #about,
+  #treats,
+  #patio,
+  #hours,
+  #visit,
+  #top {
+    scroll-margin-top: 5.5rem;
+  }
+
+  @media (min-width: 861px) {
+    .hs {
+      padding-bottom: 0;
+    }
+
+    .site-header {
+      flex-wrap: nowrap;
+      padding: 0.55rem 1.4rem 0.65rem;
+    }
+
+    .site-header nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.15rem 0.35rem;
+      margin-left: auto;
+    }
+
+    .site-header nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.45rem;
+      color: var(--black);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .site-header nav a:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.22em;
+    }
+
+    .header-call {
+      margin-left: 0.4rem;
+    }
+
+    .dock {
+      display: none;
+    }
+
+    .hero {
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 7.5rem);
+    }
+
+    .hero-copy {
+      padding: clamp(2rem, 5vw, 4.5rem) clamp(1.4rem, 4vw, 4rem);
+    }
+
+    .hero h1 {
+      font-size: clamp(4.4rem, 8vw, 8.4rem);
+      max-width: 8ch;
+      margin: 0 0 1.1rem;
+    }
+
+    .lede {
+      margin: 0 0 1.6rem;
+      font-size: 0.95rem;
+    }
+
+    .hero-photo {
+      min-height: 70vh;
+    }
+
+    .treats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tile {
+      border-right: 1px solid var(--black);
+      border-bottom: 0;
+    }
+
+    .tile:last-child {
+      border-right: 0;
+    }
+
+    .tile img {
+      height: 460px;
+    }
+
+    .tile p {
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .statement {
+      padding: clamp(2.5rem, 6vw, 5rem) clamp(1.4rem, 8vw, 8rem);
+    }
+
+    .statement h2 {
+      font-size: clamp(3.2rem, 6.5vw, 6rem);
+      margin: 0 0 1.3rem;
+    }
+
+    .statement .note {
+      font-size: 0.82rem;
+    }
+
+    .feature {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+
+    .feature-photo {
+      border-right: 1px solid var(--black);
+      border-bottom: 0;
+      min-height: 640px;
+    }
+
+    .feature-copy {
+      padding: clamp(2rem, 4vw, 3.5rem) clamp(1.3rem, 3.5vw, 3.2rem);
+    }
+
+    .feature h2 {
+      font-size: clamp(4rem, 7vw, 7.2rem);
+    }
+
+    .feature-copy p {
+      font-size: 0.95rem;
+    }
+
+    .pets-photo img {
+      height: 340px;
+    }
+
+    .info {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hours-col,
+    .visit-col {
+      padding: clamp(2rem, 4vw, 3.5rem) clamp(1.3rem, 4vw, 3.5rem);
+    }
+
+    .visit-col {
+      border-top: 0;
+      border-left: 1px solid var(--black);
+    }
+
+    .hours-col h2,
+    .visit-col h2 {
+      font-size: clamp(3.4rem, 5vw, 5.2rem);
+      margin: 0 0 1.2rem;
+    }
+
+    .hours li {
+      grid-template-columns: 1fr 1fr;
+      padding: 0.55rem 0;
+      font-size: 0.95rem;
+    }
+
+    .site-footer {
+      padding: 2.6rem clamp(1.3rem, 6vw, 4rem) 2.4rem;
+    }
+  }
+</style>
