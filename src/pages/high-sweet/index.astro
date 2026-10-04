@@ -31,7 +31,9 @@ const hours = [
     <p class="topstrip">213 E High St, Moorpark</p>
 
     <header class="site-header">
-      <a class="wordmark" href="#top">High Sweet Creamery</a>
+      <a class="brand" href="#top">
+        <img src="/high-sweet/logo.png" alt="High Sweet Creamery" width="771" height="771" />
+      </a>
       <nav aria-label="On this page">
         <a href="#about">About</a>
         <a href="#menu">Menu</a>
@@ -45,6 +47,7 @@ const hours = [
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
+          <img class="hero-mark" src="/high-sweet/logo.png" alt="" width="771" height="771" />
           <h1>Soft serve on High Street</h1>
           <p class="lede">A classic taste of High Street history with some amazing treats for all ages.</p>
           <div class="hero-actions">
@@ -201,13 +204,13 @@ const hours = [
   }
 
   .hs {
-    --tan: #e4bf93;
-    --blush: #ecd5e0;
-    --pink: #f9e0ec;
-    --cream: #f9f3e4;
-    --butter: #ffefc5;
-    --mint: #a6c7bf;
-    --lavender: #c1a2c7;
+    --tan: #e8c4b4;
+    --blush: #f0c9d8;
+    --pink: #f8d4e6;
+    --cream: #f8e6ea;
+    --butter: #fde6d6;
+    --mint: #c9aeb8;
+    --lavender: #cda8c4;
     --black: #111;
     --white: #fff;
     --display: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
@@ -284,6 +287,25 @@ const hours = [
     color: var(--black);
     text-decoration: none;
     letter-spacing: 0;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    line-height: 0;
+    text-decoration: none;
+  }
+
+  .brand img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .hero-mark {
+    width: 132px;
+    height: 132px;
+    margin: 0 0 1.05rem;
   }
 
   .site-header nav {
@@ -718,7 +740,7 @@ const hours = [
   }
 
   .dock a + a {
-    box-shadow: inset 1px 0 0 rgba(249, 243, 228, 0.28);
+    box-shadow: inset 1px 0 0 rgba(248, 230, 234, 0.28);
   }
 
   #about,
@@ -727,7 +749,7 @@ const hours = [
   #hours,
   #visit,
   #top {
-    scroll-margin-top: 5.5rem;
+    scroll-margin-top: 6.5rem;
   }
 
   @media (min-width: 861px) {
@@ -737,7 +759,18 @@ const hours = [
 
     .site-header {
       flex-wrap: nowrap;
-      padding: 0.55rem 1.4rem 0.65rem;
+      padding: 0.45rem 1.4rem 0.5rem;
+    }
+
+    .brand img {
+      width: 72px;
+      height: 72px;
+    }
+
+    .hero-mark {
+      width: 168px;
+      height: 168px;
+      margin: 0 0 1.25rem;
     }
 
     .site-header nav {
