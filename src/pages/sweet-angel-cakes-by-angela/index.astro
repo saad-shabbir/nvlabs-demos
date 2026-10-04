@@ -30,6 +30,7 @@ const hours = [
 ];
 ---
 
+
 <Demo
   businessName="Sweet Angel Cakes by Angela"
   title="Sweet Angel Cakes by Angela"
@@ -37,46 +38,79 @@ const hours = [
   image="/sweet-angel-cakes-by-angela/hero.jpg"
 >
   <div class="angel">
-    <header class="mast">
-      <h1 class="visually-hidden">Sweet Angel Cakes by Angela</h1>
-      <img
-        class="logo"
-        src="/sweet-angel-cakes-by-angela/logo.png"
-        alt="Sweet Angel Cakes by Angela. Custom Cakes and Bakes."
-        width="800"
-        height="798"
-      />
+    <header class="bar">
+      <a class="bar-brand" href="#top">
+        <img
+          class="bar-logo"
+          src="/sweet-angel-cakes-by-angela/logo.png"
+          alt=""
+          width="800"
+          height="798"
+        />
+        <span class="visually-hidden">Sweet Angel Cakes by Angela</span>
+      </a>
+      <nav class="bar-nav" aria-label="On this page">
+        <a href="#menu">Menu</a>
+        <a href="#cakes">Cakes</a>
+        <a href="#order">Order</a>
+        <a href="#hours">Hours</a>
+        <a href="#reviews">Reviews</a>
+      </nav>
+      <div class="bar-actions">
+        <a class="bar-phone" href={tel}>(915) 497-6661</a>
+        <a class="btn ghost" href={tel}>Call</a>
+        <a class="btn" href={sms}>Text to order</a>
+      </div>
     </header>
 
-    <img
-      class="hero"
-      src="/sweet-angel-cakes-by-angela/hero.jpg"
-      alt="Custom celebration cake with pink, blue, and purple layers"
-      width="1200"
-      height="1200"
-    />
-
-    <section class="intro">
-      <p>
-        Cottage bakery specializing in custom cakes, cupcakes and other sweet bakes
-        for any occasion or just because.
-      </p>
-      <p class="biscochos">Best Biscochos de anise in town.</p>
-      <p class="phone"><a href={tel}>(915) 497-6661</a></p>
-      <div class="actions">
-        <a href={tel}>Call</a>
-        <a class="ghost" href={sms}>Text to order</a>
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <img
+          class="logo"
+          src="/sweet-angel-cakes-by-angela/logo.png"
+          alt="Sweet Angel Cakes by Angela. Custom Cakes and Bakes."
+          width="800"
+          height="798"
+        />
+        <p class="eyebrow">Custom cakes and bakes</p>
+        <h1>Sweet Angel Cakes <span>by Angela</span></h1>
+        <p class="lede">
+          Cottage bakery specializing in custom cakes, cupcakes and other sweet bakes
+          for any occasion or just because.
+        </p>
+        <p class="biscochos">Best Biscochos de anise in town.</p>
+        <p class="phone"><a href={tel}>(915) 497-6661</a></p>
+        <div class="actions">
+          <a class="btn" href={sms}>Text to order</a>
+          <a class="btn ghost" href={tel}>Call</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img
+          src="/sweet-angel-cakes-by-angela/hero.jpg"
+          alt="Custom celebration cake with pink, blue, and purple layers"
+          width="1200"
+          height="1200"
+        />
       </div>
     </section>
 
-    <section class="custom">
-      <img
-        src="/sweet-angel-cakes-by-angela/army-cake.jpg"
-        alt="Three-tier custom celebration cake"
-        width="1400"
-        height="1400"
-        loading="lazy"
-      />
+    <ul class="strip">
+      <li>48 hour notice.</li>
+      <li>Pickup at Bauxite Ave, El Paso, TX 79932.</li>
+      <li><a href={tel}>(915) 497-6661</a></li>
+    </ul>
+
+    <section class="custom" id="cakes">
+      <div class="custom-photo">
+        <img
+          src="/sweet-angel-cakes-by-angela/army-cake.jpg"
+          alt="Three-tier custom celebration cake"
+          width="1400"
+          height="1400"
+          loading="lazy"
+        />
+      </div>
       <div class="prose">
         <h2>Custom cakes</h2>
         <p>
@@ -84,113 +118,138 @@ const hours = [
           and other sweet bakes.
         </p>
         <p>Custom orders and large orders: message for pricing and availability.</p>
+        <p class="actions tight">
+          <a class="btn" href={sms}>Text to order</a>
+        </p>
       </div>
     </section>
 
     <section class="menu-wrap" id="menu">
-      <h2>Fall menu</h2>
-      <p class="note">Message for available dates and items.</p>
+      <div class="menu-inner">
+        <h2>Fall menu</h2>
+        <p class="note">Message for available dates and items.</p>
+        <div class="menu-grid">
+          <div>
+            <h3>Bread, large loaf</h3>
+            <ul class="menu">
+              <li><span class="item">Banana Bread</span><span class="price">$11</span></li>
+              <li><span class="item">Cinnamon Swirl Bread</span><span class="price">$12</span></li>
+              <li><span class="item">Pumpkin Bread</span><span class="price">$12</span></li>
+            </ul>
+            <p class="addins">Add-ins +$1 each: Nuts, Chocolate Chips.</p>
+          </div>
+          <div>
+            <h3>Cinnamon Rolls, 1 dozen tray</h3>
+            <ul class="menu">
+              <li><span class="item">Classic</span><span class="price">$38</span></li>
+              <li><span class="item">Apple</span><span class="price">$42</span></li>
+              <li><span class="item">Pumpkin &amp; Spice</span><span class="price">$42</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Fall-inspired cookies</h3>
+            <ul class="menu">
+              <li><span class="item">Biscocho Cookies</span><span class="price">$20 per 5 dozen</span></li>
+              <li><span class="item">Polvorones</span><span class="price">$25 per 2½ dozen</span></li>
+            </ul>
+          </div>
+        </div>
+        <p class="signoff">Small batch baking. Made with love.</p>
+      </div>
+    </section>
 
-      <h3>Bread, large loaf</h3>
-      <ul class="menu">
-        <li><span>Banana Bread</span><span>$11</span></li>
-        <li><span>Cinnamon Swirl Bread</span><span>$12</span></li>
-        <li><span>Pumpkin Bread</span><span>$12</span></li>
-      </ul>
-      <p class="addins">Add-ins +$1 each: Nuts, Chocolate Chips.</p>
-
-      <h3>Cinnamon Rolls, 1 dozen tray</h3>
-      <ul class="menu">
-        <li><span>Classic</span><span>$38</span></li>
-        <li><span>Apple</span><span>$42</span></li>
-        <li><span>Pumpkin &amp; Spice</span><span>$42</span></li>
-      </ul>
-
-      <h3>Fall-inspired cookies</h3>
-      <ul class="menu">
-        <li><span>Biscocho Cookies</span><span>$20 per 5 dozen</span></li>
-        <li><span>Polvorones</span><span>$25 per 2½ dozen</span></li>
-      </ul>
-      <p class="signoff">Small batch baking. Made with love.</p>
+    <section class="reviews" id="reviews">
+      <div class="reviews-inner">
+        <h2>Reviews</h2>
+        <div class="quotes">
+          <figure>
+            <blockquote>
+              <p>
+                Angela’s cocoa bombs were so beautiful and tasted just as delicious
+                also bought some banana bread and soooo good! Her pastries and
+                decorations are so wonderful!
+              </p>
+            </blockquote>
+            <figcaption>Sarah Vai, January 29, 2021</figcaption>
+          </figure>
+          <figure>
+            <blockquote>
+              <p>
+                One of the best birthday cakes I’ve ever had! Both tasting and
+                beautiful to look at.
+              </p>
+            </blockquote>
+            <figcaption>Laura Mendoza, July 1, 2019</figcaption>
+          </figure>
+        </div>
+      </div>
     </section>
 
     <section class="order" id="order">
-      <h2>How to order</h2>
-      <ul class="facts">
-        <li>48 hour notice.</li>
-        <li>50% non-refundable deposit, Zelle or CashApp.</li>
-        <li>Pickup at Bauxite Ave, El Paso, TX 79932.</li>
-        <li>Call or text to order. You can also message on Instagram or Facebook.</li>
-      </ul>
-      <p>There is a discount for using Zelle.</p>
-
-      <h3>For a quote, send</h3>
-      <ol>
-        <li>Name and phone</li>
-        <li>Date of interest</li>
-        <li>Pickup or delivery time, and delivery address if delivery (fee applies)</li>
-        <li>Custom cake or other bake</li>
-        <li>Theme colors and inspiration photos</li>
-        <li>Number of servings</li>
-        <li>Payment method: Zelle, Venmo, or CashApp</li>
-      </ol>
-      <a class="text-link" href={sms}>Text these details</a>
+      <div class="order-inner">
+        <div>
+          <h2>How to order</h2>
+          <ul class="facts">
+            <li>48 hour notice.</li>
+            <li>50% non-refundable deposit, Zelle or CashApp.</li>
+            <li>Pickup at Bauxite Ave, El Paso, TX 79932.</li>
+            <li>Call or text to order. You can also message on Instagram or Facebook.</li>
+          </ul>
+          <p class="zelle">There is a discount for using Zelle.</p>
+          <div class="actions">
+            <a class="btn" href={sms}>Text these details</a>
+            <a class="btn ghost" href={tel}>Call</a>
+          </div>
+        </div>
+        <div>
+          <h3>For a quote, send</h3>
+          <ol>
+            <li>Name and phone</li>
+            <li>Date of interest</li>
+            <li>Pickup or delivery time, and delivery address if delivery (fee applies)</li>
+            <li>Custom cake or other bake</li>
+            <li>Theme colors and inspiration photos</li>
+            <li>Number of servings</li>
+            <li>Payment method: Zelle, Venmo, or CashApp</li>
+          </ol>
+        </div>
+      </div>
     </section>
 
-    <section class="visit">
-      <h2>Pickup</h2>
-      <p>
-        Bauxite Ave, El Paso, TX 79932.
-      </p>
-      <p><a href={maps}>Directions</a></p>
-
-      <h2>Hours</h2>
-      <dl>
-        {
-          hours.map(([day, time]) => (
-            <>
-              <dt>{day}</dt>
-              <dd>{time}</dd>
-            </>
-          ))
-        }
-      </dl>
-    </section>
-
-    <section class="reviews">
-      <h2>Reviews</h2>
-      <figure>
-        <blockquote>
-          <p>
-            Angela’s cocoa bombs were so beautiful and tasted just as delicious
-            also bought some banana bread and soooo good! Her pastries and
-            decorations are so wonderful!
+    <footer id="visit">
+      <div class="foot">
+        <div>
+          <p class="brand">Sweet Angel Cakes by Angela</p>
+          <p class="certs">
+            Food Safe Certified. State registered to sell refrigerated homemade
+            desserts. DSHS Registered. Texas Homemade verified.
           </p>
-        </blockquote>
-        <figcaption>Sarah Vai, January 29, 2021</figcaption>
-      </figure>
-      <figure>
-        <blockquote>
-          <p>
-            One of the best birthday cakes I’ve ever had! Both tasting and
-            beautiful to look at.
+        </div>
+        <div id="hours">
+          <h2>Hours</h2>
+          <dl>
+            {
+              hours.map(([day, time]) => (
+                <>
+                  <dt>{day}</dt>
+                  <dd>{time}</dd>
+                </>
+              ))
+            }
+          </dl>
+        </div>
+        <div>
+          <h2>Pickup</h2>
+          <p class="place">Bauxite Ave, El Paso, TX 79932.</p>
+          <p class="dir"><a class="btn ghost" href={maps}>Directions</a></p>
+          <p class="links">
+            <a href="https://www.instagram.com/sweetangelcakesbyangela/">Instagram</a>
+            <a href="https://www.facebook.com/sweetangelcakesbyangela">Facebook</a>
+            <a href="mailto:sweetangelcakesbyangela@yahoo.com">Email</a>
+            <a href={tel}>(915) 497-6661</a>
           </p>
-        </blockquote>
-        <figcaption>Laura Mendoza, July 1, 2019</figcaption>
-      </figure>
-    </section>
-
-    <footer>
-      <p>
-        Food Safe Certified. State registered to sell refrigerated homemade
-        desserts. DSHS Registered. Texas Homemade verified.
-      </p>
-      <p class="links">
-        <a href="https://www.instagram.com/sweetangelcakesbyangela/">Instagram</a>
-        <a href="https://www.facebook.com/sweetangelcakesbyangela">Facebook</a>
-        <a href="mailto:sweetangelcakesbyangela@yahoo.com">Email</a>
-        <a href={tel}>(915) 497-6661</a>
-      </p>
+        </div>
+      </div>
     </footer>
 
     <nav class="dock" aria-label="Order">
@@ -201,23 +260,29 @@ const hours = [
 </Demo>
 
 <style>
+  :global(html),
   :global(body) {
-    background: #f3c9cb;
+    background: #feebe5;
   }
 
   .angel {
     --ink: #1b1214;
-    --cream: #feeee6;
+    --cream: #feebe5;
+    --paper: #fff8f4;
     --blush: #fdb1b1;
+    --rose: #b85a68;
+    --muted: #5c4548;
     --line: rgba(27, 18, 20, 0.22);
-    max-width: 40rem;
-    margin: 0 auto;
     background: var(--cream);
     color: var(--ink);
     font-family: "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
     font-size: 1.0625rem;
-    line-height: 1.45;
-    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    line-height: 1.5;
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+
+  .angel * {
+    min-width: 0;
   }
 
   .visually-hidden {
@@ -232,125 +297,269 @@ const hours = [
     border: 0;
   }
 
-  .mast {
-    padding: 0.35rem 1rem 0.15rem;
+  h1,
+  h2,
+  h3,
+  .biscochos,
+  .place,
+  .brand,
+  .item,
+  .zelle,
+  blockquote p {
+    font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
   }
 
-  .logo {
+  h1 {
+    margin: 0 0 0.85rem;
+    font-size: clamp(3.15rem, 12vw, 4.4rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+  }
+
+  h1 span {
     display: block;
-    width: min(15.5rem, 68vw);
-    height: auto;
-    margin: 0 auto;
+    margin-top: 0.28rem;
+    color: var(--rose);
+    font-style: italic;
+    font-size: 0.58em;
+    letter-spacing: -0.03em;
   }
 
-  .hero,
-  .custom img {
+  h2 {
+    margin: 0 0 0.85rem;
+    font-size: clamp(2.5rem, 6vw, 4.4rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.94;
+  }
+
+  h3 {
+    margin: 0 0 0.45rem;
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  p {
+    margin: 0 0 0.85rem;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1.25rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--cream);
+    font: inherit;
+    font-size: 0.98rem;
+    font-weight: 650;
+    line-height: 1.1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    background: #feebe5;
+    border-bottom: 1px solid rgba(27, 18, 20, 0.1);
+    padding: 0.35rem 0.85rem;
+  }
+
+  .bar-logo {
+    display: block;
+    width: 3.35rem;
+    height: auto;
+  }
+
+  .bar-nav,
+  .bar-phone,
+  .bar .ghost {
+    display: none;
+  }
+
+  .bar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .bar .btn {
+    min-height: 44px;
+    padding-inline: 1rem;
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-photo {
+    order: -1;
+  }
+
+  .hero-photo img {
     display: block;
     width: 100%;
     height: auto;
   }
 
-  .intro,
-  .prose,
-  .menu-wrap,
-  .order,
-  .visit,
-  .reviews,
-  footer {
-    padding: 1.25rem 1.15rem 0.35rem;
+  .hero-copy {
+    padding: 0.85rem 1.15rem 1.15rem;
+    text-align: center;
   }
 
-  h2,
-  h3,
+  .logo {
+    display: block;
+    width: min(7.25rem, 38vw);
+    height: auto;
+    margin: 0 auto 0.2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.45rem;
+    color: var(--rose);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .lede {
+    margin-inline: auto;
+    max-width: 36rem;
+    font-size: 1.05rem;
+  }
+
   .biscochos {
-    font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
-    font-weight: 500;
-  }
-
-  h2 {
-    margin: 0 0 0.55rem;
-    font-size: 1.85rem;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-  }
-
-  h3 {
-    margin: 1.15rem 0 0.35rem;
-    font-size: 1.2rem;
+    margin: 0.1rem auto 0.35rem;
+    max-width: 22rem;
+    font-size: clamp(1.35rem, 4vw, 1.7rem);
     font-style: italic;
-  }
-
-  p {
-    margin: 0 0 0.75rem;
-  }
-
-  .biscochos {
-    font-size: 1.35rem;
+    font-weight: 500;
     line-height: 1.2;
-    margin: 0.15rem 0 0.2rem;
   }
 
   .phone {
-    margin: 0.15rem 0 0.7rem;
-    font-size: 1.15rem;
+    margin: 0 0 0.85rem;
+    font-size: 1.25rem;
     font-weight: 700;
   }
 
-  .phone a {
+  .phone a,
+  .bar-phone,
+  .strip a {
     color: inherit;
     text-decoration: none;
   }
 
-  .actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.55rem;
-    margin: 0.35rem 0 0.4rem;
-  }
-
-  .actions a,
-  .text-link,
-  .dock a {
-    text-decoration: none;
-  }
-
-  .actions a,
-  .text-link {
-    display: flex;
+  .phone a {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 3rem;
-    padding: 0.7rem 0.9rem;
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--cream);
-    font-weight: 650;
+    min-height: 44px;
+    padding: 0 0.4rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .actions .btn {
+    flex: 1 1 9.5rem;
+    max-width: 16rem;
+  }
+
+  .actions.tight {
+    justify-content: flex-start;
+    margin: 0.4rem 0 0;
+  }
+
+  .actions.tight .btn {
+    flex: 0 1 auto;
+  }
+
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.15rem 1.35rem;
+    margin: 0;
+    padding: 0.35rem 1rem;
+    list-style: none;
+    background: var(--blush);
     text-align: center;
-    white-space: nowrap;
   }
 
-  .actions a.ghost {
-    background: transparent;
-    color: var(--ink);
-    box-shadow: inset 0 0 0 1.5px var(--ink);
+  .strip li {
+    padding: 0.45rem 0.4rem;
+    font-weight: 650;
   }
 
-  .text-link {
-    margin: 0.4rem 0 1rem;
+  .strip a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
   }
 
-  .custom {
-    margin-top: 0.6rem;
+  .custom-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .prose {
+    padding: 2rem 1.15rem 2.3rem;
+  }
+
+  .prose p:last-child {
+    margin-bottom: 0;
   }
 
   .menu-wrap {
-    margin-top: 0.4rem;
+    padding: 2.5rem 1.15rem 2.6rem;
+    background: var(--paper);
   }
 
   .note,
-  .addins,
-  .signoff {
-    color: #5c4548;
+  .addins {
+    color: var(--muted);
+  }
+
+  .note {
+    margin: -0.2rem 0 1.5rem;
+    font-size: 1.05rem;
+  }
+
+  .menu-grid {
+    display: grid;
+    gap: 1.75rem;
   }
 
   .menu {
@@ -362,66 +571,50 @@ const hours = [
   .menu li {
     display: flex;
     justify-content: space-between;
-    gap: 0.75rem;
     align-items: baseline;
-    padding: 0.42rem 0;
+    gap: 0.75rem;
+    padding: 0.72rem 0;
     border-bottom: 1px dotted var(--line);
   }
 
-  .menu li span:last-child {
+  .item {
+    font-size: 1.22rem;
+    line-height: 1.25;
+  }
+
+  .price {
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
     font-weight: 650;
+    white-space: nowrap;
+  }
+
+  .addins {
+    margin: 0.75rem 0 0;
+    font-size: 0.98rem;
   }
 
   .signoff {
-    margin-top: 1rem;
+    margin: 2rem 0 0.15rem;
     font-family: "Iowan Old Style", Palatino, Georgia, serif;
     font-style: italic;
-    font-size: 1.15rem;
-    color: var(--ink);
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    line-height: 1.25;
   }
 
-  .facts,
-  ol {
-    margin: 0 0 0.85rem;
-    padding-left: 1.15rem;
+  .reviews {
+    padding: 2.6rem 1.15rem 2.7rem;
   }
 
-  .facts li,
-  ol li {
-    margin: 0.28rem 0;
-    padding-left: 0.15rem;
-  }
-
-  .visit a,
-  footer a {
-    color: inherit;
-  }
-
-  dl {
+  .quotes {
     display: grid;
-    grid-template-columns: 7.2rem 1fr;
-    gap: 0.28rem 0.75rem;
-    margin: 0 0 1.1rem;
-  }
-
-  dt,
-  dd {
-    margin: 0;
-  }
-
-  dt {
-    font-weight: 650;
-  }
-
-  dd:last-of-type {
-    color: #5c4548;
+    gap: 0.9rem;
   }
 
   figure {
-    margin: 0 0 1.15rem;
-    padding-top: 0.15rem;
+    margin: 0;
+    padding: 1.2rem 1.15rem 1.1rem;
+    background: var(--paper);
+    border-radius: 1.25rem;
   }
 
   blockquote {
@@ -429,39 +622,170 @@ const hours = [
   }
 
   blockquote p {
-    font-family: "Iowan Old Style", Palatino, Georgia, serif;
-    font-size: 1.22rem;
+    margin: 0;
+    font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+    font-weight: 500;
     line-height: 1.35;
   }
 
   figcaption {
+    margin-top: 0.9rem;
+    color: var(--rose);
     font-size: 0.92rem;
-    letter-spacing: 0.01em;
+    font-weight: 700;
+  }
+
+  .order {
+    background: var(--blush);
+    padding: 2.5rem 1.15rem 2.6rem;
+  }
+
+  .order-inner {
+    display: grid;
+    gap: 1.8rem;
+  }
+
+  .facts {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+  }
+
+  .facts li {
+    padding: 0.68rem 0;
+    border-top: 1px solid rgba(27, 18, 20, 0.18);
+  }
+
+  .facts li:last-child {
+    border-bottom: 1px solid rgba(27, 18, 20, 0.18);
+  }
+
+  .zelle {
+    font-size: 1.35rem;
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: quote;
+  }
+
+  ol li {
+    counter-increment: quote;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: baseline;
+    padding: 0.58rem 0;
+    border-bottom: 1px dotted rgba(27, 18, 20, 0.35);
+  }
+
+  ol li::before {
+    content: counter(quote, decimal-leading-zero);
+    font-family: "Iowan Old Style", Palatino, Georgia, serif;
   }
 
   footer {
-    padding-bottom: 1.4rem;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 2.3rem 1.15rem 2.1rem;
   }
 
-  footer p:first-child {
-    font-size: 0.95rem;
-    color: #5c4548;
+  footer h2 {
+    color: var(--cream);
+    font-size: 1.7rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .brand {
+    margin: 0 0 0.55rem;
+    font-size: clamp(1.8rem, 4vw, 2.3rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .certs,
+  .place {
+    color: rgba(254, 235, 229, 0.82);
+  }
+
+  .place {
+    margin: 0 0 0.85rem;
+    font-size: 1.35rem;
+    line-height: 1.25;
+    max-width: 18ch;
+  }
+
+  .dir {
+    margin: 0 0 0.4rem;
+  }
+
+  footer .btn.ghost {
+    color: var(--cream);
+    border-color: rgba(254, 235, 229, 0.7);
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin: 0 0 0.4rem;
+  }
+
+  dt,
+  dd {
+    margin: 0;
+    padding: 0.38rem 0;
+    border-bottom: 1px dotted rgba(254, 235, 229, 0.28);
+  }
+
+  dt {
+    padding-right: 1rem;
+    font-weight: 650;
+  }
+
+  dd {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  dd:last-of-type {
+    font-family: "Iowan Old Style", Palatino, Georgia, serif;
+    font-style: italic;
   }
 
   .links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 0.9rem;
+    gap: 0.15rem 0.25rem;
+    margin: 0.35rem 0 0;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.3rem 0.15rem;
+    margin-right: 0.85rem;
+    color: inherit;
     font-weight: 650;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  footer a:focus-visible,
+  .dock a:focus-visible {
+    outline-color: var(--cream);
   }
 
   .dock {
     position: fixed;
-    z-index: 4;
-    left: 50%;
+    z-index: 8;
+    left: 0;
+    right: 0;
     bottom: 0;
-    transform: translateX(-50%);
-    width: min(100%, 40rem);
     display: grid;
     grid-template-columns: 1fr 1fr;
     background: var(--ink);
@@ -469,23 +793,235 @@ const hours = [
   }
 
   .dock a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
     color: var(--cream);
-    text-align: center;
+    text-decoration: none;
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     font-size: 0.92rem;
-    padding: 0.95rem 0.5rem;
-    min-height: 3.1rem;
   }
 
   .dock a + a {
-    box-shadow: inset 1px 0 0 rgba(254, 238, 230, 0.28);
+    box-shadow: inset 1px 0 0 rgba(254, 235, 229, 0.28);
   }
 
-  @media (min-width: 380px) {
-    .actions {
+  #menu,
+  #order,
+  #hours,
+  #reviews,
+  #cakes,
+  #top {
+    scroll-margin-top: 5.25rem;
+  }
+
+  @media (min-width: 800px) {
+    .angel {
+      padding-bottom: 0;
+    }
+
+    .bar {
+      padding-inline: 1.25rem;
+    }
+
+    .bar-logo {
+      width: 4.15rem;
+    }
+
+    .bar-phone,
+    .bar .ghost {
+      display: inline-flex;
+    }
+
+    .bar-phone {
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.35rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dock {
+      display: none;
+    }
+
+    .hero-copy {
+      padding: 2.5rem 2rem 2.2rem;
+    }
+
+    .logo {
+      width: 11rem;
+    }
+
+    .menu-grid {
       grid-template-columns: 1fr 1fr;
+      gap: 2rem 2.75rem;
+    }
+
+    .strip {
+      flex-wrap: nowrap;
+      padding: 0.15rem 1.5rem;
+    }
+
+    .foot {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2rem 2.5rem;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .bar-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.1rem;
+      margin-left: 0.35rem;
+    }
+
+    .bar-nav a,
+    .links a:hover,
+    .bar-phone:hover,
+    .phone a:hover,
+    .strip a:hover {
+      text-underline-offset: 0.22em;
+    }
+
+    .bar-nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.7rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .bar-nav a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+      align-items: stretch;
+      min-height: max(40rem, calc(100vh - 7.25rem));
+    }
+
+    .hero-photo {
+      order: 0;
+      position: relative;
+      min-height: 100%;
+    }
+
+    .hero-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+      padding: 3rem 3.25rem 3rem max(1.5rem, 4vw);
+    }
+
+    .logo {
+      width: min(13.5rem, 70%);
+      margin: 0 0 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(4.4rem, 5.5vw, 6.3rem);
+    }
+
+    .lede,
+    .biscochos,
+    .phone,
+    .actions {
+      max-width: 34rem;
+    }
+
+    .actions {
+      justify-content: flex-start;
+    }
+
+    .biscochos {
+      margin-left: 0;
+      font-size: 1.85rem;
+    }
+
+    .custom {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      align-items: center;
+    }
+
+    .custom-photo img {
+      width: 100%;
+      height: auto;
+    }
+
+    .prose {
+      padding: 4rem 5vw 4rem 3.25rem;
+    }
+
+    .prose p {
+      max-width: 34rem;
+      font-size: 1.12rem;
+    }
+
+    .menu-wrap,
+    .reviews {
+      padding: 5rem 4vw 4.6rem;
+    }
+
+    .menu-inner,
+    .reviews-inner,
+    .order-inner,
+    .foot {
+      width: min(1140px, 100%);
+      margin-inline: auto;
+    }
+
+    .menu-grid {
+      grid-template-columns: 1.05fr 1.05fr 0.9fr;
+      gap: 2.5rem 3rem;
+    }
+
+    .quotes {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 1.5rem;
+    }
+
+    figure {
+      padding: 1.6rem 1.5rem 1.35rem;
+    }
+
+    .order {
+      padding: 4.75rem 4vw;
+    }
+
+    .order-inner {
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 3.5rem 4.5rem;
+      align-items: start;
+    }
+
+    footer {
+      padding: 3.4rem 4vw 3rem;
+    }
+
+    .foot {
+      grid-template-columns: 1.15fr 1fr 0.95fr;
+      gap: 2.5rem;
+      align-items: start;
     }
   }
 </style>
