@@ -1,0 +1,11 @@
+---
+interface Props {
+  businessName: string;
+}
+
+const { businessName } = Astro.props;
+---
+
+<div class="demo-banner" role="note">
+  <p>Demo site built for {businessName} by Saad Shabbir. Want it live? Call or text <a href="tel:+15014133386">(501) 413-3386</a>.</p>
+</div>

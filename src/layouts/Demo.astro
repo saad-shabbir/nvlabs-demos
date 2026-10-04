@@ -1,0 +1,65 @@
+---
+/**
+ * Shared layout for a future demo at /<business-slug> (a lowercase hyphenated slug).
+ * Do not use this on the homepage. It is not a page, so it does not create a route.
+ *
+ *   import Demo from "../layouts/Demo.astro";
+ *   <Demo
+ *     businessName="Business Name"
+ *     title="Business Name"
+ *     description="Short factual description."
+ *     image="/businesses/<slug>/cover.jpg"
+ *     expiry="2026-12-31"
+ *   >
+ *     page content
+ *   </Demo>
+ *
+ * expiry is optional YYYY-MM-DD. After that local date, an inline head script
+ * replaces the page. Omit it and nothing about expiry runs.
+ */
+import Base from "./Base.astro";
+import DemoBanner from "../components/DemoBanner.astro";
+
+interface Props {
+  businessName: string;
+  title?: string;
+  description?: string;
+  image?: string;
+  expiry?: string;
+}
+
+const { businessName, title, description, image, expiry } = Astro.props;
+
+if (expiry != null && !/^\d{4}-\d{2}-\d{2}$/.test(expiry)) {
+  throw new Error(`Demo expiry must be YYYY-MM-DD, received: ${expiry}`);
+}
+
+const pageTitle = title ?? businessName;
+const pageDescription = description ?? businessName;
+---
+
+<Base title={pageTitle} description={pageDescription} image={image}>
+  {
+    expiry && (
+      <script is:inline define:vars={{ expiry }} slot="head">
+        (function () {
+          if (!expiry) return;
+          var now = new Date();
+          var local =
+            now.getFullYear() +
+            "-" +
+            String(now.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(now.getDate()).padStart(2, "0");
+          if (local > expiry) {
+            document.write(
+              '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>Demo expired</title></head><body><p>This demo has expired. Contact Saad Shabbir at <a href="tel:+15014133386">(501) 413-3386</a>.</p><plaintext style="display:none">'
+            );
+          }
+        })();
+      </script>
+    )
+  }
+  <DemoBanner businessName={businessName} />
+  <slot />
+</Base>
