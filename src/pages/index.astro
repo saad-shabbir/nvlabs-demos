@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import "../styles/marketing.css";
 
 const phoneDisplay = "(501) 413-3386";
 const tel = "tel:+15014133386";
@@ -35,151 +36,705 @@ const demos = [
     thumbAlt: "Porsche oil service by Aaron the Mechanic",
   },
 ];
+
+const niches = [
+  { label: "Bakeries", href: "/bakery-website-design/" },
+  { label: "Creameries", href: "/ice-cream-shop-website/" },
+  { label: "Mechanics", href: "/mobile-mechanic-website/" },
+  { label: "Barbershops", href: "/las-vegas-barbershop-website/" },
+  { label: "Instagram-only shops", href: "/instagram-only-business-website/" },
+  { label: "Food trucks", href: "/las-vegas-food-truck-website/" },
+  { label: "Nail salons", href: "/las-vegas-nail-salon-website/" },
+  { label: "Landscapers", href: "/las-vegas-landscaper-website/" },
+  { label: "Detailing", href: "/las-vegas-mobile-detailing-website/" },
+  { label: "Panaderías", href: "/panaderia-website/" },
+  { label: "Facebook-only", href: "/facebook-only-business-website/" },
+];
+
+const faqs = [
+  {
+    q: "What does this actually cost?",
+    a: "The sample site costs nothing. If you love it, the one-page Starter Site is $499 flat, the three-page Lead Engine is $1,248 flat, and the fifteen-page Town Takeover with a launch blog is $4,999 flat. Those prices are on this page. You pay zero until you have seen your homepage and said build it.",
+  },
+  {
+    q: "The preview is really free? Why would you do that?",
+    a: "Because asking a local shop to pay before they see anything feels backwards. The sample costs me a few hours. Most owners who see their own name on a real page want it finished. That is when I get paid. If you walk away, you keep the design. That is the cost of proving I am good at this.",
+  },
+  {
+    q: "What's the catch?",
+    a: "There is not a hidden one. No deposit. No design fee. No surprise invoice. You pay only after you approve your sample, at the flat price listed here. Your domain and hosting stay in your name, paid to the provider, usually a few dollars a month. If the site turns out great I may ask to show it in my work section, but that is never required.",
+  },
+  {
+    q: "What if I don't like the sample?",
+    a: "Tell me what is off and I take one more swing at it, free. If you still do not love it, walk away and keep the design. Take it somewhere else if you want. You owe me nothing.",
+  },
+  {
+    q: "Do I actually own the site?",
+    a: "Yes. All of it. It lives on your web address and your hosting, in your name, with your password. You get the files. If you never talk to me again, it keeps working. I cannot switch it off, because it was never mine.",
+  },
+  {
+    q: "Is there a monthly fee?",
+    a: "Every build includes 90 days of care free: small edits, security help, hosting help, and a monthly check that everything works. After 90 days it is $74 a month, and it keeps going unless you cancel. Want more ongoing work? Growth is $249 and Takeover care is $499. Cancel with one text or email. No penalty. Your site keeps working either way because you own it.",
+  },
+  {
+    q: "Do I need my own domain and hosting?",
+    a: "Yes, and that is for your protection. If you do not have them yet, I help you set both up at no charge. You pay the provider directly, usually a few dollars a month, and the accounts are in your name.",
+  },
+  {
+    q: "How fast does this happen?",
+    a: "Your sample is usually ready in about 48 hours. After you approve it, the finished site typically goes live within a few days, or up to three weeks for a Town Takeover. The slow part is almost always waiting on photos, so send those quick and you will be live quick.",
+  },
+  {
+    q: "Can I split the payment?",
+    a: "Yes. The Starter Site is $149 down plus two monthly payments of $175. The Lead Engine is $249 down plus three monthly payments of $333. The Town Takeover is $1,249 down plus three monthly payments of $1,250. Same total either way. No credit check, no financing company, no markup.",
+  },
+  {
+    q: "How is this different from Wix or a free website builder?",
+    a: "A builder gives you tools and leaves the work to you. On the cheap plans it usually shows its own ads and holds your site on its subdomain. I build the whole site for you, from scratch, on your own web address, with no ads, and you own every file. And you see it before you pay.",
+  },
+  {
+    q: "Why not just buy leads from apps?",
+    a: "You can, and it never ends. Those platforms charge for every lead, often a lot, and they sell the same lead to several shops at once. A website is the opposite: you pay once, you own it, and every call it brings is yours alone.",
+  },
+];
 ---
 
 <Base
-  title="Websites for local businesses | NV Labs"
-  description="Free working demo websites for local shops, then help going live. Call or text Saad Shabbir at (501) 413-3386."
+  title="See your new website before you pay | NV Labs"
+  description="I build a free sample website for your local shop. Love it? Finish and go live from $499. Call or text Saad Shabbir at (501) 413-3386."
   image="/og.png"
   robots="index, follow"
 >
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+      body:has(.mkt) { background: #fff; margin: 0; }
+    </style>
+  </Fragment>
+
   <div class="mkt">
-    <header class="top">
-      <a class="brand" href="/">
-        <span class="brand-mark">NV Labs</span>
-        <span class="brand-sub">Saad Shabbir</span>
-      </a>
-      <div class="top-actions">
-        <a class="btn btn-ghost" href={tel}>Call</a>
-        <a class="btn btn-accent" href={sms}>Text</a>
+    <a class="skip" href="#main-content">Skip to main content</a>
+
+    <div class="top">
+      <div class="wrap">
+        <span>Call or text <a href={tel}>{phoneDisplay}</a></span>
+        <span>A few free samples a week. First come, first served.</span>
       </div>
-    </header>
+    </div>
 
-    <main>
-      <section class="hero" aria-labelledby="hero-title">
-        <p class="eyebrow">Free demos for local shops</p>
-        <h1 id="hero-title">I build you a working website demo. Then we can put it live.</h1>
-        <p class="lede">
-          Weak site, missing site, or Instagram only? I put together a real phone-friendly
-          demo of your business and send you the link. If you like it, I help you take it live.
-        </p>
-        <div class="hero-cta">
-          <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
-          <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
-          <a class="btn btn-ghost btn-lg" href="#work">See the work</a>
-        </div>
-      </section>
-
-      <section class="section steps" aria-labelledby="steps-title">
-        <h2 id="steps-title">How it works</h2>
-        <ol class="step-list">
-          <li>
-            <span class="step-num">1</span>
-            <div>
-              <h3>I build a free demo</h3>
-              <p>I find a business with a weak or missing site, or you send me one. I build a working demo at a private link.</p>
-            </div>
-          </li>
-          <li>
-            <span class="step-num">2</span>
-            <div>
-              <h3>You open it on your phone</h3>
-              <p>I send you the link. You tap call, maps, and the rest just like a real site.</p>
-            </div>
-          </li>
-          <li>
-            <span class="step-num">3</span>
-            <div>
-              <h3>We put it live if you want</h3>
-              <p>Like it? I help you take it live on your own domain. No pressure if you pass.</p>
-            </div>
-          </li>
-        </ol>
-      </section>
-
-      <section class="section work" id="work" aria-labelledby="work-title">
-        <div class="section-head">
-          <h2 id="work-title">Live demos</h2>
-          <p>Real demos I built for local businesses. Open any one on your phone.</p>
-        </div>
-        <ul class="cards">
-          {
-            demos.map((d) => (
-              <li>
-                <a class="card" href={d.href}>
-                  <div class="card-media">
-                    <img src={d.thumb} alt={d.thumbAlt} width="640" height="400" loading="lazy" />
-                    <span class="demo-tag">Demo</span>
-                  </div>
-                  <div class="card-body">
-                    <h3>{d.name}</h3>
-                    <p>{d.blurb}</p>
-                    <span class="card-link">View demo</span>
-                  </div>
-                </a>
-              </li>
-            ))
-          }
+    <nav class="nav" id="mainNav" aria-label="Main">
+      <div class="wrap">
+        <a class="logo" href="/" aria-label="NV Labs home">NV <b>Labs</b><span class="sub">Saad Shabbir</span></a>
+        <ul id="navLinks">
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
-      </section>
+        <a class="text-cta" href={sms}>Text me</a>
+        <a class="btn" href="#contact">Get a free preview</a>
+        <button type="button" class="burger" id="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span style="margin:0"></span>
+        </button>
+      </div>
+    </nav>
 
-      <section class="section for" aria-labelledby="for-title">
-        <h2 id="for-title">Who it's for</h2>
-        <ul class="for-list">
-          <li>Bakeries and sweet shops</li>
-          <li>Retail shops and storefronts</li>
-          <li>Mobile services (mechanics, cleaners, trades)</li>
-          <li>Anyone still using only Instagram for the business</li>
-        </ul>
-      </section>
+    <main id="main-content">
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="wrap hgrid">
+          <div>
+            <p class="since">Local shops. One rule: you see the work first.</p>
+            <h1 class="sign" id="hero-title">See your new website <span>before you pay</span> a single dollar.</h1>
+            <p class="lede">
+              Send me your business name and what you do. In about 48 hours you are looking at your own homepage,
+              with your name, your town, and your phone number on it. Love it? I finish it, from $499 flat. Don't?
+              You owe nothing and keep the design.
+            </p>
+            <div class="cta">
+              <a class="btn" href="#contact">Show me my homepage free</a>
+              <a class="btn line" href="#inbox">Click a live sample first</a>
+            </div>
+            <p class="fine">Takes about a minute. No card. No deposit. No sales call unless you ask for one.</p>
+          </div>
 
-      <section class="section contact" id="contact" aria-labelledby="contact-title">
-        <h2 id="contact-title">Want a demo for your shop?</h2>
-        <p class="contact-lede">Call or text. Or leave a note below and I'll reach out.</p>
-        <a class="phone-big" href={tel}>{phoneDisplay}</a>
-        <div class="hero-cta contact-cta">
-          <a class="btn btn-accent btn-lg" href={tel}>Call</a>
-          <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+          <div
+            class="pad"
+            role="img"
+            aria-label="An estimate showing what the sample costs you: nothing due before you approve it"
+          >
+            <div class="sheet">
+              <div class="sh-head"><span class="t">Estimate</span><span class="n">No. 0048</span></div>
+              <div class="field"><span>Prepared for</span><span class="pen">Your business name</span></div>
+              <div class="field"><span>Shop and town</span><span class="pen">What you do, where you do it</span></div>
+              <table class="lines">
+                <thead>
+                  <tr><th>Work I do first</th><th>Cost</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Homepage designed for your shop and town</td><td>$0.00</td></tr>
+                  <tr><td>Sales copy written for you</td><td>$0.00</td></tr>
+                  <tr><td>Delivered as a live link in about 48 hours</td><td>$0.00</td></tr>
+                  <tr><td>One more swing if it isn't right</td><td>$0.00</td></tr>
+                </tbody>
+              </table>
+              <div class="due"><span>Due before you approve it</span><b>$0.00</b></div>
+            </div>
+            <div class="stamp" aria-hidden="true">PAID IN FULL<small>$0.00</small></div>
+          </div>
         </div>
+      </section>
 
-        <form class="form" id="contact-form" novalidate>
-          <label>
-            <span>Name</span>
-            <input type="text" name="name" autocomplete="name" />
-          </label>
-          <label>
-            <span>Business</span>
-            <input type="text" name="business" autocomplete="organization" />
-          </label>
-          <label>
-            <span>Phone</span>
-            <input type="tel" name="phone" autocomplete="tel" />
-          </label>
-          <label>
-            <span>City</span>
-            <input type="text" name="city" autocomplete="address-level2" />
-          </label>
-          <label class="full">
-            <span>Notes</span>
-            <textarea name="notes" rows="4"></textarea>
-          </label>
-          <button class="btn btn-accent btn-lg full" type="submit">Send note</button>
-          <p class="form-msg" id="form-msg" hidden tabindex="-1">
-            This message stays on the page for now. Call or text {phoneDisplay}.
+      <div class="tape" aria-hidden="true"></div>
+
+      <div class="wrap">
+        <div class="facts">
+          <div>
+            <b>$0</b>
+            <h3>Until you approve it</h3>
+            <p>Not a deposit. Not a design fee. Nothing.</p>
+          </div>
+          <div>
+            <b>48h</b>
+            <h3>To your preview, about</h3>
+            <p>Built for your shop. Yours to keep either way.</p>
+          </div>
+          <div>
+            <b>4</b>
+            <h3>Samples a week, that's the limit</h3>
+            <p>Each one is custom. First come, first served.</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="show" id="inbox" aria-labelledby="show-h">
+        <div class="wrap">
+          <div class="head">
+            <h2 class="display" id="show-h">This is what lands in your inbox.</h2>
+            <p>
+              Your shop, your town, your name and your number, on a real page you can click. Here are sample sites
+              I built. Open any one on your phone.
+            </p>
+          </div>
+          <ul class="demo-grid">
+            {
+              demos.map((d) => (
+                <li>
+                  <a class="demo-card" href={d.href}>
+                    <div class="media">
+                      <img src={d.thumb} alt={d.thumbAlt} width="640" height="400" loading="lazy" />
+                      <span class="tag">Sample</span>
+                    </div>
+                    <div class="body">
+                      <h3>{d.name}</h3>
+                      <p>{d.blurb}</p>
+                      <span class="go">Open sample →</span>
+                    </div>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="prob" id="losing-jobs" aria-labelledby="prob-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="prob-h">The other shop isn't better. They're just easier to find.</h2>
+            <p>
+              You've probably lost customers to someone whose cakes, curls, or oil changes you'd never recommend.
+              That stings. But they showed up on the phone screen and you didn't. Even when a friend shares your
+              Instagram, people still type your name into Google first.
+            </p>
+          </div>
+          <div
+            class="serp"
+            role="img"
+            aria-label="Illustration of a phone search where two competitors appear and you do not"
+          >
+            <div class="q">bakery near me</div>
+            <div class="r">
+              <b>Valley Sweet Bakery: Open Late</b>
+              <small>valleysweetbakery.com</small>
+              <p>Custom cakes, pan dulce, same-day pickup. Call now.</p>
+            </div>
+            <div class="r">
+              <b>Sunrise Creamery</b>
+              <small>sunrisecreamery.com</small>
+              <p>Soft serve and shakes. Henderson and Las Vegas.</p>
+            </div>
+            <div class="you">
+              This is where you're not
+              <div class="note">Illustration, not a real search. What ranks depends on many things I can't promise.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="letter" id="why-it-matters" aria-labelledby="letter-h">
+        <div class="wrap">
+          <div class="t">
+            <h2 class="display" id="letter-h">You're good at the work. That used to be enough.</h2>
+            <p>
+              It isn't anymore. Not because you got worse. Because the way people pick who to buy from changed, and
+              nobody sent you the memo.
+            </p>
+            <p>
+              They look you up. All of them. If nothing comes up, you just became a stranger. And an Instagram page
+              isn't fully yours. You built the following, they own the rules, and they can change them on Monday or
+              lock you out on Tuesday.
+            </p>
+            <p>
+              The fix is simple: one fast page on a web address you own, with your real work, your town, and your
+              number one tap away. It's also what AI assistants look for now. When someone asks for a bakery or a
+              mechanic nearby, the shops with a real website are the ones that get named.
+            </p>
+            <p>
+              Most owners put it off because a web designer normally wants thousands of dollars up front, before you
+              ever see a thing.
+            </p>
+            <p>
+              <strong>So I took the cost off the table.</strong> I design your homepage first. You look at it. Then
+              you decide.
+            </p>
+          </div>
+          <aside class="notes" aria-label="Three numbers">
+            <div>
+              <b>77%</b>
+              of customers check two or more places before hiring. BrightLocal, 2024.
+            </div>
+            <div>
+              <b>$85+</b>
+              is what lead apps often charge for a single lead, sold to several of your competitors at once.
+            </div>
+            <div>
+              <b>$0</b>
+              is what you've spent when you first see your new homepage.
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="how" id="how-it-works" aria-labelledby="how-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="how-h">Five steps. You pay at step three.</h2>
+            <p class="lede" style="margin-top:26px;color:var(--body)">
+              Only if you love it. You're busy, so all of this takes about an hour of your life, total.
+            </p>
+          </div>
+          <ol>
+            <li>
+              <span class="when">Sixty seconds</span>
+              <h3>You send the form</h3>
+              <p>Name, how to reach you, what you do. That's the hardest part and it isn't hard.</p>
+            </li>
+            <li>
+              <span class="when">About 48 hours later</span>
+              <h3>I design your homepage, free</h3>
+              <p>
+                You get a link to your sample. Your shop, your town, your name on it. No deposit. No sales call. You
+                just look at it.
+              </p>
+            </li>
+            <li class="pay">
+              <span class="when">The first dollar moves here</span>
+              <h3>You decide</h3>
+              <p>
+                Love it? Pick your size and put down the first payment. Don't? Tell me what's off and I'll take one
+                more swing, or walk away and keep the design. Either way, no bill.
+              </p>
+            </li>
+            <li>
+              <span class="when">A few days after that</span>
+              <h3>I finish it and take it live</h3>
+              <p>
+                You review everything before it goes up. It launches on your own web address, in your name. A Town
+                Takeover takes up to three weeks.
+              </p>
+            </li>
+            <li>
+              <span class="when">The next 90 days</span>
+              <h3>I watch it, included</h3>
+              <p>
+                Care comes free: small edits, security help, hosting help, and a monthly "everything works" check.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="price" id="pricing" aria-labelledby="price-h">
+        <div class="wrap">
+          <h2 class="display" id="price-h">Flat prices. Written right here.</h2>
+          <div class="cols">
+            <div class="col">
+              <div class="tagrow"></div>
+              <h3>The Starter Site</h3>
+              <div class="amt">$499</div>
+              <div class="flat">One page. Flat, one time.</div>
+              <p>
+                One strong homepage with everything on the scope sheet below. Perfect if you have no website at all.
+                Live in days.
+              </p>
+              <div class="plan">Or $149 down and 2 payments of $175. Same total. No credit check.</div>
+            </div>
+            <div class="col">
+              <div class="tagrow"><span class="pick">Most popular</span></div>
+              <h3>The Lead Engine</h3>
+              <div class="amt">$1,248</div>
+              <div class="flat">Three pages. Flat, one time.</div>
+              <p>
+                Home, services, and an about and reviews page. Built to turn a stranger into a caller or a walk-in.
+              </p>
+              <div class="plan">Or $249 down and 3 payments of $333. Same total. No credit check.</div>
+            </div>
+            <div class="col">
+              <div class="tagrow"></div>
+              <h3>The Town Takeover</h3>
+              <div class="amt">$4,999</div>
+              <div class="flat">15 pages and a blog. Flat, one time.</div>
+              <p>
+                A page for every service you do and every town you serve, plus a blog launched with 6 posts.
+              </p>
+              <div class="plan">Or $1,249 down and 3 payments of $1,250. Same total.</div>
+            </div>
+          </div>
+          <div class="care">
+            <b>90 days of care, free</b>
+            <span>
+              Small edits, security help, hosting help, and a monthly check that everything works. After 90 days it's
+              $74 a month, and it keeps going unless you cancel, which takes one text or email. Growth care is $249
+              and Takeover care is $499 if you want more help each month. I'm telling you now, in plain letters, so
+              there's never a surprise. The site is yours either way.
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="scope" id="the-offer" aria-labelledby="scope-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="scope-h">Scope of work. It's all on the sheet.</h2>
+            <p class="lede">
+              First you see it. Then you decide. Then you pay. Here's everything the finished site comes with.
+            </p>
+          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td>A real, finished website</td>
+                <td>Not a demo forever, not a template with your logo slapped on. On your own web address.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>Words that sell your work</td>
+                <td>I write it. You don't have to.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>Built for a phone first</td>
+                <td>Big buttons. Easy to read. Your number one tap away.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>Loads fast</td>
+                <td>No spinning wheel while somebody waits and gives up on you.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>A form that reaches you</td>
+                <td>It lands where you can see it. A lead you own, not one you rented from an app.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>Set up so Google can read it</td>
+                <td>No promises about rankings. Just built correctly.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>Your photos, your town</td>
+                <td>Not stock photos of somebody else's shop.</td>
+                <td>Incl.</td>
+              </tr>
+              <tr>
+                <td>It's yours. All of it.</td>
+                <td>Files, code, the whole thing, in your name. Walk away tomorrow and it still works.</td>
+                <td>Incl.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="value" id="compare" aria-labelledby="value-h">
+        <div class="wrap">
+          <h2 class="display" id="value-h">More for the money than the usual options.</h2>
+          <p class="lede">
+            That's a claim, so here's the list. I know what a web project usually costs a bakery, a creamery, or a
+            mobile mechanic, and what usually gets left out.
           </p>
-        </form>
+          <table class="cmp">
+            <thead>
+              <tr>
+                <th scope="col">What you get</th>
+                <th scope="col">Free site builder</th>
+                <th scope="col">Typical agency</th>
+                <th scope="col">NV Labs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">See your design before you pay</th>
+                <td data-l="Free site builder">You build it yourself</td>
+                <td data-l="Typical agency">Deposit first, design later</td>
+                <td data-l="NV Labs">Yes. Free sample in about 48 hours</td>
+              </tr>
+              <tr>
+                <th scope="row">Price</th>
+                <td data-l="Free site builder">Free, if you accept their ads and limits</td>
+                <td data-l="Typical agency">Often $3,000 to $10,000, quoted after a call</td>
+                <td data-l="NV Labs">$499 to $4,999 flat, published on this page</td>
+              </tr>
+              <tr>
+                <th scope="row">Sales copy for your shop</th>
+                <td data-l="Free site builder">You write it</td>
+                <td data-l="Typical agency">Often billed extra</td>
+                <td data-l="NV Labs">Written for you, included</td>
+              </tr>
+              <tr>
+                <th scope="row">Who owns the site</th>
+                <td data-l="Free site builder">It lives on their system</td>
+                <td data-l="Typical agency">Often on their hosting account</td>
+                <td data-l="NV Labs">You. Your domain, your hosting, your files</td>
+              </tr>
+              <tr>
+                <th scope="row">After launch</th>
+                <td data-l="Free site builder">You're on your own</td>
+                <td data-l="Typical agency">A monthly retainer</td>
+                <td data-l="NV Labs">90 days of care free. Cancel with one text</td>
+              </tr>
+              <tr>
+                <th scope="row">Hours of your time</th>
+                <td data-l="Free site builder">A weekend, maybe more</td>
+                <td data-l="Typical agency">Calls, meetings, revisions</td>
+                <td data-l="NV Labs">About an hour, total</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="catch" id="why-free" aria-labelledby="catch-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="catch-h">So how do I make money?</h2>
+            <div class="big">A deposit-first designer risks your money. I risk my time.</div>
+          </div>
+          <div>
+            <p>
+              Any time somebody works before you pay, you should ask what their angle is. Here's mine, with nothing
+              left out.
+            </p>
+            <p>
+              The sample costs me a few hours. When an owner sees their own shop on a real homepage for the first
+              time, most say "when can it be live?" That's when I charge, at the flat price on this page.
+            </p>
+            <p>
+              Some people take the free design and walk. That's fine. It's the price of proving I'm good, and it's
+              cheaper than advertising.
+            </p>
+            <p>
+              No hidden fee. No surprise invoice. No "actually, hosting is through me now." Your domain, hosting and
+              files live in your name from day one, so your site can never be held hostage.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="tape" aria-hidden="true"></div>
+
+      <section class="work" id="work" aria-labelledby="work-h">
+        <div class="wrap">
+          <h2 class="display" id="work-h">Here's sample sites I built.</h2>
+          <p class="lede">
+            Real demos for local shops. They're live right now. Go click them. That's the standard your page gets
+            held to. No fake quotes. Just the work.
+          </p>
+          <ul class="work-grid">
+            {
+              demos.map((d) => (
+                <li>
+                  <a class="work-card" href={d.href}>
+                    <div class="frame">
+                      <img src={d.thumb} alt={d.thumbAlt} width="800" height="500" loading="lazy" />
+                    </div>
+                    <div class="info">
+                      <h3>{d.name}</h3>
+                      <p>{d.blurb}</p>
+                      <span class="go">View sample →</span>
+                    </div>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="trades" id="niches" aria-labelledby="trades-h">
+        <div class="wrap">
+          <h2 class="display" id="trades-h" style="color:var(--amber);margin-bottom:28px;">Websites by shop type</h2>
+          <p class="t">
+            {
+              niches.map((n) => (
+                <a href={n.href}>{n.label}</a>
+              ))
+            }
+          </p>
+          <p class="s">
+            Tap your type to see how a website helps. Don't see yours? Doesn't matter. If you show up and serve
+            people in Las Vegas, Henderson, or anywhere in the Southwest, this works.
+          </p>
+        </div>
+      </section>
+
+      <section class="need" id="domain-hosting" aria-labelledby="need-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="need-h">Two things you need. Don't have them? Relax.</h2>
+          </div>
+          <div class="two">
+            <div>
+              <h3>1. A web address</h3>
+              <p>
+                The thing people type in to find you, like yourshop.com. The fancy word is a domain. You rent it,
+                for about the price of a couple of coffees a year.
+              </p>
+            </div>
+            <div>
+              <h3>2. A place to put the site</h3>
+              <p>
+                The fancy word is hosting. If the web address is your street address, hosting is the lot the building
+                sits on. It's usually a few dollars a month.
+              </p>
+            </div>
+            <div class="own">
+              <h3>I'll help you set up both, free.</h3>
+              <p>
+                It takes about fifteen minutes. You pay the provider directly, not me. I don't take a cut and I don't
+                mark it up. It's your account, in your name, with your password. I don't host websites on purpose: it
+                means nobody, including me, can ever hold your site over your head.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq" id="faq" aria-labelledby="faq-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="faq-h">You've got questions. You should.</h2>
+            <p class="lede">
+              Anyone offering to work before you pay should expect to get grilled. Grill away.
+            </p>
+          </div>
+          <div>
+            {
+              faqs.map((f) => (
+                <details>
+                  <summary>{f.q}</summary>
+                  <p>{f.a}</p>
+                </details>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="claim" id="contact" aria-labelledby="contact-h">
+        <div class="wrap">
+          <div>
+            <h2 class="display" id="contact-h">Sixty seconds, tops.</h2>
+            <p class="lede">
+              A few boxes. I read every one and write back, usually the same day. Worst case, you get a free homepage
+              design and never pay a dollar.
+            </p>
+            <a class="tel" href={tel}>{phoneDisplay}</a>
+            <p class="reach">
+              Rather talk? <a href={tel}>Call</a> or <a href={sms}>send a text</a>. I work with local shops in Las
+              Vegas, Henderson, and across the Southwest.
+            </p>
+          </div>
+          <form class="contact-form" id="contact-form" novalidate>
+            <label>
+              <span>Name</span>
+              <input type="text" name="name" autocomplete="name" required />
+            </label>
+            <label>
+              <span>Business</span>
+              <input type="text" name="business" autocomplete="organization" />
+            </label>
+            <label>
+              <span>Phone or email</span>
+              <input type="text" name="contact" autocomplete="tel" required />
+            </label>
+            <label>
+              <span>Note</span>
+              <textarea name="notes" rows="4" placeholder="What you do and where"></textarea>
+            </label>
+            <button class="btn" type="submit">Send note</button>
+            <p class="form-msg" id="form-msg" hidden tabindex="-1">
+              Got it. This message stays on the page for now. Call or text {phoneDisplay} and I'll follow up.
+            </p>
+            <p class="form-fine">No card. No obligation. Nothing to pay unless you approve your design.</p>
+          </form>
+        </div>
       </section>
     </main>
 
-    <footer class="foot">
-      <p><strong>NV Labs</strong> · Saad Shabbir</p>
-      <p>
-        <a href={tel}>{phoneDisplay}</a>
-      </p>
-      <p class="foot-note">
-        Demos live under this same host for now at demo.nvlabs.co. When ready, nvlabs.co can point here too.
-      </p>
+    <div class="tape" aria-hidden="true"></div>
+
+    <footer class="site-f">
+      <div class="wrap">
+        <div>
+          <div class="brand-f">NV <b>Labs</b></div>
+          <p style="margin-top:12px;">Saad Shabbir · Free sample sites for local shops, then help going live.</p>
+          <p style="margin-top:10px;"><a href={tel}>{phoneDisplay}</a></p>
+        </div>
+        <div>
+          <h4>Jump</h4>
+          <ul>
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Samples</h4>
+          <ul>
+            <li><a href="/sweet-angel-cakes-by-angela/">Sweet Angel Cakes</a></li>
+            <li><a href="/high-sweet/">High Sweet</a></li>
+            <li><a href="/gracielas-bakery/">Graciela's Bakery</a></li>
+            <li><a href="/aaron-the-mechanic/">Aaron the Mechanic</a></li>
+          </ul>
+        </div>
+      </div>
     </footer>
+
+    <div class="mob-bar" aria-label="Quick contact">
+      <a class="call" href={tel}>Call</a>
+      <a class="text-link" href={sms}>Text</a>
+    </div>
   </div>
 
   <script>
@@ -192,432 +747,18 @@ const demos = [
         msg.focus?.();
       }
     });
+
+    const nav = document.getElementById("mainNav");
+    const burger = document.getElementById("hamburger");
+    burger?.addEventListener("click", () => {
+      const open = nav?.classList.toggle("open");
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    nav?.querySelectorAll("#navLinks a").forEach((a) => {
+      a.addEventListener("click", () => {
+        nav.classList.remove("open");
+        burger?.setAttribute("aria-expanded", "false");
+      });
+    });
   </script>
 </Base>
-
-<style>
-  .mkt {
-    --bg: #0f0e0c;
-    --surface: #171512;
-    --line: #2a2620;
-    --ink: #f5f0e6;
-    --muted: #b7aea0;
-    --accent: #e8c56a;
-    --accent-ink: #1a1508;
-    --cream: #f3ebda;
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-      sans-serif;
-  }
-
-  .mkt a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .top {
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.7rem 1rem;
-    background: rgba(15, 14, 12, 0.92);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .brand {
-    display: flex;
-    flex-direction: column;
-    gap: 0.05rem;
-    min-width: 0;
-  }
-
-  .brand-mark {
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    font-size: 1rem;
-  }
-
-  .brand-sub {
-    color: var(--muted);
-    font-size: 0.75rem;
-  }
-
-  .top-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-shrink: 0;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    padding: 0.55rem 0.95rem;
-    font: inherit;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-  }
-
-  .btn-lg {
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-  }
-
-  .mkt .btn-accent {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  .mkt .btn-ghost {
-    background: transparent;
-    border-color: var(--line);
-    color: var(--ink);
-  }
-
-  .btn-text {
-    background: transparent;
-    color: var(--cream);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    font-weight: 500;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-  }
-
-  .hero,
-  .section,
-  .foot {
-    width: min(72rem, calc(100% - 2rem));
-    margin-inline: auto;
-  }
-
-  .hero {
-    padding: 2.4rem 0 2rem;
-  }
-
-  .eyebrow {
-    margin: 0 0 0.75rem;
-    color: var(--accent);
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .hero h1 {
-    margin: 0;
-    max-width: 16ch;
-    font-size: clamp(2rem, 7vw, 3.4rem);
-    line-height: 1.08;
-    letter-spacing: -0.035em;
-    font-weight: 700;
-  }
-
-  .lede {
-    margin: 1rem 0 0;
-    max-width: 34rem;
-    color: var(--muted);
-    font-size: 1.05rem;
-  }
-
-  .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.65rem;
-    margin-top: 1.4rem;
-  }
-
-  .section {
-    padding: 2.25rem 0;
-    border-top: 1px solid var(--line);
-  }
-
-  .section h2,
-  .section-head h2 {
-    margin: 0;
-    font-size: clamp(1.45rem, 4vw, 2rem);
-    letter-spacing: -0.03em;
-  }
-
-  .section-head p {
-    margin: 0.55rem 0 0;
-    color: var(--muted);
-    max-width: 36rem;
-  }
-
-  .step-list {
-    list-style: none;
-    margin: 1.4rem 0 0;
-    padding: 0;
-    display: grid;
-    gap: 0.9rem;
-  }
-
-  .step-list li {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.85rem;
-    padding: 1rem;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-  }
-
-  .step-num {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    display: grid;
-    place-items: center;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-
-  .step-list h3 {
-    margin: 0.1rem 0 0.35rem;
-    font-size: 1.05rem;
-  }
-
-  .step-list p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
-
-  .cards {
-    list-style: none;
-    margin: 1.35rem 0 0;
-    padding: 0;
-    display: grid;
-    gap: 1rem;
-  }
-
-  .card {
-    display: block;
-    overflow: hidden;
-    border-radius: 1.1rem;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    transition: border-color 0.15s ease, transform 0.15s ease;
-  }
-
-  .card:hover,
-  .card:focus-visible {
-    border-color: #4a4338;
-    transform: translateY(-1px);
-  }
-
-  .card-media {
-    position: relative;
-    aspect-ratio: 16 / 10;
-    background: #0a0908;
-    overflow: hidden;
-  }
-
-  .card-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .demo-tag {
-    position: absolute;
-    top: 0.7rem;
-    left: 0.7rem;
-    padding: 0.28rem 0.55rem;
-    border-radius: 999px;
-    background: rgba(15, 14, 12, 0.82);
-    border: 1px solid rgba(232, 197, 106, 0.35);
-    color: var(--accent);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .card-body {
-    padding: 1rem 1rem 1.15rem;
-  }
-
-  .card-body h3 {
-    margin: 0;
-    font-size: 1.05rem;
-    letter-spacing: -0.02em;
-  }
-
-  .card-body p {
-    margin: 0.35rem 0 0.7rem;
-    color: var(--muted);
-    font-size: 0.92rem;
-  }
-
-  .card-link {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.92rem;
-  }
-
-  .for-list {
-    margin: 1.1rem 0 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .for-list li {
-    padding: 0.85rem 1rem;
-    border: 1px solid var(--line);
-    border-radius: 0.85rem;
-    background: var(--surface);
-  }
-
-  .contact {
-    text-align: left;
-  }
-
-  .contact-lede {
-    margin: 0.6rem 0 0;
-    color: var(--muted);
-  }
-
-  .phone-big {
-    display: inline-block;
-    margin-top: 1.1rem;
-    font-size: clamp(1.8rem, 6vw, 2.6rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--cream);
-  }
-
-  .contact-cta {
-    margin-top: 1rem;
-  }
-
-  .form {
-    margin-top: 1.5rem;
-    display: grid;
-    gap: 0.8rem;
-    padding: 1rem;
-    border: 1px solid var(--line);
-    border-radius: 1.1rem;
-    background: var(--surface);
-  }
-
-  .form label {
-    display: grid;
-    gap: 0.35rem;
-  }
-
-  .form label span {
-    font-size: 0.82rem;
-    color: var(--muted);
-  }
-
-  .form input,
-  .form textarea {
-    width: 100%;
-    border: 1px solid var(--line);
-    border-radius: 0.7rem;
-    background: #0f0e0c;
-    color: var(--ink);
-    padding: 0.75rem 0.85rem;
-    font: inherit;
-  }
-
-  .form input:focus,
-  .form textarea:focus {
-    outline: 2px solid rgba(232, 197, 106, 0.55);
-    outline-offset: 1px;
-  }
-
-  .form .full {
-    grid-column: 1 / -1;
-  }
-
-  .form-msg {
-    margin: 0;
-    grid-column: 1 / -1;
-    padding: 0.85rem 0.95rem;
-    border-radius: 0.75rem;
-    background: rgba(232, 197, 106, 0.12);
-    border: 1px solid rgba(232, 197, 106, 0.35);
-    color: var(--cream);
-  }
-
-  .foot {
-    padding: 2rem 0 2.5rem;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 0.92rem;
-  }
-
-  .foot p {
-    margin: 0 0 0.45rem;
-  }
-
-  .foot strong {
-    color: var(--ink);
-  }
-
-  .foot a {
-    color: var(--cream);
-  }
-
-  .foot-note {
-    max-width: 36rem;
-    margin-top: 0.75rem !important;
-    font-size: 0.85rem;
-  }
-
-  @media (min-width: 640px) {
-    .top {
-      padding-inline: 1.25rem;
-    }
-
-    .step-list {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .step-list li {
-      grid-template-columns: 1fr;
-      min-height: 100%;
-    }
-
-    .cards {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .form {
-      grid-template-columns: 1fr 1fr;
-      padding: 1.2rem;
-    }
-  }
-
-  @media (min-width: 960px) {
-    .hero {
-      padding-top: 3.4rem;
-      padding-bottom: 2.6rem;
-    }
-
-    .cards {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-</style>
