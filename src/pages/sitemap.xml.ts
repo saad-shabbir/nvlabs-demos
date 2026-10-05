@@ -30,6 +30,30 @@ export const GET: APIRoute = () => {
   <url>
     <loc>https://demo.nvlabs.co/free-website-demo/</loc>
   </url>
+  <url>
+    <loc>https://demo.nvlabs.co/las-vegas-landscaper-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/ice-cream-shop-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/dallas-bakery-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/henderson-barbershop-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/facebook-only-business-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/las-vegas-food-truck-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/las-vegas-nail-salon-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/las-vegas-mobile-detailing-website/</loc>
+  </url>
 </urlset>
 `;
   return new Response(body, {

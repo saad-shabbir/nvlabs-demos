@@ -1,0 +1,131 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Dallas Bakery Websites, Free Demo by Text | NV Labs"
+  description="Dallas bakeries: I build a free demo website for you remotely by phone and text. Menu, hours, and order requests. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Dallas bakeries</p>
+      <h1 id="hero-title">Websites for Dallas bakeries, built remotely by phone and text</h1>
+      <p class="lede">
+        Free demo first. Menu, hours, and order requests. Everything by call and text. No meeting
+        needed.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/las-vegas-bakery-website/">Las Vegas bakery websites</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="remote-title">
+      <h2 id="remote-title">Quick heads up: I work from Las Vegas</h2>
+      <p>
+        My name is Saad. I run NV Labs out of Las Vegas, and I work with Dallas bakeries by phone
+        and text. You won't need to take a break from the ovens for a meeting. You text me some
+        details and photos, I put together a demo, and I send you the link.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="dfw-title">
+      <h2 id="dfw-title">DFW is a lot of ground to cover</h2>
+      <p>
+        A bakery in Bishop Arts pulls a different crowd than one in Plano. Someone in Deep Ellum
+        after a show and a family in Richardson planning a birthday are looking for different
+        things.
+      </p>
+      <p>
+        I'll write your site around where you actually are and who you serve. Oak Cliff, Lakewood,
+        Garland, Irving, wherever. It'll read like you talking about your neighborhood, not a list
+        of city names.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="morning-title">
+      <h2 id="morning-title">Kolaches, breakfast tacos, and the morning rush</h2>
+      <p>
+        Lots of Dallas bakeries do serious early morning business. If you sell kolaches, breakfast
+        pastries, or coffee, I'll make the morning menu and opening time easy to spot. People
+        grabbing something on the way to work don't want to scroll.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="orders-title">
+      <h2 id="orders-title">Pre-orders for big days</h2>
+      <p>
+        Dozens of kolaches for the office, cookie boxes for the holidays, a wedding cake six months
+        out. I'll set up order pages that fit what you sell, each with its own short form. One for
+        party trays, one for celebration cakes, one for holiday pre-orders. You decide which ones
+        you need.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="markets-title">
+      <h2 id="markets-title">Farmers markets and pop-ups</h2>
+      <p>
+        If you sell at markets or pop-ups around town, I'll add a simple "Where to find us this
+        week" section. Customers who love your stuff can track you down even on days the shop is
+        closed.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="how-title">
+      <h2 id="how-title">How we'll work together</h2>
+      <ol>
+        <li>Text me your bakery's name and what you bake.</li>
+        <li>Send me your menu, hours, and some photos.</li>
+        <li>I build your demo and text you the link.</li>
+        <li>You tell me what to fix.</li>
+        <li>If you like it, I put it live. If not, you're free to go.</li>
+      </ol>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>How do you build a site for a Dallas bakery from Las Vegas?</h3>
+          <p>
+            Everything happens over text and phone. You send the details, I build, and you check the
+            demo link from wherever you are. You don't have to be anywhere for it.
+          </p>
+        </div>
+        <div>
+          <h3>Can you include the markets or pop-ups I sell at?</h3>
+          <p>
+            Yes. I'll add a schedule section you can update, or text me the new dates and I'll
+            handle it.
+          </p>
+        </div>
+        <div>
+          <h3>Do I need a big menu to make the site worth it?</h3>
+          <p>
+            No. A small menu, your hours, your address, and a few good photos make a solid site.
+            Lots of great bakeries only do a handful of things.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's build your Dallas bakery demo</h2>
+      <p>Send me a text and we'll get going.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

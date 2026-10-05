@@ -1,0 +1,134 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Henderson Barbershop Websites, Free Demo | NV Labs"
+  description="A free demo website for your Henderson barbershop with kids' cuts, family booking, and commuter hours. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Henderson barbershops</p>
+      <h1 id="hero-title">Websites for Henderson barbershops that cut for the whole family</h1>
+      <p class="lede">
+        Free demo first. Kids' cuts, family booking, and hours that fit commuter schedules. Call or
+        text to get started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/las-vegas-barbershop-website/">Las Vegas barbershop websites</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="family-title">
+      <h2 id="family-title">Henderson is a family town</h2>
+      <p>
+        A lot of your chairs are filled by dads and sons, first haircuts, and back-to-school rushes.
+        Your website should show that you're a good spot for kids, not just adults.
+      </p>
+      <p>
+        I'll add a section about kids' cuts, what age you start, and anything that helps nervous
+        little ones. Parents read that stuff closely.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="commute-title">
+      <h2 id="commute-title">Booking around commuter schedules</h2>
+      <p>
+        Plenty of people in Henderson drive into Las Vegas for work and back again on the 215 or
+        I-11. They want a cut early before work, right after, or on Saturday morning.
+      </p>
+      <p>
+        If you open early or stay late certain days, I'll put that front and center. A line like
+        "Open at 7 on weekdays" can win over someone who thought they'd never find time.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="part-title">
+      <h2 id="part-title">Your part of Henderson</h2>
+      <p>
+        Henderson covers a lot of ground. A shop near the Water Street District serves a different
+        crowd than one out by Inspirada or Cadence. I'll write your site so it sounds like your
+        corner of town, whether that's Green Valley, Anthem, Seven Hills, or somewhere else. I'm
+        based in Las Vegas, so I know the area.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="book-title">
+      <h2 id="book-title">Family booking made simple</h2>
+      <p>
+        Booking three kids and a dad back to back is a pain on most apps. I'll add a short note or a
+        simple request form for group appointments, so families can text one request and you line up
+        the chairs.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="vibe-title">
+      <h2 id="vibe-title">Show off your shop's vibe</h2>
+      <p>
+        Families want to know what they're walking into. I'll add photos of your shop, your chairs,
+        and your team, plus a short line about the feel of the place. Laid back, sports on the TV,
+        whatever fits you.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="demo-title">
+      <h2 id="demo-title">Free demo, all by text</h2>
+      <p>
+        I build your demo and text you the link. Show it to your barbers and see what they think. If
+        you like it, I put it live. If not, no worries. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can parents book a few kids at once?</h3>
+          <p>
+            Yes. I can add a group booking request, so a parent sends one message with everyone's
+            names and preferred times.
+          </p>
+        </div>
+        <div>
+          <h3>I already have a booking app. Do I still need a website?</h3>
+          <p>
+            Your booking app is great for scheduling. Your website tells new families who you are,
+            shows your shop, and helps you come up when people in Henderson search for a barber. I'll
+            link your booking app right from the site.
+          </p>
+        </div>
+        <div>
+          <h3>Should my site mention specific neighborhoods?</h3>
+          <p>
+            I'll mention the parts of Henderson you actually serve, in a natural way. It helps
+            locals know you're close by.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's build your Henderson shop's demo</h2>
+      <p>Text me your shop name and I'll start on it.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <p class="related">
+        Have a shop elsewhere in the valley? See my page on
+        <a href="/las-vegas-barbershop-website/">barbershop websites in Las Vegas</a>.
+      </p>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

@@ -1,0 +1,137 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Only Using Facebook for Your Business? Read This | NV Labs"
+  description="Keep your Facebook page and add a simple website so more people can find your hours and info on Google. Free demo. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Facebook-only businesses</p>
+      <h1 id="hero-title">Running your shop from a Facebook page? Here's what a website adds</h1>
+      <p class="lede">
+        Keep Facebook for updates. Add a simple site for Google, hours, and people who aren't logged
+        in. Free demo first.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/instagram-only-business-website/">Instagram-only shops</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="fb-title">
+      <h2 id="fb-title">Facebook has been good to you</h2>
+      <p>
+        A lot of local shops have run their whole business from a Facebook page for years. Your
+        regulars follow you, share your posts, and message you there. That's worth keeping.
+      </p>
+      <p>
+        I'm not going to tell you to delete it. I just want to point out a few gaps a simple website
+        can fill.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="reach-title">
+      <h2 id="reach-title">Fewer people see your posts than you think</h2>
+      <p>
+        You might have plenty of followers, but Facebook decides how many of them see each post.
+        Lots of owners notice their posts reach fewer people than they used to. A website doesn't
+        depend on that. Anyone who looks you up sees the whole thing.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="login-title">
+      <h2 id="login-title">Login walls turn people away</h2>
+      <p>
+        Tap a Facebook link without an account, and you often get a pop-up asking you to log in.
+        Lots of people close it and move on. A website opens for anyone, no account needed.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="buried-title">
+      <h2 id="buried-title">Your info gets buried</h2>
+      <p>
+        Your hours change for the holidays, so you post it. Next week you post a special. Then a
+        photo. A month later, nobody can find the holiday hours post.
+      </p>
+      <p>A website keeps the basics in one steady spot:</p>
+      <ul>
+        <li>Hours, including holiday changes</li>
+        <li>Address and directions</li>
+        <li>Phone number</li>
+        <li>Menu, services, or what you sell</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="google-title">
+      <h2 id="google-title">Google doesn't always show Facebook pages well</h2>
+      <p>
+        When people search for a shop like yours, Google mostly shows map listings and websites.
+        Facebook pages sometimes come up, but often below other results or with outdated info. A
+        simple website gives Google a clear, current page about your business.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="older-title">
+      <h2 id="older-title">Your longtime customers will like it too</h2>
+      <p>
+        If a lot of your customers are older, they often call before heading over. A website with a
+        big "tap to call" button and easy-to-read hours makes that simple. No scrolling through a
+        feed.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="keep-title">
+      <h2 id="keep-title">Keep Facebook, add a site</h2>
+      <p>
+        The easiest setup: keep posting on Facebook like you do now, and add your website link to
+        your page. Facebook stays your place for updates. Your website holds the facts. I'll build
+        you a free demo so you can see what that looks like. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Will I have to stop using Facebook?</h3>
+          <p>
+            Not at all. Keep using it. Your website just makes sure people can always find your
+            basics, even if they're not on Facebook.
+          </p>
+        </div>
+        <div>
+          <h3>Can you use the info and photos from my Facebook page?</h3>
+          <p>Yes, with your OK. That's usually the fastest way to build your demo.</p>
+        </div>
+        <div>
+          <h3>Is a website hard to keep up?</h3>
+          <p>
+            Not the way I set it up. The basics rarely change. When they do, text me and I'll update
+            it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">See your Facebook page as a website</h2>
+      <p>I'll build the demo from what you already have.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

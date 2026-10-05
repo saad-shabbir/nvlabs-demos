@@ -1,0 +1,130 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Mobile Detailing Websites in Las Vegas, Free Demo | NV Labs"
+  description="A free demo website for your Las Vegas mobile detailing business with packages, service area, and a booking form. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Las Vegas mobile detailing</p>
+      <h1 id="hero-title">A website for your mobile detailing business in Las Vegas</h1>
+      <p class="lede">
+        Free demo first. Packages, service area, and a booking form. Call or text to get started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/mobile-mechanic-website/">Mobile mechanic websites</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="vegas-title">
+      <h2 id="vegas-title">Vegas is rough on cars</h2>
+      <p>
+        Between the sun, the dust, and the hard water, cars here take a beating. Your customers know
+        it. They're looking for someone who can bring the shine back without them leaving home or
+        work.
+      </p>
+      <p>Your site will explain what you do in plain words, and show the results.</p>
+    </section>
+
+    <section class="section" aria-labelledby="pkg-title">
+      <h2 id="pkg-title">Packages people understand</h2>
+      <p>Detailing terms can confuse people. I'll lay out your packages so they're easy to compare:</p>
+      <ul>
+        <li>Exterior wash and wax</li>
+        <li>Full interior detail</li>
+        <li>Full in and out detail</li>
+        <li>Paint correction and polish</li>
+        <li>Ceramic coating</li>
+        <li>Headlight restoration</li>
+        <li>Fleet or dealership service</li>
+      </ul>
+      <p>
+        Each package gets a short description of what's included. If you prefer to quote each job,
+        we'll say that instead.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="photos-title">
+      <h2 id="photos-title">Before and after photos</h2>
+      <p>
+        Nothing sells a detail like a filthy interior next to the same car looking brand new. I'll
+        set up a photo gallery that shows your best transformations on phones, where most people
+        will see it.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="hoa-title">
+      <h2 id="hoa-title">Water and HOA questions</h2>
+      <p>
+        People in HOA communities sometimes ask if you can work in their driveway, or whether you
+        bring your own water and power. If you use waterless or rinseless methods, or bring
+        everything with you, I'll spell that out. It answers the question before they have to ask.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="area-title">
+      <h2 id="area-title">Where you go</h2>
+      <p>
+        Your service area will be clear: Summerlin, Henderson, Southern Highlands, North Las Vegas,
+        Mountain's Edge, or wherever you work. If you also do offices and parking garages, we'll
+        mention that. Customers want to know right away if you come to them.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="book-title">
+      <h2 id="book-title">Book by text or form</h2>
+      <p>
+        I'll add a booking form that asks for the vehicle type, the package they want, their area,
+        and a preferred time. Or a big "Text to Book" button if that's how you like to work. I'm
+        based in Las Vegas, and I'll build your demo and text you the link. If you like it, I put it
+        live. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can customers book a specific time through the site?</h3>
+          <p>
+            Yes. I can link your booking app or add a request form, and you confirm each job by
+            text.
+          </p>
+        </div>
+        <div>
+          <h3>I quote every job differently. Do I need to list packages?</h3>
+          <p>
+            No. We can describe what you offer and use a quote request form instead. Many detailers
+            work that way.
+          </p>
+        </div>
+        <div>
+          <h3>Can the site show I'm insured?</h3>
+          <p>If you are, yes. I'll add a short line about it, worded the way you want.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's get your detailing demo built</h2>
+      <p>Text me your business name and what you offer.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

@@ -1,0 +1,124 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Las Vegas Food Truck Websites, Free Demo | NV Labs"
+  description="A free demo website for your Las Vegas food truck with your weekly schedule, menu, and catering requests. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Las Vegas food trucks</p>
+      <h1 id="hero-title">A website for your Las Vegas food truck that tells people where you'll be</h1>
+      <p class="lede">
+        Free demo first. Weekly schedule, menu, and catering requests. Call or text to get started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="where-title">
+      <h2 id="where-title">"Where are you parked today?"</h2>
+      <p>
+        That's the question your fans ask most. Your website will answer it with a simple weekly
+        schedule: where you'll be, what days, and what hours. Breweries, office parks, events,
+        neighborhood spots. You text me changes or update it yourself.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="menu-title">
+      <h2 id="menu-title">A menu people can read before they're in line</h2>
+      <p>
+        Lines move faster when people already know what they want. I'll put your full menu on the
+        site with short descriptions and photos of your best sellers. If you rotate specials, they
+        get their own spot.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="cater-title">
+      <h2 id="cater-title">Catering and private events</h2>
+      <p>
+        Food truck catering is a big deal in Vegas. Weddings, office lunches, quinceañeras, block
+        parties, school fundraisers. I'll add a catering page with a request form that asks for the
+        date, location, number of guests, and type of event. That way you get the details you need
+        to say yes or no quickly.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="found-title">
+      <h2 id="found-title">Getting found around the Valley</h2>
+      <p>
+        When someone in Henderson or Summerlin searches "food truck near me" or "food truck catering
+        Las Vegas," you want to show up. I'll make sure your site clearly says you serve the Las
+        Vegas area, the parts of town you hit most, and that it matches your Google Business
+        Profile. No promises on rankings, but you'll be set up right.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="social-title">
+      <h2 id="social-title">Works with your social media</h2>
+      <p>
+        You probably post your location on Instagram or Facebook already. Keep doing that. Your
+        website gives you one link to share that always has your menu, schedule, and catering info,
+        even for people who don't follow you.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="local-title">
+      <h2 id="local-title">I'm local, and it all happens by text</h2>
+      <p>
+        I'm based in Las Vegas, so I know the spots trucks hit around town. I build your demo and
+        text you the link. Check it out between rushes. If you like it, I put it live. If not,
+        nothing owed. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>My schedule changes every week. Can the site keep up?</h3>
+          <p>
+            Yes. I'll set up a schedule section that's quick to update, or you can text me the new
+            week and I'll post it.
+          </p>
+        </div>
+        <div>
+          <h3>Can people book my truck for events through the site?</h3>
+          <p>
+            They can send a catering request with all the details. You review it and reply when
+            you're ready.
+          </p>
+        </div>
+        <div>
+          <h3>I'm on Instagram already. Why do I need a site?</h3>
+          <p>
+            Instagram is great for daily updates. Your site helps people find you on Google,
+            especially event planners searching for catering, and gives everyone one place for your
+            menu and schedule.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's get your truck online</h2>
+      <p>Text me your truck's name and what you serve.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

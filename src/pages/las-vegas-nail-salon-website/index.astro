@@ -1,0 +1,127 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Nail Salon Websites in Las Vegas and Henderson | NV Labs"
+  description="A free demo website for your Las Vegas or Henderson nail salon with services, a nail art gallery, and booking. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Las Vegas and Henderson nail salons</p>
+      <h1 id="hero-title">A website for your nail salon that shows off the work</h1>
+      <p class="lede">
+        Free demo first. Services menu, nail art gallery, and booking. Call or text to get started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="art-title">
+      <h2 id="art-title">Let the nail art do the talking</h2>
+      <p>
+        People pick a salon by looking at nails. I'll build a gallery of your best work, sorted the
+        way clients think about it: French tips, chrome, ombré, character art, simple and clean,
+        bridal. Someone can scroll, find a style, and book.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="svc-title">
+      <h2 id="svc-title">A clear services menu</h2>
+      <p>I'll list your services in plain words so people know what to book:</p>
+      <ul>
+        <li>Gel manicures and gel X</li>
+        <li>Acrylic full sets and fills</li>
+        <li>Dip powder</li>
+        <li>Pedicures, including spa pedicures</li>
+        <li>Nail art and designs</li>
+        <li>Waxing or lashes, if you offer them</li>
+      </ul>
+      <p>
+        You tell me what you do, and I'll write it up. If your full service list lives in a booking
+        app, I'll link to it too.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="walkin-title">
+      <h2 id="walkin-title">Walk-ins and appointments</h2>
+      <p>
+        Some clients just want to know if they can walk in today. I'll put your walk-in policy and
+        booking button right at the top. If you're busier on weekends or need appointments for full
+        sets, we'll say so.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="tech-title">
+      <h2 id="tech-title">A spot for each nail tech</h2>
+      <p>
+        Regulars follow their favorite tech. I'll give each tech a short spot with their photo,
+        their specialty, the days they work, and their own booking or Instagram link if they have
+        one. If your team speaks more than one language, that can go here too.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="area-title">
+      <h2 id="area-title">Found in your part of town</h2>
+      <p>
+        Whether your salon is in Henderson, Summerlin, Spring Valley, or near Chinatown on Spring
+        Mountain, I'll write the site so locals searching "nail salon near me" see where you are.
+        I'm based in Las Vegas myself, so I'll get the details right.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="demo-title">
+      <h2 id="demo-title">Demo link first, decision later</h2>
+      <p>
+        I build a free demo of your salon's site and text you the link. Show it to your techs. If
+        you like it, I put it live. If not, no problem. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can I use photos from my Instagram for the gallery?</h3>
+          <p>
+            Yes, with your OK. Your Instagram is often the best source for nail photos, and I'll
+            arrange them so they're easy to browse.
+          </p>
+        </div>
+        <div>
+          <h3>Can clients book with a specific tech?</h3>
+          <p>
+            Yes. I'll link each tech's booking page or add a simple request form where clients can
+            pick who they want.
+          </p>
+        </div>
+        <div>
+          <h3>Do I need to update the site often?</h3>
+          <p>
+            Not really. The basics stay the same. When you want new gallery photos, text them to me.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's build your salon's demo</h2>
+      <p>Text me your salon name and I'll get started.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

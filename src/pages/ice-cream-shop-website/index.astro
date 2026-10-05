@@ -1,0 +1,126 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Ice Cream Shop Websites, See Your Free Demo | NV Labs"
+  description="A free demo website for your ice cream shop with a flavor board, seasonal hours, and party pint orders. Call or text (501) 413-3386 to start."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Ice cream shops and creameries</p>
+      <h1 id="hero-title">A website for your ice cream shop that keeps up with the flavor board</h1>
+      <p class="lede">
+        Free demo first. Flavor board, seasonal hours, and party pint orders. Call or text to get
+        started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="flavors-title">
+      <h2 id="flavors-title">"What flavors do you have today?"</h2>
+      <p>
+        You probably hear that question all day. Your website can answer it. I'll build a flavor
+        board section that matches what's in your case, with your regular lineup and a spot for this
+        week's rotating flavors.
+      </p>
+      <p>
+        Keeping it current is simple. You can update it yourself, or text me the changes and I'll
+        handle it.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="seasonal-title">
+      <h2 id="seasonal-title">Seasonal flavors get their own spotlight</h2>
+      <p>
+        Pumpkin in the fall, peppermint in winter, fresh fruit in summer. Seasonal flavors are a big
+        reason people come back. I'll give them their own section so fans can see what's coming and
+        what's leaving soon.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="hours-title">
+      <h2 id="hours-title">Hours that change with the weather</h2>
+      <p>
+        Lots of ice cream shops keep longer hours in summer and shorter ones in winter, or close for
+        part of the year. I'll make your current hours the first thing people see, with a note about
+        seasonal changes. That way nobody shows up in January expecting summer hours.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="party-title">
+      <h2 id="party-title">Party pints and catering</h2>
+      <p>
+        Birthdays, office parties, school events, weddings. If you sell pints to go, cakes, or bring
+        a cart to events, I'll add a page for it with a simple request form. It asks for the date,
+        how many people, and which flavors, so you get the details all at once.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="diet-title">
+      <h2 id="diet-title">Clear dietary notes</h2>
+      <p>
+        Parents of kids with allergies and folks who skip dairy check before they head over. If you
+        offer dairy-free, vegan, or nut-free options, I'll mark them clearly on the flavor board.
+        I'll also add a short line about cross-contact if you'd like, worded the way you want it.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="phone-title">
+      <h2 id="phone-title">Phone first, because that's how people find you</h2>
+      <p>
+        Most people looking for ice cream are already out and about. Your site will load fast on a
+        phone, show your address and hours right away, and let them call or get directions with one
+        tap.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>My flavors change every few days. How do I keep the site current?</h3>
+          <p>
+            I'll set up the flavor board so it's quick to update. If you'd rather not deal with it,
+            text me the new lineup and I'll swap it in.
+          </p>
+        </div>
+        <div>
+          <h3>Can people order party pints or cakes ahead of time?</h3>
+          <p>
+            Yes. I can add an order request form for pints, cakes, or event service. You confirm each
+            one the way you normally do.
+          </p>
+        </div>
+        <div>
+          <h3>We close for part of the winter. Should the site still be up?</h3>
+          <p>
+            Definitely. It can show a "closed for the season, back in spring" message, so people
+            know you're coming back and don't think you shut down.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's make your flavor board live</h2>
+      <p>I'll build the demo first. You look at it, then decide. We work by call and text.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

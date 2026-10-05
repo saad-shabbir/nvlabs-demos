@@ -1,0 +1,145 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Las Vegas Landscaper Websites, Free Demo First | NV Labs"
+  description="A free demo website for your Las Vegas landscaping business with a quote form, photo gallery, and service area. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Las Vegas landscapers</p>
+      <h1 id="hero-title">Websites for Las Vegas landscapers who'd rather be outside</h1>
+      <p class="lede">
+        Free demo first. Before and after gallery, quote form, and clear service area. Call or text
+        to get started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="photos-title">
+      <h2 id="photos-title">Your work is the best sales pitch</h2>
+      <p>
+        A yard that went from dead grass to clean rock and desert plants says more than anything I
+        could write. So I build your site around your photos.
+      </p>
+      <p>
+        I'll set up a before and after gallery, sorted by job type if you want. Turf installs in one
+        section, rock and gravel in another, irrigation fixes in another. Homeowners can scroll and
+        picture their own yard.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="jobs-title">
+      <h2 id="jobs-title">List the jobs you actually take</h2>
+      <p>
+        Desert yards need different work than yards back east. I'll write your services in plain
+        words so people know if you're the right call:
+      </p>
+      <ul>
+        <li>Desert landscaping and xeriscape design</li>
+        <li>Artificial turf installs and grass removal</li>
+        <li>Drip irrigation installs and repairs</li>
+        <li>Sprinkler and timer fixes</li>
+        <li>Tree and palm trimming</li>
+        <li>Rock, gravel, and decomposed granite</li>
+        <li>Cleanups and regular maintenance</li>
+      </ul>
+      <p>
+        If you don't do something, we leave it off. That saves you from calls you'll just have to
+        turn down.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="quote-title">
+      <h2 id="quote-title">A quote form that gets you real details</h2>
+      <p>
+        "How much to redo my backyard?" is impossible to answer over text. Your quote form will ask
+        the useful stuff up front: address or neighborhood, front or back yard, rough size, what they
+        want done, and a spot to upload photos. You get a clear picture before you ever call them
+        back.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="water-title">
+      <h2 id="water-title">Water Smart and HOA questions</h2>
+      <p>
+        A lot of homeowners here are swapping grass for desert plants, and many of them ask about
+        the Southern Nevada Water Authority's Water Smart Landscapes program. I'll add a short,
+        careful section that points people to SNWA's official page for current rules. I won't list
+        amounts or promise anyone qualifies, since those details change and it's their call to
+        check. Many programs want approval before any grass comes out, so the site can remind them
+        to check first.
+      </p>
+      <p>
+        HOAs come up a lot too. A simple line like "We're happy to work with your HOA's design
+        rules" answers a question before it gets asked.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="area-title">
+      <h2 id="area-title">Your service area across the Valley</h2>
+      <p>
+        I'm based in Las Vegas, so I know how big this valley is. Your site will say exactly where
+        you work, like Summerlin, Centennial Hills, Spring Valley, Enterprise, Henderson, or North
+        Las Vegas. If you skip certain areas, we can say that too, so nobody's disappointed.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="demo-title">
+      <h2 id="demo-title">Built first, decided later</h2>
+      <p>
+        I build a free demo of your site and text you the link. Look at it between jobs. If you like
+        it, I put it live. If not, no hard feelings and nothing owed. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can customers send me photos of their yard through the site?</h3>
+          <p>
+            Yes. I can add a photo upload to your quote form, so you see the yard before you call
+            back.
+          </p>
+        </div>
+        <div>
+          <h3>Will the site talk about turf rebates?</h3>
+          <p>
+            It can mention the Water Smart Landscapes program and link to SNWA for current details. I
+            keep it general and don't state amounts, because the program sets its own rules.
+          </p>
+        </div>
+        <div>
+          <h3>I don't have many before and after photos. Is that okay?</h3>
+          <p>
+            Sure. We can start with a few and add more as you finish jobs. Just text me new photos
+            when you have them.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's get your landscaping demo started</h2>
+      <p>Text me your business name and the kind of work you do.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>
