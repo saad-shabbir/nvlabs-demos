@@ -1,0 +1,347 @@
+---
+import Demo from "../../layouts/Demo.astro";
+import AaronChrome from "../../components/AaronChrome.astro";
+import AaronServiceCard from "../../components/AaronServiceCard.astro";
+import { groups } from "../../data/aaron";
+
+const times = [
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+];
+---
+
+<Demo
+  businessName="Aaron the Mechanic"
+  title="Request service, Aaron the Mechanic"
+  description="Request a visit from Aaron the Mechanic in North Houston. Appointment only, Monday to Saturday, 9am to 4pm."
+  image="/aaron-the-mechanic/porsche-oil-service.jpg"
+>
+  <AaronChrome>
+    <section class="page-intro">
+      <div class="wrap">
+        <p class="kicker">Request service</p>
+        <h1>Book a visit.</h1>
+        <p>Appointment only. Monday to Saturday, 9am to 4pm. No Sunday. We come to you.</p>
+      </div>
+    </section>
+
+    <form id="request" class="book" novalidate>
+      <div class="wrap book-layout">
+        <div class="book-main">
+          <section class="step-services" id="services">
+            <p class="kicker">1. Services</p>
+            <h2>Pick one or more</h2>
+            <p class="lede">Starting labor, not an all-in price. Select every job you want quoted.</p>
+            {
+              groups.map((group) => (
+                <div class="group">
+                  <h3>{group.name}</h3>
+                  <div class="grid">
+                    {group.items.map((service) => (
+                      <AaronServiceCard service={service} pick />
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </section>
+
+          <section class="step-info" id="info">
+            <p class="kicker">2. Your information</p>
+            <h2>Where to come</h2>
+            <div class="fields">
+              <label class="field">
+                <span>Name</span>
+                <input id="cust-name" name="name" type="text" autocomplete="name" required />
+              </label>
+              <label class="field">
+                <span>Phone</span>
+                <input id="cust-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input id="cust-email" name="email" type="email" autocomplete="email" required />
+              </label>
+              <label class="field">
+                <span>Address to come to</span>
+                <input id="cust-address" name="address" type="text" autocomplete="street-address" required />
+              </label>
+              <div class="trio">
+                <label class="field">
+                  <span>Year</span>
+                  <input id="veh-year" name="year" type="text" inputmode="numeric" autocomplete="off" required />
+                </label>
+                <label class="field">
+                  <span>Make</span>
+                  <input id="veh-make" name="make" type="text" autocomplete="off" required />
+                </label>
+                <label class="field">
+                  <span>Model</span>
+                  <input id="veh-model" name="model" type="text" autocomplete="off" required />
+                </label>
+              </div>
+              <label class="field">
+                <span>VIN</span>
+                <input id="veh-vin" name="vin" type="text" autocomplete="off" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Notes</span>
+                <textarea id="cust-notes" name="notes"></textarea>
+              </label>
+              <label class="field">
+                <span>Photos</span>
+                <input id="photos" type="file" accept="image/*" multiple />
+              </label>
+              <div class="previews" id="photo-preview"></div>
+              <p class="hours-line">Photos stay on this page so you can see them. They are not sent.</p>
+            </div>
+          </section>
+
+          <section class="step-when" id="when">
+            <p class="kicker">3. Schedule</p>
+            <h2>Pick a time</h2>
+            <p class="lede">Monday to Saturday, 9am to 4pm. No Sunday.</p>
+            <div class="fields">
+              <label class="field">
+                <span class="when-label">Date</span>
+                <input id="appt-date" name="date" type="date" required />
+              </label>
+              <div>
+                <span class="when-label" id="time-label">Time</span>
+                <div class="times" role="group" aria-labelledby="time-label">
+                  {
+                    times.map((label) => (
+                      <button type="button" class="time" data-time={label} aria-pressed="false">
+                        {label}
+                      </button>
+                    ))
+                  }
+                </div>
+                <input id="time-value" type="hidden" value="" />
+              </div>
+            </div>
+          </section>
+
+          <div class="step-send">
+            <p class="submit-line" data-submit-line>Starting labor $0. Time 0m.</p>
+            <p class="form-error" id="form-error" hidden></p>
+            <p class="demo-note" id="demo-note" hidden tabindex="-1">
+              This is a demo, so this request stays on the page. To book for real, call or text <a href="tel:+13462583244">(346) 258-3244</a>.
+            </p>
+            <div class="send-row">
+              <button class="btn btn-solid" type="submit">Send this request</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="total" aria-live="polite">
+          <p class="kicker">Total</p>
+          <div class="total-row">
+            <div>
+              <span class="plabel">Starting labor</span>
+              <p class="figure" data-labor-total>$0</p>
+            </div>
+            <div>
+              <span class="plabel">Time</span>
+              <p class="figure" data-time-total>0m</p>
+            </div>
+          </div>
+          <p class="picked" data-picked>Nothing selected yet.</p>
+          <p class="note-line" data-coil-note hidden>
+            Ignition coil is $50 starting labor, plus $50 each.
+          </p>
+          <p class="note-line" data-hose-note hidden>
+            Coolant hose has no time listed, so it is not in the time total.
+          </p>
+          <h3>Travel and extras</h3>
+          <ul class="fees">
+            <li>Local travel $25 (Humble / Atascocita)</li>
+            <li>Extended travel $45 (outside the normal area)</li>
+            <li>Emergency / same-day +$50</li>
+            <li>After-hours (after 4pm) +$60</li>
+            <li>Parts are extra</li>
+            <li>Starting labor can change once vehicle info is in</li>
+          </ul>
+        </aside>
+      </div>
+    </form>
+
+<script is:inline>
+  (function () {
+    var buttons = document.querySelectorAll("[data-svc]");
+    var laborEl = document.querySelector("[data-labor-total]");
+    var timeEl = document.querySelector("[data-time-total]");
+    var pickedEl = document.querySelector("[data-picked]");
+    var coilNote = document.querySelector("[data-coil-note]");
+    var hoseNote = document.querySelector("[data-hose-note]");
+    var submitLine = document.querySelector("[data-submit-line]");
+    var timeButtons = document.querySelectorAll("[data-time]");
+    var timeValue = document.querySelector("#time-value");
+    var fileInput = document.querySelector("#photos");
+    var preview = document.querySelector("#photo-preview");
+    var form = document.querySelector("#request");
+    var note = document.querySelector("#demo-note");
+    var err = document.querySelector("#form-error");
+    var dateInput = document.querySelector("#appt-date");
+    var previewUrls = [];
+
+    function money(n) {
+      return "$" + n;
+    }
+
+    function fmt(mins) {
+      var h = Math.floor(mins / 60);
+      var m = mins % 60;
+      if (h && m) return h + "h " + m + "m";
+      if (h) return h + "h";
+      if (m) return m + "m";
+      return "0m";
+    }
+
+    function render() {
+      var labor = 0;
+      var mins = 0;
+      var names = [];
+      var hose = false;
+      var coil = false;
+      var timed = false;
+      buttons.forEach(function (btn) {
+        if (btn.getAttribute("aria-pressed") !== "true") return;
+        labor += Number(btn.getAttribute("data-labor") || 0);
+        var raw = btn.getAttribute("data-minutes");
+        if (raw && raw !== "none") {
+          mins += Number(raw);
+          timed = true;
+        }
+        if (btn.getAttribute("data-id") === "ignition-coil") coil = true;
+        if (btn.getAttribute("data-id") === "coolant-hose") hose = true;
+        names.push(btn.getAttribute("data-name"));
+      });
+      laborEl.textContent = money(labor);
+      var timeText = "0m";
+      if (!names.length) {
+        timeText = "0m";
+        pickedEl.textContent = "Nothing selected yet.";
+      } else if (hose && !timed) {
+        timeText = "No time listed";
+        pickedEl.textContent = names.join(", ");
+      } else if (hose) {
+        timeText = fmt(mins) + ", plus coolant hose";
+        pickedEl.textContent = names.join(", ");
+      } else {
+        timeText = fmt(mins);
+        pickedEl.textContent = names.join(", ");
+      }
+      timeEl.textContent = timeText;
+      coilNote.hidden = !coil;
+      hoseNote.hidden = !hose;
+      submitLine.textContent = "Starting labor " + money(labor) + ". Time " + timeText + ".";
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var on = btn.getAttribute("aria-pressed") === "true";
+        btn.setAttribute("aria-pressed", on ? "false" : "true");
+        render();
+      });
+    });
+
+    timeButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        timeButtons.forEach(function (other) {
+          other.setAttribute("aria-pressed", "false");
+        });
+        btn.setAttribute("aria-pressed", "true");
+        timeValue.value = btn.getAttribute("data-time") || "";
+      });
+    });
+
+    if (dateInput) {
+      var now = new Date();
+      var month = String(now.getMonth() + 1).padStart(2, "0");
+      var day = String(now.getDate()).padStart(2, "0");
+      dateInput.min = now.getFullYear() + "-" + month + "-" + day;
+    }
+
+    function clearPreviews() {
+      previewUrls.forEach(function (url) {
+        URL.revokeObjectURL(url);
+      });
+      previewUrls = [];
+      preview.textContent = "";
+    }
+
+    fileInput.addEventListener("change", function () {
+      clearPreviews();
+      var files = fileInput.files || [];
+      Array.prototype.forEach.call(files, function (file, index) {
+        if (!file.type || file.type.indexOf("image/") !== 0) return;
+        var img = document.createElement("img");
+        var url = URL.createObjectURL(file);
+        previewUrls.push(url);
+        img.src = url;
+        img.alt = "Preview of photo " + (index + 1);
+        preview.appendChild(img);
+      });
+    });
+
+    function valueOf(id) {
+      var el = document.querySelector(id);
+      return el && el.value ? el.value.trim() : "";
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var problems = [];
+      var selected = document.querySelector('[data-svc][aria-pressed="true"]');
+      if (!selected) problems.push("Select at least one service.");
+      if (!valueOf("#cust-name")) problems.push("Add your name.");
+      var phone = valueOf("#cust-phone").replace(/\D/g, "");
+      if (phone.length < 10) problems.push("Add a phone number.");
+      var email = valueOf("#cust-email");
+      if (!email || email.indexOf("@") < 1 || email.indexOf(".") < 0) problems.push("Add an email.");
+      if (!valueOf("#cust-address")) problems.push("Add the address to come to.");
+      if (!valueOf("#veh-year") || !valueOf("#veh-make") || !valueOf("#veh-model")) {
+        problems.push("Add the vehicle year, make, and model.");
+      }
+      var other = document.querySelector('[data-id="something-else"][aria-pressed="true"]');
+      if (other && !valueOf("#veh-vin")) problems.push("Something else needs the VIN.");
+      if (other && !valueOf("#cust-notes")) problems.push("Something else needs the details in the notes.");
+      var date = valueOf("#appt-date");
+      if (!date) {
+        problems.push("Pick a date.");
+      } else {
+        var picked = new Date(date + "T12:00:00");
+        var today = new Date();
+        today.setHours(12, 0, 0, 0);
+        if (picked.getDay() === 0) problems.push("No Sunday. Monday to Saturday only.");
+        if (picked < today) problems.push("Pick a date that has not passed.");
+      }
+      if (!timeValue.value) problems.push("Pick a time from 9am to 4pm.");
+
+      if (problems.length) {
+        err.hidden = false;
+        err.textContent = problems.join(" ");
+        note.hidden = true;
+        err.focus && err.setAttribute("tabindex", "-1");
+        err.focus();
+        return;
+      }
+
+      err.hidden = true;
+      note.hidden = false;
+      note.focus();
+    });
+
+    render();
+  })();
+</script>
+
+  </AaronChrome>
+</Demo>

@@ -6,3 +6,9 @@
 
 /high-sweet/*
   X-Robots-Tag: noindex
+
+/aaron-the-mechanic
+  X-Robots-Tag: noindex
+
+/aaron-the-mechanic/*
+  X-Robots-Tag: noindex

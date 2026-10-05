@@ -1,0 +1,197 @@
+---
+import Demo from "../../layouts/Demo.astro";
+import AaronChrome from "../../components/AaronChrome.astro";
+import AaronServiceCard from "../../components/AaronServiceCard.astro";
+import { homeServices } from "../../data/aaron";
+
+const photos = [
+  {
+    src: "/aaron-the-mechanic/porsche-oil-service.jpg",
+    alt: "Rear of a dark Porsche Boxster on the ground during an oil service, tools and a red case beside it.",
+    wide: true,
+  },
+  {
+    src: "/aaron-the-mechanic/aaron-subaru-coolant.jpg",
+    alt: "Aaron beside a Subaru with the hood open for a coolant repair.",
+    wide: false,
+  },
+  {
+    src: "/aaron-the-mechanic/work-truck.jpg",
+    alt: "White heavy pickup with the hood up on gravel.",
+    wide: false,
+  },
+  {
+    src: "/aaron-the-mechanic/silverado-oil-service.jpg",
+    alt: "Maroon Chevrolet Silverado in a driveway for an oil service.",
+    wide: true,
+  },
+  {
+    src: "/aaron-the-mechanic/ac-compressor.jpg",
+    alt: "Gloved hand holding an A/C compressor over concrete.",
+    wide: false,
+  },
+  {
+    src: "/aaron-the-mechanic/aaron-working.jpg",
+    alt: "Aaron in a navy shirt under a canopy on a mobile job.",
+    wide: false,
+  },
+  {
+    src: "/aaron-the-mechanic/aaron-jeep-tuneup.jpg",
+    alt: "Champion spark plug held in front of a Jeep Gladiator with the hood open.",
+    wide: false,
+  },
+  {
+    src: "/aaron-the-mechanic/shop-inspection.jpg",
+    alt: "View from the driver seat of a Toyota in a service bay with red lifts.",
+    wide: false,
+  },
+  {
+    src: "/aaron-the-mechanic/aaron-van-interior.jpg",
+    alt: "Van cabin with the side panels off the seats.",
+    wide: false,
+  },
+];
+
+const cities = [
+  "Humble",
+  "Atascocita",
+  "Spring",
+  "Tomball",
+  "Cypress",
+  "Conroe",
+  "North Houston",
+  "Kingwood",
+  "Huffman",
+];
+---
+
+<Demo
+  businessName="Aaron the Mechanic"
+  title="Aaron the Mechanic"
+  description="Mobile mechanic in North Houston. We come to you. Appointment only, Monday to Saturday, 9am to 4pm. Call or text (346) 258-3244."
+  image="/aaron-the-mechanic/porsche-oil-service.jpg"
+>
+  <AaronChrome>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-logo">
+          <img
+            src="/aaron-the-mechanic/logo.png"
+            alt="Aaron the Mechanic gear logo"
+            width="640"
+            height="640"
+          />
+        </div>
+        <div>
+          <p class="kicker">Houston / North Houston</p>
+          <h1>
+            Mobile<br />mechanic.<br />
+            <span>We come<br />to you.</span>
+          </h1>
+          <p class="tagline">Honest work. Fair prices. Reliable service.</p>
+          <p class="hours-line">Appointment only. Monday to Saturday, 9am to 4pm.</p>
+          <div class="cta">
+            <a class="btn btn-solid" href="tel:+13462583244">Call</a>
+            <a class="btn btn-ghost" href="/aaron-the-mechanic/book#services">Request Service</a>
+            <a class="btn btn-line" href="sms:+13462583244">Text</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="hazard" aria-hidden="true"></div>
+
+    <div class="wrap">
+      <div class="strip" aria-label="Kinds of work">
+        <span>Maintenance</span>
+        <span>Brakes</span>
+        <span>Steering</span>
+        <span>Cooling</span>
+        <span>Electrical</span>
+        <span>A/C</span>
+      </div>
+    </div>
+
+    <section class="services" id="services">
+      <div class="wrap">
+        <p class="kicker">Services</p>
+        <h2>What we come out for</h2>
+        <p class="lede">
+          Starting labor from the list. Make and model will determine the total.
+        </p>
+        <div class="grid">
+          {homeServices.map((service) => <AaronServiceCard service={service} home />)}
+        </div>
+        <div class="center-btn">
+          <a class="btn btn-solid" href="/aaron-the-mechanic/book#services">View all services</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="brakes" aria-labelledby="brakes-title">
+      <div class="wrap">
+        <p class="kicker">Brakes</p>
+        <h2 id="brakes-title">Starting price $80</h2>
+        <p>Front or rear. Make and model will determine the total. Parts vary.</p>
+        <div class="brake-split">
+          <div>
+            <p class="big-num">$150</p>
+            <p>Brake pads, starting labor. 1h 30m. Front or rear.</p>
+          </div>
+          <div>
+            <p class="big-num">$200</p>
+            <p>Pads and rotors, starting labor. 2h. Front or rear.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <p class="ppi">We do pre-purchase inspections.</p>
+    </div>
+
+    <section class="work" id="work">
+      <div class="wrap">
+        <p class="kicker">Work</p>
+        <h2>On the job</h2>
+        <div class="shots">
+          {
+            photos.map((photo) => (
+              <img
+                class={photo.wide ? "wide" : undefined}
+                src={photo.src}
+                alt={photo.alt}
+                width="485"
+                height="492"
+              />
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="area" id="area">
+      <div class="wrap">
+        <p class="kicker">Area</p>
+        <h2>Where we go</h2>
+        <p class="lede">
+          Mobile mechanic. We come to you. We will travel outside the area for a fee.
+        </p>
+        <ul class="cities">
+          {cities.map((city) => <li>{city}</li>)}
+        </ul>
+        <div class="address-block">
+          <p>9825 N Sam Houston, Humble, TX is the address on the Facebook page. We come to you.</p>
+          <p>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=9825+N+Sam+Houston+Humble+TX"
+              rel="noopener noreferrer"
+            >
+              Map for that address
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </AaronChrome>
+</Demo>
