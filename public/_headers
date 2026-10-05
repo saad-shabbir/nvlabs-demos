@@ -1,6 +1,3 @@
-/*
-  X-Robots-Tag: noindex
-
 /high-sweet
   X-Robots-Tag: noindex
 
@@ -11,4 +8,16 @@
   X-Robots-Tag: noindex
 
 /aaron-the-mechanic/*
+  X-Robots-Tag: noindex
+
+/gracielas-bakery
+  X-Robots-Tag: noindex
+
+/gracielas-bakery/*
+  X-Robots-Tag: noindex
+
+/sweet-angel-cakes-by-angela
+  X-Robots-Tag: noindex
+
+/sweet-angel-cakes-by-angela/*
   X-Robots-Tag: noindex

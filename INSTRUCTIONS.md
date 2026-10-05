@@ -6,7 +6,7 @@ You are building and running a demo-website system. Saad contacts local business
 - This is an Astro static site in the private GitHub repo nvlabs-demos. The repo is the only place the project lives: pull it at the start of every job and push when you finish, since the computer may reset between jobs.
 - The GitHub token is stored only at /home/box/.config/nvlabs/github_token (mode 600). Never commit it, never print it, never put it in this file.
 - Saad connects the repo to Cloudflare himself so every push deploys automatically. Do not ask for his Cloudflare login. The dashboard creates a Worker, not classic Pages: wrangler.jsonc publishes ./dist as static assets. Build command is npm run build. Deploy command is npx wrangler deploy.
-- demo.nvlabs.co itself is a plain NV Labs page that does not list any of the businesses.
+- The homepage (demo.nvlabs.co, and nvlabs.co when that domain is pointed here) is the NV Labs marketing site. It MAY show a portfolio of demos. Individual demo pages stay noindex. Demos still must not invent facts.
 - Reread this file at the start of every job.
 
 ## Every demo site

@@ -38,7 +38,7 @@ const pageTitle = title ?? businessName;
 const pageDescription = description ?? businessName;
 ---
 
-<Base title={pageTitle} description={pageDescription} image={image}>
+<Base title={pageTitle} description={pageDescription} image={image} robots="noindex, nofollow">
   {
     expiry && (
       <script is:inline define:vars={{ expiry }} slot="head">
