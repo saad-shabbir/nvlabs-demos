@@ -1,0 +1,128 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title='Websites for Panaderías and Mexican Bakeries | NV Labs'
+  description='A free demo website for your panadería, in English and Spanish. Pan dulce, tres leches, quinceañera cakes. Call or text (501) 413-3386.'
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Panaderías and Mexican bakeries</p>
+      <h1 id="hero-title">A website for your panadería, in English and Spanish</h1>
+      <p class="lede">
+        A free demo site that shows your pan dulce, cakes, hours, and how to order. Built so both
+        Spanish and English customers can find what they need.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="search-title">
+      <h2 id="search-title">People are searching for pan dulce near them</h2>
+      <p>
+        When someone wants fresh conchas on a Sunday morning, they pull out their phone and search.
+        Some type "Mexican bakery near me." Others type "panadería cerca de mí." Your website
+        should show up for both.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="lang-title">
+      <h2 id="lang-title">Two languages, one simple site</h2>
+      <p>
+        A lot of your regulars might be more comfortable in Spanish. Plenty of new customers might
+        only read English. I suggest building your site in both, with a simple button to switch.
+      </p>
+      <p>
+        That way abuela can read the cake menu, and her grandkid's friend who just moved to the
+        neighborhood can too. If you'd rather keep it to one language, that's fine. It's your call.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="bake-title">
+      <h2 id="bake-title">Show off what you bake</h2>
+      <p>Your case is full of things people love but might not know the names of. I'll lay it out so it's easy to browse:</p>
+      <ul>
+        <li><strong>Pan dulce:</strong> conchas, orejas, cuernos, marranitos, polvorones, and whatever else you make</li>
+        <li><strong>Cakes:</strong> tres leches, chocolate, fruit cakes, and your house specials</li>
+        <li><strong>Seasonal items:</strong> rosca de reyes, pan de muerto, tamales if you sell them</li>
+        <li><strong>Drinks:</strong> champurrado, café de olla, or whatever you serve with it</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="cele-title">
+      <h2 id="cele-title">Quinceañera, birthday, and wedding cakes</h2>
+      <p>
+        Celebration cakes are a big part of a panadería's business. Families plan these for weeks.
+        I'll set up a page that shows photos of cakes you've made and a simple order request form
+        for the date, number of people, flavors, and colors.
+      </p>
+      <p>
+        Requests come straight to your phone or email, in whichever language the customer wrote.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="expect-title">
+      <h2 id="expect-title">Hours, address, and what to expect</h2>
+      <p>
+        Some panaderías sell out early. Some only take cash. Some have a parking lot around back.
+        I'll put all of that right up front so customers come in prepared and happy.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="free-title">
+      <h2 id="free-title">Free demo, no commitment</h2>
+      <p>
+        I build your demo first. You look at it and decide. If it feels right, I put it live. If
+        not, you don't owe me anything.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can you write the Spanish part of the site?</h3>
+          <p>
+            Yes, I can prepare the Spanish text, and I'll always have you look it over so it sounds
+            the way you and your customers talk. You know your community best.
+          </p>
+        </div>
+        <div>
+          <h3>Do I need photos of every pan?</h3>
+          <p>
+            No. A handful of good photos of your case and a few celebration cakes go a long way. We
+            can add more over time.
+          </p>
+        </div>
+        <div>
+          <h3>Can customers order a quinceañera cake through the site?</h3>
+          <p>
+            They can send an order request with all the details. You review it and confirm by phone
+            or text, just like you do now, only with less back and forth.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">¿Listo para ver su página? Ready to see your site?</h2>
+      <p>Hablo con usted por teléfono o texto. Let's build your demo.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

@@ -1,0 +1,136 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title='Only Have Instagram for Your Business? Read This | NV Labs'
+  description="Instagram is great. A simple website helps you show up on Google and reach people who aren't on IG. Free demo first. Call or text (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Instagram-only businesses</p>
+      <h1 id="hero-title">Only on Instagram? Here's what a simple website adds</h1>
+      <p class="lede">
+        Keep Instagram for what's new. Add a simple site for Google, hours, and people who aren't on
+        IG. Free demo first.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/free-website-demo/">How the free demo works</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="ig-title">
+      <h2 id="ig-title">First off, your Instagram is working</h2>
+      <p>
+        If you've built a following on Instagram, that's real work and it shows. Lots of local
+        businesses get most of their customers from it. I'm not here to tell you to stop.
+      </p>
+      <p>
+        I just want to show you a few things a basic website can do that Instagram can't, so you can
+        decide for yourself.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="google-title">
+      <h2 id="google-title">Google doesn't really show your posts</h2>
+      <p>
+        When someone searches "taco truck near me" or "nail salon in Henderson," Google mostly shows
+        websites and map listings. Your Instagram posts rarely come up in those results.
+      </p>
+      <p>
+        A simple site gives Google something to show. It also backs up your Google Business Profile,
+        which is what powers those map results.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="one-title">
+      <h2 id="one-title">Everything in one spot</h2>
+      <p>
+        On Instagram, your hours might be in a highlight, your menu in a pinned post, and your
+        address in a caption from last March. Regulars know where to look. New people don't.
+      </p>
+      <p>A website puts it all on one page:</p>
+      <ul>
+        <li>Hours</li>
+        <li>Menu or services</li>
+        <li>Address and map</li>
+        <li>Phone number</li>
+        <li>How to order or book</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="notig-title">
+      <h2 id="notig-title">Not everyone is on Instagram</h2>
+      <p>
+        Some of your future customers don't have an account, or don't want one. Others hit a login
+        wall when they tap your link. Think older customers, busy parents, office managers ordering
+        for a team. A website opens for anyone with a phone.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="bio-title">
+      <h2 id="bio-title">It makes your link in bio better</h2>
+      <p>
+        You can put your website in your Instagram bio. Instead of a cluttered list of links,
+        followers land on a clean page with your menu, hours, and a way to order or book. Instagram
+        keeps doing what it does well. Your site handles the details.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="risk-title">
+      <h2 id="risk-title">Try it with no risk</h2>
+      <p>
+        I'll build a free demo of your site using your Instagram photos (with your OK) and info. You
+        look at it. If you like it, I put it live. If you decide Instagram is enough, that's totally
+        fine.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Will a website replace my Instagram?</h3>
+          <p>
+            No. They work together. Instagram is where people see what's new. Your website is where
+            they find the basics and where Google sends people searching for you.
+          </p>
+        </div>
+        <div>
+          <h3>Can you use the photos I already posted?</h3>
+          <p>
+            Yes, if you're okay with it. Your Instagram photos are often the best ones you have, and
+            they keep the site feeling like you.
+          </p>
+        </div>
+        <div>
+          <h3>I don't have time to keep two things updated. Is that a problem?</h3>
+          <p>
+            Your site doesn't need daily posts. Once your hours, menu, and contact info are set, it
+            mostly stays the same. When something changes, text me.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">See what your Instagram looks like as a website</h2>
+      <p>I'll build the demo from what you already have.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

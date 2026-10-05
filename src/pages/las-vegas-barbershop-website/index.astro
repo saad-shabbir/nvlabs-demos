@@ -1,0 +1,128 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title='Barbershop Websites in Las Vegas and Henderson | NV Labs'
+  description='A free demo website for your Las Vegas or Henderson barbershop with booking, barber pages, and hours. Call or text (501) 413-3386.'
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Las Vegas and Henderson barbershops</p>
+      <h1 id="hero-title">A barbershop website for Las Vegas and Henderson shops</h1>
+      <p class="lede">
+        Free demo first. Booking, barber pages, hours, and walk-in policy clear up top. Call or text
+        to get started.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="walkin-title">
+      <h2 id="walkin-title">Walk in or book? Tell them up front</h2>
+      <p>
+        The most common question a barbershop gets is "Do you take walk-ins?" Your site should
+        answer it the second someone lands on it.
+      </p>
+      <p>
+        Whether you're walk-ins only, appointments only, or a mix, I'll make it clear at the top. If
+        walk-ins are slower on weekday mornings, we can say that too.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="book-title">
+      <h2 id="book-title">Your booking link, easy to find</h2>
+      <p>
+        If you already use a booking app, great. I'll put a big "Book Now" button right where people
+        expect it, and on every barber's page. No hunting through menus. If you don't use one yet, a
+        "Call or Text to Book" button works just as well.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="barber-title">
+      <h2 id="barber-title">A page for every barber</h2>
+      <p>People don't just pick a shop. They pick a barber. I'll give each barber their own section with:</p>
+      <ul>
+        <li>Their name and photo</li>
+        <li>What they're known for (fades, beard work, designs, kids' cuts)</li>
+        <li>The days they work</li>
+        <li>Their personal booking link or Instagram</li>
+      </ul>
+      <p>That way a customer who loved their cut last time can find the same chair again.</p>
+    </section>
+
+    <section class="section" aria-labelledby="svc-title">
+      <h2 id="svc-title">Services and hours, no guessing</h2>
+      <p>
+        I'll lay out your services in a clean list: cuts, fades, lineups, beard trims, hot towel
+        shaves, kids' cuts, and anything else you offer. Your hours go right next to it, with notes
+        like late nights on Fridays or closed Sundays.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="local-title">
+      <h2 id="local-title">Local to the Valley</h2>
+      <p>
+        I'm based in Las Vegas, so I know the area. Whether your shop is in Henderson near Green
+        Valley, out in Summerlin, in Spring Valley, or over in North Las Vegas, I'll write your site
+        so people nearby can find you when they search "barbershop near me."
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="see-title">
+      <h2 id="see-title">See it before you commit</h2>
+      <p>
+        I'll build a free demo of your shop's site and send you the link. If you and your barbers
+        like it, I put it live. If not, no problem at all. We work by call and text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can each barber have their own booking link?</h3>
+          <p>
+            Yes. If each barber books through their own account, I'll link each one from their own
+            section.
+          </p>
+        </div>
+        <div>
+          <h3>We're mostly walk-ins. Do we still need a website?</h3>
+          <p>
+            A site helps people know you exist, see your hours, and check out your work before they
+            walk in. For a walk-in shop, that's often the difference between someone showing up or
+            going somewhere else.
+          </p>
+        </div>
+        <div>
+          <h3>How do we review the demo?</h3>
+          <p>
+            I text or call you with the link. You and your barbers can open it on your phones and
+            tell me what to change.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's build your shop's demo</h2>
+      <p>Send me your shop name and I'll get started.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

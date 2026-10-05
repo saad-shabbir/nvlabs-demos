@@ -1,0 +1,134 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title='Houston Mobile Mechanic Website, Free Demo | NV Labs'
+  description='Houston mobile mechanics: I build a free demo site for you remotely, with your service area and one-tap calling. Call or text (501) 413-3386.'
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Houston mobile mechanics</p>
+      <h1 id="hero-title">Websites for Houston mobile mechanics, built remotely and built right</h1>
+      <p class="lede">
+        I'm Saad, based in Las Vegas. I build your free demo by phone and text. You look at it on
+        your phone between jobs, then decide.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/aaron-the-mechanic/">See a Houston mechanic demo</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="honest-title">
+      <h2 id="honest-title">Straight up: I'm not in Houston</h2>
+      <p>
+        I build websites for local businesses all over, and I do it by phone and text. You don't
+        need to meet me in person. You send me a few details, I build your demo, and you look at it
+        on your phone between jobs.
+      </p>
+      <p>I just want to be honest about that up front.</p>
+    </section>
+
+    <section class="section" aria-labelledby="area-title">
+      <h2 id="area-title">Houston is huge, so your service area matters</h2>
+      <p>
+        Houston sprawls in every direction. A customer in Katy and a customer in Pasadena are a long
+        drive apart, and you don't want to burn half a day on traffic.
+      </p>
+      <p>
+        Your site will spell out exactly where you go. Maybe it's the west side out to Katy and
+        Cypress. Maybe it's south toward Pearland, Sugar Land, and Missouri City. Maybe it's inside
+        the Loop, The Heights, and up to Spring. You tell me, and I'll write it so customers know
+        right away if you cover them.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="jobs-title">
+      <h2 id="jobs-title">Jobs you handle where the car sits</h2>
+      <p>
+        Houston heat is rough on cars. Dead batteries, AC problems, and overheating are everyday
+        calls. I'll list the work you do on site in plain words so people can tell if you're the
+        right call:
+      </p>
+      <ul>
+        <li>Batteries, starters, and alternators</li>
+        <li>AC checks and recharges (if you do them)</li>
+        <li>Brakes and rotors</li>
+        <li>Diagnostics and check engine lights</li>
+        <li>Fleet or work truck service, if you offer it</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="near-title">
+      <h2 id="near-title">Built for "mobile mechanic near me"</h2>
+      <p>
+        When a car breaks down on the Beltway or in an H-E-B parking lot, people search on their
+        phone and call fast. Your site will load quick, show your service area right away, and have
+        a big one-tap call button.
+      </p>
+      <p>
+        I'll also make sure your site and your Google Business Profile match, with the same name,
+        phone, and service area. That helps Google connect the dots. I can't promise rankings, but
+        you'll be set up correctly.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="how-title">
+      <h2 id="how-title">How we work together from a distance</h2>
+      <ol>
+        <li>You call or text me with your business name and what you do.</li>
+        <li>You send a few photos of your truck, your work, or yourself if you're comfortable.</li>
+        <li>I build a free demo and text you the link.</li>
+        <li>You look it over and tell me what to change.</li>
+        <li>If you like it, I put it live. If not, you're free to walk away.</li>
+      </ol>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>How can you build my site if you're not in Houston?</h3>
+          <p>
+            Everything I need comes over text and phone: your services, your area, your photos. Most
+            of my work happens on a computer anyway, so being in Las Vegas doesn't slow things down.
+          </p>
+        </div>
+        <div>
+          <h3>Will the site mention the Houston areas I cover?</h3>
+          <p>
+            Yes. I'll list the actual neighborhoods and suburbs you serve, written naturally so it
+            reads well for customers and makes sense to Google.
+          </p>
+        </div>
+        <div>
+          <h3>What if I mostly work on fleets or commercial trucks?</h3>
+          <p>
+            I'll build the site around that. We can focus the pages on businesses instead of
+            everyday drivers, or cover both.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's build your Houston demo</h2>
+      <p>A quick text is all it takes to get started.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

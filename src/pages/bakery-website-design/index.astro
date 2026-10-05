@@ -1,0 +1,125 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title='Bakery Website Design, See a Free Demo First | NV Labs'
+  description='I build a free demo website for your bakery with your menu, hours, and cake orders. See it before you pay. Call or text (501) 413-3386.'
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Bakery website design</p>
+      <h1 id="hero-title">A bakery website you can see before you pay a thing</h1>
+      <p class="lede">
+        I build a free working demo for your bakery first. You look at it on your phone. If you like
+        it, I put it live. If you don't, you walk away. No pressure and nothing owed.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/#work">See bakery demos</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="looking-title">
+      <h2 id="looking-title">Your customers are already looking you up</h2>
+      <p>
+        Someone tastes your croissant at a coworker's desk. That night they search for you. What do
+        they find?
+      </p>
+      <p>
+        If the answer is nothing, or an old listing with the wrong hours, you're losing people who
+        already want to buy. A simple website fixes that. It puts your bakery in front of them with
+        the real info they need.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="what-title">
+      <h2 id="what-title">What I put on a bakery site</h2>
+      <p>I keep it simple and focused on what people actually ask you at the counter:</p>
+      <ul>
+        <li><strong>Your menu.</strong> Breads, pastries, cookies, cakes. With photos if you have them.</li>
+        <li><strong>Hours and pickup times.</strong> Including early closing days and when the bread usually runs out.</li>
+        <li><strong>Custom cake orders.</strong> A simple form for date, size, flavor, and design ideas, so requests stop getting lost in your DMs.</li>
+        <li><strong>Daily specials.</strong> A spot you can point people to for today's bake.</li>
+        <li><strong>Address, map, and parking notes.</strong> So nobody drives in circles.</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="cake-title">
+      <h2 id="cake-title">Custom cake orders without the back and forth</h2>
+      <p>
+        Cake orders are where a lot of bakers lose hours. Someone messages, you ask what size, they
+        answer a day later, you ask about the date, and so on.
+      </p>
+      <p>
+        On your site, I set up an order request form that asks all of that up front. You get one
+        clear message with everything in it. You still decide what you accept and when.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="phone-title">
+      <h2 id="phone-title">Built for phones first</h2>
+      <p>
+        Most people looking up a bakery are on their phone, usually in the car or on a break. I
+        make sure your menu loads fast, your hours are easy to spot, and the call button works with
+        one tap.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="demo-title">
+      <h2 id="demo-title">How the free demo works</h2>
+      <p>
+        I build a demo of your bakery's website first, using your name, your photos, and your menu.
+        You look at it on your own phone. If you like it, I put it live for you. If you don't, you
+        walk away. No pressure and nothing owed.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>Can customers order cakes directly through the site?</h3>
+          <p>
+            Yes. I can add a cake order request form that collects the date, size, flavors, and
+            design ideas. Orders come to you by email or text, and you confirm them the way you
+            already do.
+          </p>
+        </div>
+        <div>
+          <h3>I change my specials every day. Will that be a pain to update?</h3>
+          <p>
+            It doesn't have to be. I can set up a simple specials section you can update quickly, or
+            point it to the place you already post your daily bake.
+          </p>
+        </div>
+        <div>
+          <h3>I don't have professional photos. Is that a problem?</h3>
+          <p>
+            Not at all. Good phone photos of your case and your cakes work fine. I'll help pick the
+            best ones and make them look clean on the page.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Ready to see your bakery's website?</h2>
+      <p>I'll build the demo first. You only decide after you've seen it.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

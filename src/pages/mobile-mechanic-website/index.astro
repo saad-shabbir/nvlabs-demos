@@ -1,0 +1,135 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title='Mobile Mechanic Website, Free Demo Before You Pay | NV Labs'
+  description='Get found for "mobile mechanic near me." I build your free demo site with services, service area, and a call button. Call or text (501) 413-3386.'
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Mobile mechanic websites</p>
+      <h1 id="hero-title">A website that gets your phone ringing for mobile repair jobs</h1>
+      <p class="lede">
+        Free demo first. Services, service area, and a one-tap call button so people searching
+        "mobile mechanic near me" can reach you fast.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/aaron-the-mechanic/">See a mechanic demo</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="phone-title">
+      <h2 id="phone-title">When a car won't start, people grab their phone</h2>
+      <p>
+        Nobody plans to need a mechanic. Their car dies in a parking lot or the battery quits in the
+        driveway. They search "mobile mechanic near me" and call the first one that looks legit.
+      </p>
+      <p>
+        A clean website helps you look like that legit choice. It tells them who you are, what you
+        fix, and where you go, in about ten seconds.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="area-title">
+      <h2 id="area-title">Your service area, front and center</h2>
+      <p>
+        The first question every caller asks is "Do you come out to me?" Your site answers it before
+        they call.
+      </p>
+      <p>
+        I'll add a clear service area section listing the towns and neighborhoods you cover, plus
+        any spots you don't. This also helps Google understand where to show you.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="fix-title">
+      <h2 id="fix-title">What you fix on site</h2>
+      <p>People want to know if their problem is something you can handle in a driveway. I'll lay out your jobs in plain words, like:</p>
+      <ul>
+        <li>Battery testing and replacement</li>
+        <li>Brake pads and rotors</li>
+        <li>Starters and alternators</li>
+        <li>Oil changes and fluid checks</li>
+        <li>Check engine light diagnostics</li>
+        <li>No-start troubleshooting</li>
+        <li>Belts, hoses, and spark plugs</li>
+      </ul>
+      <p>You tell me what you do and don't do, and I'll write it up.</p>
+    </section>
+
+    <section class="section" aria-labelledby="tap-title">
+      <h2 id="tap-title">One tap to call</h2>
+      <p>
+        Most of your work comes from phone calls, so your site is built around one big button: call
+        me. On a phone, it dials you in one tap. I can also add a short "describe the problem" form
+        for people who'd rather text.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="maps-title">
+      <h2 id="maps-title">Showing up on Google Maps</h2>
+      <p>
+        For searches like "mobile mechanic near me," your Google Business Profile matters a lot.
+        Your website backs it up. I'll make sure your name, phone, service area, and hours match
+        everywhere, and that your site links to your profile and vice versa. No guarantees on
+        rankings, but you'll be set up properly.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="decide-title">
+      <h2 id="decide-title">I build it first, you decide</h2>
+      <p>
+        I make a free demo of your site with your name, your services, and your area. You check it
+        out on your phone. Like it? I put it live. Don't? No problem.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+      <div class="faq">
+        <div>
+          <h3>I don't have a shop address. Is that okay?</h3>
+          <p>
+            Totally fine. Lots of mobile mechanics work from home or a truck. Your site can show a
+            service area instead of a street address.
+          </p>
+        </div>
+        <div>
+          <h3>Can people book a time through the site?</h3>
+          <p>
+            Yes, if you want that. Some mechanics prefer a simple request form so they can call back
+            and quote. I'll set it up the way you like to work.
+          </p>
+        </div>
+        <div>
+          <h3>I'm under the hood all day. Will I need to update the site?</h3>
+          <p>
+            Not much. Once it's set up, it mostly runs on its own. If something changes, like a new
+            service, just text me.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Let's get your phone ringing</h2>
+      <p>I'll build your demo first. Take a look when you're on a break.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>
