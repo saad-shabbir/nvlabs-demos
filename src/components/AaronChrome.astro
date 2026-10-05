@@ -86,14 +86,14 @@ const servicesHref = onBook ? "/aaron-the-mechanic/book#services" : "/aaron-the-
 
   html:has(.aaron) {
     scroll-padding-top: 5.4rem;
-    scroll-padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
+    scroll-padding-bottom: calc(7rem + env(safe-area-inset-bottom));
   }
 
   .aaron {
     background: #020202;
     color: #f6f6f6;
     min-height: 100vh;
-    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
   }
 
   .aaron a {
@@ -642,6 +642,20 @@ const servicesHref = onBook ? "/aaron-the-mechanic/book#services" : "/aaron-the-
 
   .page-intro {
     padding: 1.3rem 0 0.2rem;
+  }
+
+  @media (max-width: 799px) {
+    .book {
+      padding-bottom: 0.75rem;
+    }
+
+    .step-services .grid {
+      margin-bottom: 0.5rem;
+    }
+
+    .svc-foot {
+      padding-bottom: 0.9rem;
+    }
   }
 
   .page-intro p {

@@ -203,6 +203,10 @@ const hours = [
     background: #fff;
   }
 
+  :global(html):has(.hs) {
+    scroll-padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
+  }
+
   .hs {
     --tan: #e8c4b4;
     --blush: #f0c9d8;
@@ -221,7 +225,7 @@ const hours = [
     font-family: var(--sans);
     font-size: 16px;
     line-height: 1.45;
-    padding-bottom: calc(3.4rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
   }
 
   .hs * {
@@ -752,7 +756,34 @@ const hours = [
     scroll-margin-top: 6.5rem;
   }
 
+  @media (max-width: 799px) {
+    .hero-mark {
+      display: none;
+    }
+
+    .hero-copy {
+      padding: 1.25rem 1.15rem 1.35rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 14vw, 4.2rem);
+      margin-bottom: 0.7rem;
+    }
+
+    .lede {
+      margin-bottom: 0.95rem;
+    }
+
+    .hero-actions {
+      gap: 0.55rem 0.7rem;
+    }
+  }
+
   @media (min-width: 861px) {
+    :global(html):has(.hs) {
+      scroll-padding-bottom: 0;
+    }
+
     .hs {
       padding-bottom: 0;
     }
