@@ -1,0 +1,75 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Free website demo for local businesses | NV Labs"
+  description="Get a free working website demo for your local shop. Call or text Saad Shabbir at (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Free working demo</p>
+      <h1 id="hero-title">See a real website for your business before you commit.</h1>
+      <p class="lede">
+        I build you a phone-friendly demo site and send the link. You open it, tap the buttons, and
+        decide if you want help putting it live. No long form. Call or text to start.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/#work">Browse example demos</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="what-title">
+      <h2 id="what-title">What you get in the free demo</h2>
+      <ul>
+        <li>A working page that looks like your business, not a blank template</li>
+        <li>Tap-to-call and other phone-friendly actions</li>
+        <li>A private link you can open and share with your team</li>
+        <li>Help going live on your domain only if you want that next step</li>
+      </ul>
+      <p>
+        I do not invent prices, reviews, or hours. If I do not have a detail from you or your
+        public posts, I leave it out.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="steps-title">
+      <h2 id="steps-title">Three simple steps</h2>
+      <ul>
+        <li>1. Call or text with your business name and city</li>
+        <li>2. I build the demo and send you the link</li>
+        <li>3. You try it on your phone. We go live only if you want to</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="for-title">
+      <h2 id="for-title">Good fit for</h2>
+      <ul>
+        <li>Bakeries and sweet shops</li>
+        <li>Retail shops and storefronts</li>
+        <li>Mobile services like mechanics and trades</li>
+        <li>Any local shop that is still Instagram-only</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Request your free demo</h2>
+      <p>Call or text Saad Shabbir at NV Labs.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>

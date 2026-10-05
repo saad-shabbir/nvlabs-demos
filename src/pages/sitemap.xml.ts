@@ -6,6 +6,15 @@ export const GET: APIRoute = () => {
   <url>
     <loc>https://demo.nvlabs.co/</loc>
   </url>
+  <url>
+    <loc>https://demo.nvlabs.co/websites-for-bakeries/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/las-vegas-bakery-website/</loc>
+  </url>
+  <url>
+    <loc>https://demo.nvlabs.co/free-website-demo/</loc>
+  </url>
 </urlset>
 `;
   return new Response(body, {

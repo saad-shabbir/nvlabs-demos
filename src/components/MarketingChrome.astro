@@ -1,0 +1,273 @@
+---
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<div class="mkt">
+  <header class="top">
+    <a class="brand" href="/">
+      <span class="brand-mark">NV Labs</span>
+      <span class="brand-sub">Saad Shabbir</span>
+    </a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href={tel}>Call</a>
+      <a class="btn btn-accent" href={sms}>Text</a>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="foot">
+    <p><strong>NV Labs</strong> · Saad Shabbir</p>
+    <p>
+      <a href={tel}>{phoneDisplay}</a>
+    </p>
+    <p class="foot-links">
+      <a href="/">Home</a>
+      ·
+      <a href="/websites-for-bakeries/">Websites for bakeries</a>
+      ·
+      <a href="/las-vegas-bakery-website/">Las Vegas bakery websites</a>
+      ·
+      <a href="/free-website-demo/">Free website demo</a>
+    </p>
+    <p class="foot-note">
+      Call or text for a free working demo of your shop. Demos live on demo.nvlabs.co for now.
+    </p>
+  </footer>
+</div>
+
+<style is:global>
+  .mkt {
+    --bg: #0f0e0c;
+    --surface: #171512;
+    --line: #2a2620;
+    --ink: #f5f0e6;
+    --muted: #b7aea0;
+    --accent: #e8c56a;
+    --accent-ink: #1a1508;
+    --cream: #f3ebda;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+      sans-serif;
+  }
+
+  .mkt a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .mkt .top {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: rgba(15, 14, 12, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mkt .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    min-width: 0;
+  }
+
+  .mkt .brand-mark {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: 1rem;
+  }
+
+  .mkt .brand-sub {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+
+  .mkt .top-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .mkt .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 0.55rem 0.95rem;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .mkt .btn-lg {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .mkt .btn-accent {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .mkt .btn-ghost {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--ink);
+  }
+
+  .mkt .btn-text {
+    background: transparent;
+    color: var(--cream);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    font-weight: 500;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  .mkt .hero,
+  .mkt .section,
+  .mkt .foot {
+    width: min(44rem, calc(100% - 2rem));
+    margin-inline: auto;
+  }
+
+  .mkt .hero {
+    padding: 2.2rem 0 1.5rem;
+  }
+
+  .mkt .eyebrow {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .mkt .hero h1 {
+    margin: 0;
+    font-size: clamp(1.85rem, 6vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+
+  .mkt .lede {
+    margin: 1rem 0 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+  .mkt .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1.35rem;
+  }
+
+  .mkt .section {
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .mkt .section h2 {
+    margin: 0;
+    font-size: clamp(1.35rem, 4vw, 1.75rem);
+    letter-spacing: -0.03em;
+  }
+
+  .mkt .section p {
+    margin: 0.75rem 0 0;
+    color: var(--muted);
+  }
+
+  .mkt .section ul {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .mkt .section li {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 0.85rem;
+    background: var(--surface);
+    color: var(--cream);
+  }
+
+  .mkt .phone-big {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: clamp(1.7rem, 6vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--cream);
+  }
+
+  .mkt .back-home {
+    display: inline-block;
+    margin-top: 1.1rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .mkt .foot {
+    padding: 2rem 0 2.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .mkt .foot p {
+    margin: 0 0 0.45rem;
+  }
+
+  .mkt .foot strong {
+    color: var(--ink);
+  }
+
+  .mkt .foot a {
+    color: var(--cream);
+  }
+
+  .mkt .foot-links {
+    margin-top: 0.75rem !important;
+    line-height: 1.6;
+  }
+
+  .mkt .foot-links a {
+    color: var(--accent);
+  }
+
+  .mkt .foot-note {
+    max-width: 36rem;
+    margin-top: 0.75rem !important;
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 640px) {
+    .mkt .top {
+      padding-inline: 1.25rem;
+    }
+  }
+</style>

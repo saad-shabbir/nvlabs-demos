@@ -1,0 +1,71 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketingChrome from "../../components/MarketingChrome.astro";
+
+const phoneDisplay = "(501) 413-3386";
+const tel = "tel:+15014133386";
+const sms = "sms:+15014133386";
+---
+
+<Base
+  title="Las Vegas bakery website | NV Labs"
+  description="Free working website demos for Las Vegas bakeries and sweet shops. Call or text Saad Shabbir at (501) 413-3386."
+  image="/og.png"
+  robots="index, follow"
+>
+  <MarketingChrome>
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Las Vegas bakeries</p>
+      <h1 id="hero-title">Website demos for Las Vegas bakeries and sweet shops.</h1>
+      <p class="lede">
+        Local customers search on their phone for cakes, pan dulce, custom orders, and nearby
+        bakeries. I build a free working demo site for your shop so you can see how a clean,
+        tap-to-call page feels before you decide to go live.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call {phoneDisplay}</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text me</a>
+        <a class="btn btn-text" href="/#work">See live demos</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="local-title">
+      <h2 id="local-title">Built for how people find you in Vegas</h2>
+      <p>
+        Visitors want photos, a clear way to call, and directions. Your demo can highlight what
+        you already sell and how to reach you, without inventing hours, prices, or reviews you
+        did not give me.
+      </p>
+      <ul>
+        <li>Phone-first layout for people searching nearby</li>
+        <li>Call and text buttons that actually work</li>
+        <li>Space for your real photos and menu items</li>
+        <li>Ready to move to your own domain when you say yes</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="who-title">
+      <h2 id="who-title">Who this is for</h2>
+      <ul>
+        <li>Las Vegas bakeries with no website yet</li>
+        <li>Shops running only on Instagram or Facebook</li>
+        <li>Owners with an old site that is hard to update or hard to use on a phone</li>
+      </ul>
+      <p>
+        I also build demos for sweet shops and related local businesses. If you are outside Las
+        Vegas, still text me. The same free-demo process applies.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="cta-title">
+      <h2 id="cta-title">Get a free Las Vegas bakery demo</h2>
+      <p>Call or text Saad Shabbir with your bakery name and neighborhood or city.</p>
+      <a class="phone-big" href={tel}>{phoneDisplay}</a>
+      <div class="hero-cta">
+        <a class="btn btn-accent btn-lg" href={tel}>Call</a>
+        <a class="btn btn-ghost btn-lg" href={sms}>Text</a>
+      </div>
+      <a class="back-home" href="/">Back to NV Labs home</a>
+    </section>
+  </MarketingChrome>
+</Base>
