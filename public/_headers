@@ -21,3 +21,9 @@
 
 /sweet-angel-cakes-by-angela/*
   X-Robots-Tag: noindex
+
+/las-vegas-compost
+  X-Robots-Tag: noindex
+
+/las-vegas-compost/*
+  X-Robots-Tag: noindex
