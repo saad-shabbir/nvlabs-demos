@@ -344,6 +344,19 @@ body.driver-mode .tabs{display:none!important}
 .confirm:first-child{border-top:0}
 .confirm.fresh{background:color-mix(in srgb,var(--brand-soft) 60%,transparent)}
 
+/* import */
+.upload-box{display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 16px;border:2px dashed var(--line);border-radius:14px;cursor:pointer;background:var(--surface-2);width:100%;text-align:center;color:var(--ink)}
+.upload-box:hover{border-color:var(--brand)}
+.upload-box svg{width:28px;height:28px;color:var(--brand)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.imp-table{border-collapse:collapse;font-size:13px;min-width:600px;width:100%}
+.imp-table th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:8px 10px;background:var(--surface-2)}
+.imp-table td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.imp-table td .muted{font-size:12px}
+.col-chips{display:flex;gap:6px;flex-wrap:wrap}
+.or-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12.5px;font-weight:700}
+.or-line::before,.or-line::after{content:"";flex:1;height:1px;background:var(--line)}
+
 /* drawer + lightbox + toast */
 .scrim{position:fixed;inset:0;background:rgba(10,16,12,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
@@ -453,7 +466,9 @@ const ICON = {
   download:'<path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 20h14"/>',
   trash:'<path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/>',
   edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
-  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>'
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',
+  upload:'<path d="M12 16V5m-4.5 4.5L12 5l4.5 4.5M5 20h14"/>',
+  sheet:'<path d="M5 3h14v18H5zM5 9h14M5 15h14M11 3v18"/>'
 };
 const ic = (n, cls="") => `<svg class="${cls}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]||""}</svg>`;
 const BRAND_MARK = `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#2C6B3E"/><circle cx="20" cy="20" r="15.5" fill="none" stroke="#DCEADB" stroke-width="1.2" opacity=".7"/><path d="M12.5 27.5c0-9 6-14.5 15-15.5-.6 9.3-6.2 15.4-15 15.5z" fill="#DCEADB"/><path d="M12.5 27.5c3.2-4.6 6.6-8 10.8-10.6" stroke="#2C6B3E" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`;
@@ -466,7 +481,7 @@ const TYPE = {
 const DRIVER_COLORS = ["#2C6B3E","#2A6585","#8A5A12","#7A3E8E","#A5412A"];
 
 /* ---------- seed data ---------- */
-const FACILITY = {name:"Facility", address:"Compost facility (sample address)", city:"Las Vegas", lat:36.0915, lng:-115.1835};
+const FACILITY = {name:"Terra Firma Organics", short:"Terra Firma", address:"5355 Beesley Dr", city:"Las Vegas, NV 89115", lat:36.25775, lng:-115.03873};
 const FIRST = ["Sarah","Michael","Priya","David","Jasmine","Carlos","Emily","Andre","Lauren","Kevin","Maria","Tyler","Aisha","Brandon","Nicole","Omar","Hannah","Luis","Rachel","Jason","Fatima","Derek","Megan","Victor","Chloe","Marcus","Elena","Grant","Tasha","Ryan","Leah","Diego","Kim","Noah","Bianca","Sam","Olivia","Ethan","Rosa","Ben","Ivy","Malik","Grace","Hector","Jenna","Dev","Paige","Isaac","Nadia","Cole","Amara","Trevor","Lucia","Wes","Simone","Ari","Monica","Jamal","Tess","Raj","Kayla","Felix","Naomi","Gabe","Yara","Drew","Lena"];
 const LAST = ["Mitchell","Nguyen","Patel","Romero","Brooks","Alvarez","Chen","Watson","Kowalski","Park","Delgado","Hughes","Rahman","Foster","Ortega","Haddad","Sullivan","Reyes","Bennett","Morales","Khan","Lindqvist","Price","Castillo","Dubois","Grant","Petrov","Sato","Jordan","Medina","Hayes","Fischer","Ramos","Okafor","Russo","Bishop","Torres","Wallace","Vega","Kaur"];
 const NOTES = ["Bucket is on the side of the garage","Dog in the backyard. Don't open the side gate","Leave the clean bucket behind the planter","Corner house, park on the side street","Bucket under the carport","Use the walk-in gate on the left side","Back by the trash cans","Front steps are uneven, use the side path","Apartment 2B, bucket by the mailroom","Please close the gate behind you","Bucket on the porch by the bench","Ring the bell only if the bucket isn't out"];
@@ -482,7 +497,7 @@ const AREAS = [
 function seedState(){
   const r = rng(20261109);
   const s = {
-    v: 3,
+    v: 4,
     facility: {...FACILITY},
     drivers: {
       d0: {id:"d0", name:"Yusuf", owner:true, phone:"(949) 873-0720", color:DRIVER_COLORS[0], start:{kind:"facility"}},
@@ -570,7 +585,7 @@ function startPoint(s, driverId){
 }
 function startLabel(s, driverId){
   const d = s.drivers[driverId]; if(!d) return "Facility";
-  if(d.start.kind === "facility") return "Starts at the facility";
+  if(d.start.kind === "facility") return "Starts at " + s.facility.name;
   return (d.owner ? "Your" : firstName(d.name) + "'s") + " home · " + d.start.address;
 }
 function routePoints(s, route, driverId){
@@ -680,11 +695,11 @@ function processUpload(file, stamp){
 }
 
 /* ---------- state ---------- */
-const KEY = "lvc-route-demo-v3";
+const KEY = "lvc-route-demo-v4";
 let S;
 function load(){
-  try{ const raw = localStorage.getItem(KEY); if(raw){ const p = JSON.parse(raw); if(p && p.v === 3){ S = p; return; } } }catch(e){}
-  S = seedState();
+  try{ const raw = localStorage.getItem(KEY); if(raw){ const p = JSON.parse(raw); if(p && p.v === 4){ S = p; return; } } }catch(e){}
+  S = seedState(); save();
 }
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }
@@ -756,7 +771,7 @@ function routeMap(route, opts={}){
   });
   const [sx, sy] = xy[0], [fx, fy] = xy[xy.length-1];
   const label = (x, y, t) => `<text x="${(x+13).toFixed(1)}" y="${(y+4).toFixed(1)}" font-size="11.5" fill="var(--ink)" stroke="var(--map-bg)" stroke-width="4" paint-order="stroke">${esc(t)}</text>`;
-  marks += `<rect x="${(fx-10).toFixed(1)}" y="${(fy-10).toFixed(1)}" width="20" height="20" rx="5" fill="var(--ink)"/><path d="M${fx-5} ${fy+5}V${fy-1}l3 1.6V${fy-1}l3 1.6V${fy-4}h3V${fy+5}z" fill="var(--bg)"/>` + label(fx, fy, "Facility");
+  marks += `<rect x="${(fx-10).toFixed(1)}" y="${(fy-10).toFixed(1)}" width="20" height="20" rx="5" fill="var(--ink)"/><path d="M${fx-5} ${fy+5}V${fy-1}l3 1.6V${fy-1}l3 1.6V${fy-4}h3V${fy+5}z" fill="var(--bg)"/>` + label(fx, fy, S.facility.short || "Facility");
   if(st !== S.facility){
     marks += `<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="11" fill="var(--ink)"/><path d="M${sx-5} ${sy+1}L${sx} ${sy-4.5}L${sx+5} ${sy+1}V${sy+5}H${sx-5}z" fill="var(--bg)"/>` + label(sx, sy, "Start");
   } else {
@@ -764,13 +779,13 @@ function routeMap(route, opts={}){
   }
   return `<svg class="map" viewBox="0 0 ${w} ${h}" role="img" aria-label="Map of ${esc(route.name)} route with ${route.stops.length} stops"><rect width="${w}" height="${h}" fill="var(--map-bg)"/>${gridLines(b, P, w, h)}${paths}${marks}</svg>`;
 }
-const VALLEY = {minLat:35.995, maxLat:36.235, minLng:-115.385, maxLng:-115.03};
+const VALLEY = {minLat:35.995, maxLat:36.3, minLng:-115.385, maxLng:-115.0};
 function valleyMap(driverId){
   const w = 640, h = 420, m = 14, P = projector(VALLEY, w, h, m);
   let dots = "";
   Object.values(S.customers).forEach(c => { const [x, y] = P.p(c.lat, c.lng); dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="var(--brand)" opacity=".45"/>`; });
   const [fx, fy] = P.p(S.facility.lat, S.facility.lng);
-  dots += `<rect x="${fx-9}" y="${fy-9}" width="18" height="18" rx="4" fill="var(--ink)"/><text x="${fx+13}" y="${fy+4}" font-size="12" fill="var(--ink)" stroke="var(--map-bg)" stroke-width="4" paint-order="stroke">Facility</text>`;
+  dots += `<rect x="${fx-9}" y="${fy-9}" width="18" height="18" rx="4" fill="var(--ink)"/><text x="${fx+13}" y="${fy+4}" font-size="12" fill="var(--ink)" stroke="var(--map-bg)" stroke-width="4" paint-order="stroke">${esc(S.facility.short || "Facility")}</text>`;
   const d = S.drivers[driverId], st = startPoint(S, driverId);
   if(d.start.kind !== "facility"){ const [x, y] = P.p(st.lat, st.lng); dots += `<circle cx="${x}" cy="${y}" r="10" fill="${d.color}" stroke="var(--surface)" stroke-width="3"/><text x="${x+14}" y="${y+4}" font-size="12" fill="var(--ink)" stroke="var(--map-bg)" stroke-width="4" paint-order="stroke">${esc(firstName(d.name))}'s start</text>`; }
   return `<svg class="map" viewBox="0 0 ${w} ${h}" data-act="pick-start" data-driver="${driverId}" style="cursor:crosshair" role="img" aria-label="Tap to set start location"><rect width="${w}" height="${h}" fill="var(--map-bg)"/>${gridLines(VALLEY, P, w, h)}${dots}</svg>`;
@@ -892,7 +907,7 @@ function confirmationsList(){
       : (c.photos || []).map((seed, i) => ({src: samplePhoto(seed, "Sample photo"), cap: c.routeName + " · stop " + (i+1)}));
     return `<div class="confirm${c.fresh?" fresh":""}">
       <div class="row between wrapflex"><div class="row">${avatar(dr)}<div><b>${esc(firstName(dr.name))} finished ${esc(c.routeName)}</b><div class="muted" style="font-size:13px">${new Date(c.date).toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"})}${c.endedAt ? " · ended " + fmtTime(c.endedAt) : ""}</div></div></div>${c.fresh?'<span class="chip ok">New</span>':""}</div>
-      <div class="row wrapflex" style="gap:16px;font-size:13.5px"><span><b class="num">${c.ok}/${c.total}</b> serviced</span><span><b class="num">${fmtMi(c.miles)}</b> mi</span>${c.issues?`<span style="color:var(--clay)"><b>${c.issues}</b> couldn't be serviced</span>`:""}<span class="muted">Dumped at facility</span></div>
+      <div class="row wrapflex" style="gap:16px;font-size:13.5px"><span><b class="num">${c.ok}/${c.total}</b> serviced</span><span><b class="num">${fmtMi(c.miles)}</b> mi</span>${c.issues?`<span style="color:var(--clay)"><b>${c.issues}</b> couldn't be serviced</span>`:""}<span class="muted">Dumped at ${esc(S.facility.short || "facility")}</span></div>
       ${photos.length ? `<div class="photo-strip">${photos.slice(0, 8).map(p => `<img src="${p.src}" alt="${esc(p.cap)}" data-act="zoom" data-cap="${esc(p.cap)}">`).join("")}</div>` : ""}
     </div>`;
   }).join("");
@@ -913,12 +928,12 @@ function textRow(t){
 function viewRoutes(){
   return `
   <div class="page-head"><div><h1>Routes</h1><p class="lede">Each route starts at the assigned driver's start location and ends at the facility.</p></div>
-  <button class="btn primary" type="button" data-act="new-route">${ic("plus")}New route</button></div>
+  <div class="row wrapflex"><button class="btn" type="button" data-act="import-open">${ic("upload")}Import spreadsheet</button><button class="btn primary" type="button" data-act="new-route">${ic("plus")}New route</button></div></div>
   <div class="card">
     ${S.routeList.map(id => {
       const rt = R(id), c = routeCounts(rt), dr = S.drivers[rt.driverId];
       return `<a href="#route-${rt.id}" class="crow" style="text-decoration:none;color:inherit;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto">
-        <div><b style="font-size:15.5px">${esc(rt.name)}</b><div class="sub">${c.total} stops · ${fmtMi(routeMiles(S, rt))} mi · ends at facility</div></div>
+        <div><b style="font-size:15.5px">${esc(rt.name)}</b><div class="sub">${c.total} stop${c.total === 1 ? "" : "s"} · ${fmtMi(routeMiles(S, rt))} mi · ends at ${esc(S.facility.short || "the facility")}</div></div>
         <div class="route-col row">${avatar(dr)}<div style="min-width:0"><b style="font-size:14px">${esc(dr.name)}</b><div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(startLabel(S, rt.driverId))}</div></div></div>
         <div class="tags">${c.new ? `<span class="chip new">${c.new} new</span>` : ""}${c.final ? `<span class="chip final">${c.final} final</span>` : ""}${routeStatusPill(rt)}</div>
       </a>`;
@@ -963,9 +978,9 @@ function viewRoute(id){
     </div>
     <div class="card" style="overflow:hidden">
       <ol class="stops">
-        <li class="stop endpoint"><span class="n">${ic("today").replace('class=""','style="width:14px;height:14px"')}</span><div><div class="who">Start</div><div class="addr">${esc(st === S.facility ? "Facility" : st.address + ", " + st.city)}</div></div><div class="right"></div></li>
+        <li class="stop endpoint"><span class="n">${ic("today").replace('class=""','style="width:14px;height:14px"')}</span><div><div class="who">Start</div><div class="addr">${esc(st === S.facility ? S.facility.name + " · " + S.facility.address : st.address + ", " + st.city)}</div></div><div class="right"></div></li>
         ${rt.stops.map((x, i) => stopRowOwner(rt, x, i, locked)).join("")}
-        <li class="stop endpoint"><span class="n">F</span><div><div class="who">Facility · dump the day's food scraps</div><div class="addr">${esc(S.facility.address)}</div></div><div class="right">${rt.facilityDone ? `<span class="chip ok">${ic("check")}Dumped</span>` : ""}</div></li>
+        <li class="stop endpoint"><span class="n">F</span><div><div class="who">${esc(S.facility.name)} · dump the day's food scraps</div><div class="addr">${esc(S.facility.address + ", " + S.facility.city)}</div></div><div class="right">${rt.facilityDone ? `<span class="chip ok">${ic("check")}Dumped</span>` : ""}</div></li>
       </ol>
     </div>
   </div>`;
@@ -998,7 +1013,7 @@ function viewCustomers(){
   }).sort((a, b) => a.name.localeCompare(b.name));
   return `
   <div class="page-head"><div><h1>Customers</h1><p class="lede">${Object.keys(S.customers).length} customers. Gate codes and notes show up for the driver at each stop.</p></div>
-  <button class="btn primary" type="button" data-act="new-customer">${ic("plus")}Add customer</button></div>
+  <div class="row wrapflex"><button class="btn" type="button" data-act="import-open">${ic("upload")}Import spreadsheet</button><button class="btn primary" type="button" data-act="new-customer">${ic("plus")}Add customer</button></div></div>
   <div class="stack">
     <div class="search">${ic("search")}<input class="input" id="cust-search" type="search" placeholder="Search name, address or phone" value="${esc(custQuery)}" data-input="cust-search" aria-label="Search customers"></div>
     <div class="filters"><button type="button" data-act="cust-filter" data-f="all" aria-pressed="${custFilter==="all"}">All</button>${S.routeList.map(id => `<button type="button" data-act="cust-filter" data-f="${id}" aria-pressed="${custFilter===id}">${esc(R(id).name)}</button>`).join("")}</div>
@@ -1066,7 +1081,7 @@ function viewDrivers(){
       return `<div class="card pad stack">
         <div class="row between"><div class="row">${avatar(d, true)}<div><b style="font-size:16px">${esc(d.name)}${d.owner ? " <span class='chip neutral'>Owner</span>" : ""}</b><div class="muted" style="font-size:13.5px">${esc(d.phone)}</div></div></div>
         <button class="btn sm" type="button" data-act="edit-driver" data-id="${d.id}">${ic("pin")}Edit start</button></div>
-        <div class="infobox" style="background:var(--surface-2)">${ic("pin")}<div><div class="lbl muted">Start location</div><b>${esc(d.start.kind === "facility" ? "Facility" : d.start.address + ", " + d.start.city)}</b></div></div>
+        <div class="infobox" style="background:var(--surface-2)">${ic("pin")}<div><div class="lbl muted">Start location</div><b>${esc(d.start.kind === "facility" ? S.facility.name + ", " + S.facility.address : d.start.address + ", " + d.start.city)}</b></div></div>
         <div class="row wrapflex" style="gap:18px;font-size:13.5px">
           <span><b>Routes:</b> ${assigned.length ? assigned.map(rt => `<a class="link" href="#route-${rt.id}">${esc(rt.name)}</a>`).join(", ") : '<span class="muted">None today</span>'}</span>
           <span><b class="num">${fmtMi(miles)}</b> mi in the last 7 days</span>
@@ -1084,7 +1099,7 @@ function driverForm(d){
   <div class="drawer-head"><h2>${esc(firstName(d.name))}'s start location</h2><button class="btn ghost sm" type="button" data-act="close-drawer" aria-label="Close">${ic("x")}</button></div>
   <form class="drawer-body" data-form="driver" data-id="${d.id}" id="drv-form">
     <div class="stack">
-      <label class="radio-row"><input type="radio" name="kind" value="facility" ${d.start.kind==="facility"?"checked":""}><div><b>Starts at the facility</b><div class="hint">Keeps their buckets at your location</div></div></label>
+      <label class="radio-row"><input type="radio" name="kind" value="facility" ${d.start.kind==="facility"?"checked":""}><div><b>Starts at ${esc(S.facility.name)}</b><div class="hint">${esc(S.facility.address)} · keeps their buckets at your location</div></div></label>
       <label class="radio-row"><input type="radio" name="kind" value="home" ${d.start.kind==="home"?"checked":""}><div><b>Starts from home</b><div class="hint">Keeps their buckets with them</div></div></label>
     </div>
     <div class="form-grid">
@@ -1136,11 +1151,20 @@ function viewTexts(){
 }
 
 /* ---------- driver ---------- */
-function driverRoute(){ const d = S.driverId; if(!d) return null; return S.routeList.map(R).find(rt => rt.driverId === d) || null; }
+function driverRoutes(){ const d = S.driverId; return d ? S.routeList.map(R).filter(rt => rt.driverId === d) : []; }
+function driverRoute(){
+  const list = driverRoutes(); if(!list.length || S.driverRouteId === "__pick") return null;
+  return list.find(rt => rt.id === S.driverRouteId) || list.find(rt => rt.status === "active") || (list.length === 1 ? list[0] : null);
+}
+function driverRoutePicker(list){
+  return `<div><p class="eyebrow">${list.length} routes assigned to you</p><h1>Which route are you running?</h1></div>
+  <div class="driver-pick">${list.map(rt => { const c = routeCounts(rt); return `<button type="button" class="card" data-act="driver-pick-route" data-id="${rt.id}"><div class="who"><b>${esc(rt.name)}</b><span class="sub">${c.total} stop${c.total === 1 ? "" : "s"} · ${fmtMi(routeMiles(S, rt))} mi${c.new ? " · " + c.new + " new bucket" + (c.new > 1 ? "s" : "") : ""}</span>${routeStatusPill(rt)}</div>${ic("chev","go")}</button>`; }).join("")}</div>`;
+}
 function viewDriver(){
   if(!S.driverId || !S.drivers[S.driverId]) return driverSelect();
-  const rt = driverRoute(), d = S.drivers[S.driverId];
-  const head = `<div class="row between"><div class="row">${avatar(d)}<div><b>${esc(d.name)}</b><div class="muted" style="font-size:12.5px">Signed in</div></div></div><button class="btn sm" type="button" data-act="driver-logout">Switch driver</button></div>`;
+  const list = driverRoutes(), rt = driverRoute(), d = S.drivers[S.driverId];
+  const head = `<div class="row between wrapflex"><div class="row">${avatar(d)}<div><b>${esc(d.name)}</b><div class="muted" style="font-size:12.5px">Signed in</div></div></div><div class="row" style="gap:6px">${list.length > 1 && rt ? `<button class="btn sm" type="button" data-act="driver-routes">${ic("routes")}My routes</button>` : ""}<button class="btn sm" type="button" data-act="driver-logout">Switch driver</button></div></div>`;
+  if(list.length && !rt) return head + driverRoutePicker(list);
   if(!rt) return head + `<div class="card empty">No route is assigned to you today. Yusuf can assign one from the Routes page.</div>`;
   if(rt.status === "ready") return head + driverPre(rt);
   if(rt.status === "active") return head + driverActive(rt);
@@ -1150,8 +1174,8 @@ function driverSelect(){
   return `
   <div><p class="eyebrow">Driver app</p><h1>Who's driving today?</h1><p class="muted" style="margin-top:4px">Each driver gets their own login. In this demo, just tap a name.</p></div>
   <div class="driver-pick">
-    ${Object.values(S.drivers).map(d => { const rt = S.routeList.map(R).find(r => r.driverId === d.id); const c = rt ? routeCounts(rt) : null;
-      return `<button type="button" class="card" data-act="driver-login" data-id="${d.id}">${avatar(d, true)}<div class="who"><b>${esc(d.name)}${d.owner?" (owner)":""}</b><span class="sub">${rt ? esc(rt.name) + " · " + c.total + " stops" : "No route today"}</span>${rt ? routeStatusPill(rt) : ""}</div>${ic("chev","go")}</button>`; }).join("")}
+    ${Object.values(S.drivers).map(d => { const rts = S.routeList.map(R).filter(r => r.driverId === d.id); const rt = rts.find(r => r.status === "active") || rts[0]; const c = rt ? routeCounts(rt) : null;
+      return `<button type="button" class="card" data-act="driver-login" data-id="${d.id}">${avatar(d, true)}<div class="who"><b>${esc(d.name)}${d.owner?" (owner)":""}</b><span class="sub">${rts.length > 1 ? rts.length + " routes · " + esc(rts.map(r => r.name).join(", ")) : rt ? esc(rt.name) + " · " + c.total + " stop" + (c.total === 1 ? "" : "s") : "No route today"}</span>${rt ? routeStatusPill(rt) : ""}</div>${ic("chev","go")}</button>`; }).join("")}
   </div>
   <div class="card howto"><h3>Try it as Marcus</h3><ol><li>See the new-bucket alert and load the buckets</li><li>Start the route and take a photo at each stop</li><li>Dump at the facility and end the route</li><li>Switch to Owner to see the texts and the route confirmation</li></ol></div>`;
 }
@@ -1161,7 +1185,7 @@ function driverPre(rt){
   const finals = rt.stops.map((x, i) => ({...x, i})).filter(x => x.type === "final");
   const needs = drops.length > 0;
   return `
-  <div><p class="eyebrow">Today's route</p><h1>${esc(rt.name)}</h1><p class="muted" style="margin-top:4px">${c.total} stops · ${fmtMi(routeMiles(S, rt))} mi · ${esc(startLabel(S, rt.driverId).replace(/^.*'s home · |^Your home · /, "From home · "))}</p></div>
+  <div><p class="eyebrow">Today's route</p><h1>${esc(rt.name)}</h1><p class="muted" style="margin-top:4px">${c.total} stop${c.total === 1 ? "" : "s"} · ${fmtMi(routeMiles(S, rt))} mi · ${esc(startLabel(S, rt.driverId).replace(/^.*'s home · |^Your home · /, "From home · "))}</p></div>
   ${needs ? `<div class="alert-buckets" role="alert">
     <div class="big">${ic("bucket")}<div><h2>Grab ${drops.length} new bucket${drops.length>1?"s":""} before you leave</h2><p style="font-size:14px;font-weight:600">For new customers on today's route</p></div></div>
     <ul>${drops.map(x => { const cu = S.customers[x.cid]; return `<li><span class="chip new">Stop ${x.i+1}</span>${esc(cu.name)} · ${esc(cu.address)}</li>`; }).join("")}</ul>
@@ -1169,7 +1193,7 @@ function driverPre(rt){
   </div>` : ""}
   ${finals.length ? `<div class="final-note">${ic("flag")}<div>${finals.length} final pickup${finals.length>1?"s":""} today: ${finals.map(x => "stop " + (x.i+1)).join(", ")}. Take the bucket and don't leave a clean one.</div></div>` : ""}
   <div class="card pad">${routeMap(rt, {h:340})}<div class="map-legend"><span><i></i>Pickup</span><span><i class="n"></i>New bucket</span><span><i class="f"></i>Final pickup</span></div></div>
-  <div class="card" style="overflow:hidden"><ol class="stops">${rt.stops.map((x, i) => driverStopRow(rt, x, i)).join("")}<li class="stop endpoint"><span class="n">F</span><div><div class="who">Facility</div><div class="addr">Dump everything at the end of the day</div></div><div></div></li></ol></div>
+  <div class="card" style="overflow:hidden"><ol class="stops">${rt.stops.map((x, i) => driverStopRow(rt, x, i)).join("")}<li class="stop endpoint"><span class="n">F</span><div><div class="who">${esc(S.facility.name)}</div><div class="addr">Dump everything at the end of the day</div></div><div></div></li></ol></div>
   <div class="dock" id="dock"><div class="dock-inner">
     ${needs && !rt.bucketsLoaded ? `<div class="hint">Check off the new buckets first</div>` : ""}
     <button class="btn primary big block" type="button" data-act="start-route" data-id="${rt.id}" ${needs && !rt.bucketsLoaded ? "disabled" : ""}>${ic("nav")}Start route</button>
@@ -1195,9 +1219,9 @@ function driverActive(rt){
   if(idx === -1){
     return top + `
     <div class="now-card"><div class="now-type regular">${ic("factory")}LAST STOP</div><div class="now-top">
-      <div class="now-name">Dump at the facility</div><div class="now-addr">${esc(S.facility.address)}</div>
+      <div class="now-name">Dump at ${esc(S.facility.name)}</div><div class="now-addr">${esc(S.facility.address + ", " + S.facility.city)}</div>
       <a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(S.facility.lat + "," + S.facility.lng)}" target="_blank" rel="noopener">${ic("nav")}Navigate</a>
-      <label class="check-row" style="border-color:var(--line)"><input type="checkbox" data-change="facility-done" data-id="${rt.id}" ${rt.facilityDone?"checked":""}>I dumped everything at the facility</label>
+      <label class="check-row" style="border-color:var(--line)"><input type="checkbox" data-change="facility-done" data-id="${rt.id}" ${rt.facilityDone?"checked":""}>I dumped everything at ${esc(S.facility.short || "the facility")}</label>
     </div></div>
     <div class="dock" id="dock"><div class="dock-inner">${!rt.facilityDone ? `<div class="hint">Check off the facility to end your route</div>` : ""}
       <button class="btn primary big block" type="button" data-act="end-route" data-id="${rt.id}" ${rt.facilityDone?"":"disabled"}>${ic("check")}End route</button></div></div>`;
@@ -1224,7 +1248,7 @@ function driverActive(rt){
     </div>
   </div>
   <button class="btn ghost" type="button" data-act="skip-stop" data-id="${rt.id}" data-cid="${x.cid}" style="align-self:center;color:var(--clay)">${ic("alert")}Couldn't service this stop</button>
-  ${upcoming.length ? `<section class="stack"><h3>Up next</h3><div class="card up-next" style="overflow:hidden"><ol class="stops">${upcoming.map(o => driverStopRow(rt, o.s, o.i)).join("")}<li class="stop endpoint"><span class="n">F</span><div><div class="who">Facility</div><div class="addr">Dump everything, then end the route</div></div><div></div></li></ol></div><p class="kbd-tip">Tap a stop to do it next.</p></section>` : ""}
+  ${upcoming.length ? `<section class="stack"><h3>Up next</h3><div class="card up-next" style="overflow:hidden"><ol class="stops">${upcoming.map(o => driverStopRow(rt, o.s, o.i)).join("")}<li class="stop endpoint"><span class="n">F</span><div><div class="who">${esc(S.facility.name)}</div><div class="addr">Dump everything, then end the route</div></div><div></div></li></ol></div><p class="kbd-tip">Tap a stop to do it next.</p></section>` : ""}
   ${doneList.length ? `<section class="stack"><h3>Done</h3><div class="card" style="overflow:hidden"><ol class="stops">${doneList.map(o => driverStopRow(rt, o.s, o.i)).join("")}</ol></div></section>` : ""}
   <div class="dock" id="dock"><div class="dock-inner">
     <button class="btn primary big block" type="button" data-act="complete-stop" data-id="${rt.id}" data-cid="${x.cid}" ${pp?"":"disabled"}>${ic("check")}Mark ${x.type==="new"?"dropped off":"serviced"} & text customer</button>
@@ -1240,6 +1264,185 @@ function driverDone(rt){
   <div class="stats"><div class="stat"><b class="num">${c.done}/${c.total}</b><span>Serviced</span></div><div class="stat"><b class="num">${fmtMi(routeMiles(S, rt))}</b><span>Miles</span></div><div class="stat"><b class="num">${mins >= 60 ? Math.floor(mins/60) + "h " + (mins%60) + "m" : mins + "m"}</b><span>Time on route</span></div><div class="stat"><b class="num">${c.issue}</b><span>Couldn't service</span></div></div>
   ${photos.length ? `<div class="card pad stack"><h3>Your photos</h3><div class="photo-grid">${photos.map(p => `<img src="${p.src}" alt="${esc(p.cap)}" data-act="zoom" data-cap="${esc(p.cap)}">`).join("")}</div></div>` : ""}
   <div class="row wrapflex" style="justify-content:center"><a class="btn primary" href="#today">${ic("today")}See it as Yusuf</a><button class="btn" type="button" data-act="driver-logout">Switch driver</button></div>`;
+}
+
+
+/* ---------- spreadsheet import ---------- */
+let IMP = null;
+const IMPORT_FIELDS = [
+  ["name","Name",["name","customer","customer name","full name","client","client name","contact","contact name"]],
+  ["first","First name",["first name","first","firstname"]],
+  ["last","Last name",["last name","last","lastname","surname"]],
+  ["address","Address",["address","street","street address","address 1","address line 1","addr","service address","pickup address"]],
+  ["city","City",["city","town"]],
+  ["zip","ZIP",["zip","zip code","zipcode","postal code","postcode"]],
+  ["phone","Phone",["phone","mobile","cell","phone number","mobile number","cell phone","telephone"]],
+  ["gate","Gate code",["gate","gate code","access code","gate access","code"]],
+  ["notes","Notes",["notes","note","instructions","driver notes","delivery notes","comments","driver instructions"]],
+  ["route","Route",["route","route name","area","zone"]],
+  ["type","Stop type",["stop type","type","service type","action"]],
+  ["freq","Schedule",["schedule","frequency","pickup frequency","plan","service frequency"]]
+];
+const normH = h => String(h || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const addrKey = a => String(a || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+function detectCols(headers){
+  const cols = {}, H = headers.map(normH), used = new Set();
+  IMPORT_FIELDS.forEach(([key,, syn]) => { const i = H.findIndex((h, idx) => !used.has(idx) && syn.includes(h)); if(i >= 0){ cols[key] = i; used.add(i); } });
+  const loose = (key, word) => { if(cols[key] == null){ const i = H.findIndex((h, idx) => !used.has(idx) && h.includes(word)); if(i >= 0){ cols[key] = i; used.add(i); } } };
+  loose("address", "address"); loose("phone", "phone"); loose("gate", "gate"); loose("notes", "note");
+  if(cols.first == null) loose("name", "name");
+  return cols;
+}
+function rowToRec(r, cols){
+  const g = k => cols[k] != null ? String(r[cols[k]] ?? "").trim() : "";
+  const name = g("name") || [g("first"), g("last")].filter(Boolean).join(" ");
+  let address = g("address"), city = g("city");
+  if(!city && address.includes(",")){ const parts = address.split(","); address = parts.shift().trim(); city = parts.join(",").trim(); }
+  const zip = g("zip"); if(zip && !city.includes(zip)) city = (city ? city + " " : "") + zip;
+  const t = g("type").toLowerCase(), f = g("freq").toLowerCase();
+  const type = /final|cancel|last|remove/.test(t) ? "final" : /new|drop|first/.test(t) ? "new" : "regular";
+  const freq = /other|bi|two|2/.test(f) ? "Every other week" : "Weekly";
+  return {name, address, city: city || "Las Vegas", phone: g("phone"), gate: g("gate"), notes: g("notes"), route: g("route"), type, freq, ok: !!(name && address)};
+}
+function parseDelimited(text){
+  text = String(text || "").replace(/^﻿/, "");
+  const first = text.split(/\r?\n/)[0] || "";
+  const count = c => first.split(c).length;
+  const delim = count("\t") > count(",") ? "\t" : count(";") > count(",") ? ";" : ",";
+  const rows = []; let row = [], cur = "", q = false;
+  for(let i = 0; i < text.length; i++){
+    const ch = text[i];
+    if(q){ if(ch === '"'){ if(text[i+1] === '"'){ cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if(ch === '"' && cur === "") q = true;
+    else if(ch === delim){ row.push(cur); cur = ""; }
+    else if(ch === "\n" || ch === "\r"){ if(ch === "\r" && text[i+1] === "\n") i++; row.push(cur); rows.push(row); row = []; cur = ""; }
+    else cur += ch;
+  }
+  if(cur !== "" || row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+function loadXLSX(){
+  if(window.XLSX) return Promise.resolve(window.XLSX);
+  return new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; sc.onload = () => window.XLSX ? res(window.XLSX) : rej(new Error("xlsx")); sc.onerror = () => rej(new Error("xlsx")); document.head.appendChild(sc); });
+}
+const csvCell = v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+function downloadText(name, text, type){
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+const IMPORT_HEAD = ["Name","Address","City","Phone","Gate code","Notes","Route","Stop type","Schedule"];
+const SAMPLE_SHEET = [IMPORT_HEAD,
+  ["Hailey Vance","4213 Lone Mountain Vista Dr","North Las Vegas","(702) 555-0201","","Bucket by the garage door","North Las Vegas","Regular pickup","Weekly"],
+  ["Andre Pham","5530 Desert Primrose Ln","North Las Vegas","(702) 555-0202","#2290","New customer","North Las Vegas","New bucket drop-off","Weekly"],
+  ["Jillian Ruiz","3906 Painted Mesa Ct","North Las Vegas","(702) 555-0203","","Side gate latch sticks, lift and pull","North Las Vegas","Regular pickup","Every other week"],
+  ["Mateo Silva","6122 Copper Sage St","North Las Vegas","(702) 555-0204","Call box 318","","North Las Vegas","Regular pickup","Weekly"],
+  ["Renee Carter","4708 Ironwood Ridge Ave","North Las Vegas","(702) 555-0205","","First bucket, leave it on the porch","North Las Vegas","New bucket drop-off","Weekly"],
+  ["Owen Brooks","5891 Starlight Peak Way","North Las Vegas","(702) 555-0206","#7741","Dog in the yard, bucket is on the porch","North Las Vegas","Final pickup","Weekly"],
+  ["Priyanka Rao","3317 Saguaro Shadow Ln","North Las Vegas","(702) 555-0207","","","North Las Vegas","Regular pickup","Every other week"],
+  ["Luis Navarro","6004 Red Cliff Bend Dr","North Las Vegas","(702) 555-0208","","Leave the clean bucket behind the planter","North Las Vegas","Regular pickup","Weekly"],
+  ["Grace Whitfield","4450 Juniper Hollow Ct","North Las Vegas","(702) 555-0209","#1180","","North Las Vegas","Regular pickup","Weekly"],
+  ["Tony Mercado","5216 Desert Falcon St","North Las Vegas","(702) 555-0210","","Apartment 3, bucket by the mailroom","North Las Vegas","Regular pickup","Weekly"]
+];
+const AREA_CENTERS = {"north las vegas":[36.268,-115.14], "aliante":[36.285,-115.165], "centennial":[36.272,-115.26], "summerlin":[36.171,-115.318], "henderson":[36.033,-115.079], "green valley":[36.035,-115.08], "spring valley":[36.086,-115.262], "southwest":[36.05,-115.26], "enterprise":[36.02,-115.2], "downtown":[36.168,-115.14], "silverado":[36.01,-115.15], "mountains edge":[36.01,-115.28], "southern highlands":[35.997,-115.205], "sunrise":[36.16,-115.05], "east":[36.14,-115.07]};
+function placeFor(rt, seedStr){
+  const h = [...String(seedStr)].reduce((a, c) => (a*31 + c.charCodeAt(0)) | 0, 7); const r = rng(h);
+  const pts = rt.stops.map(x => S.customers[x.cid]).filter(Boolean);
+  let c;
+  if(pts.length) c = [pts.reduce((a, p) => a + p.lat, 0)/pts.length, pts.reduce((a, p) => a + p.lng, 0)/pts.length];
+  else { const n = rt.name.toLowerCase(); const k = Object.keys(AREA_CENTERS).find(k => n.includes(k)); c = k ? AREA_CENTERS[k] : [36.15 + (r()-0.5)*0.1, -115.17 + (r()-0.5)*0.14]; }
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  return {lat: clamp(c[0] + (r()-0.5)*0.032, 36.0, 36.29), lng: clamp(c[1] + (r()-0.5)*0.048, -115.37, -115.02)};
+}
+function setImportRows(rows, source){
+  rows = (rows || []).map(r => (r || []).map(v => String(v ?? "").trim())).filter(r => r.some(Boolean));
+  if(rows.length < 2){ IMP.rows = null; IMP.error = "No rows found. Make sure the first row has column names like Name and Address, with one customer per row below it."; return renderImport(); }
+  const cols = detectCols(rows[0]);
+  if(cols.address == null || (cols.name == null && cols.first == null)){ IMP.rows = null; IMP.error = "There's no " + (cols.address == null ? "Address" : "Name") + " column in " + source + ". Check that the first row has column names like Name and Address."; return renderImport(); }
+  IMP.error = null; IMP.source = source; IMP.cols = cols; IMP.rows = rows.slice(1); IMP.recs = IMP.rows.map(r => rowToRec(r, cols));
+  renderImport();
+}
+function renderImport(){ const d = $("#drawer"); d.innerHTML = importView(); const b = d.querySelector(".drawer-body"); if(b) b.scrollTop = 0; }
+function importView(){
+  const head = `<div class="drawer-head"><h2>Import from a spreadsheet</h2><button class="btn ghost sm" type="button" data-act="close-drawer" aria-label="Close">${ic("x")}</button></div>`;
+  if(!IMP.rows){
+    return head + `<div class="drawer-body">
+      <p>Add customers from Excel, a CSV file, or Google Sheets. One row per customer, with column names in the first row.</p>
+      <button type="button" class="upload-box" data-act="import-choose">${ic("upload")}<b>Choose an Excel or CSV file</b><span class="hint">.xlsx, .xls or .csv</span></button>
+      <input type="file" id="import-file" data-change="import-file" accept=".csv,.tsv,.txt,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden>
+      <div class="or-line">or</div>
+      <div class="field"><label for="import-paste">Paste from Google Sheets</label><textarea class="textarea" id="import-paste" rows="4" placeholder="In Google Sheets, select the rows including the header row, copy, and paste here"></textarea>
+        <button class="btn" type="button" data-act="import-paste" style="align-self:flex-start">${ic("sheet")}Read pasted rows</button></div>
+      ${IMP.error ? `<div class="final-note">${ic("alert")}<div>${esc(IMP.error)}</div></div>` : ""}
+      <div class="infobox" style="background:var(--surface-2)">${ic("note")}<div><div class="lbl muted">Columns it looks for</div><div style="font-size:13.5px">Name, Address, City, Phone, Gate code, Notes, Route, Stop type, Schedule. Only Name and Address are required, and the order doesn't matter.</div></div></div>
+      <div class="row wrapflex"><button class="btn" type="button" data-act="import-template">${ic("download")}Download template</button><button class="btn" type="button" data-act="import-sample">Try a sample sheet</button></div>
+      <p class="hint">This demo keeps everything on this device only. Your real customer list goes in once the secure version is built.</p>
+    </div>
+    <div class="drawer-foot"><button class="btn" type="button" data-act="close-drawer">Cancel</button></div>`;
+  }
+  const recs = IMP.recs, good = recs.filter(r => r.ok), bad = recs.length - good.length;
+  const existing = new Set(Object.values(S.customers).map(c => addrKey(c.address)));
+  const updates = good.filter(r => existing.has(addrKey(r.address))).length;
+  const useCol = IMP.cols.route != null && good.some(r => r.route);
+  const known = new Set(S.routeList.map(id => R(id).name.toLowerCase().trim()));
+  const newRoutes = useCol ? [...new Set(good.map(r => r.route).filter(n => n && !known.has(n.toLowerCase().trim())))] : [];
+  const needFallback = !useCol || good.some(r => !r.route);
+  const matched = IMPORT_FIELDS.filter(([k]) => IMP.cols[k] != null).map(([, label]) => label);
+  const nTypes = {new: good.filter(r => r.type === "new").length, final: good.filter(r => r.type === "final").length};
+  const routeSelect = `<select class="select" id="imp-target" data-change="imp-target">${S.routeList.map(id => `<option value="${id}" ${IMP.target === id ? "selected" : ""}>${esc(R(id).name)}</option>`).join("")}<option value="__new" ${IMP.target === "__new" ? "selected" : ""}>New route...</option></select>`;
+  const newRouteFields = IMP.target === "__new" ? `<div class="form-grid"><div class="field"><label for="imp-newname">New route name</label><input class="input" id="imp-newname" data-input="imp-newname" value="${esc(IMP.newName)}" placeholder="e.g. North Las Vegas"></div><div class="field"><label for="imp-driver">Driver</label><select class="select" id="imp-driver" data-change="imp-driver">${Object.values(S.drivers).map(d => `<option value="${d.id}" ${IMP.newDriver === d.id ? "selected" : ""}>${esc(d.owner ? d.name + " (you)" : d.name)}</option>`).join("")}</select></div></div>` : "";
+  return head + `<div class="drawer-body">
+    <div class="row between wrapflex"><div class="row" style="gap:8px">${ic("sheet")}<b>${esc(IMP.source)}</b></div><button class="link" type="button" data-act="import-reset">Choose a different file</button></div>
+    <div class="col-chips">${matched.map(m => `<span class="chip ok">${ic("check")}${esc(m)}</span>`).join("")}</div>
+    <div class="stack" style="gap:6px">
+      <b style="font-size:16px">${good.length} customer${good.length === 1 ? "" : "s"} ready to import</b>
+      ${updates ? `<span class="muted" style="font-size:13.5px">${updates} already on your list. Their details will be updated, not duplicated.</span>` : ""}
+      ${nTypes.new || nTypes.final ? `<div class="row wrapflex" style="gap:6px">${nTypes.new ? `<span class="chip new">${ic("bucket")}${nTypes.new} new bucket drop-off${nTypes.new > 1 ? "s" : ""}</span>` : ""}${nTypes.final ? `<span class="chip final">${ic("flag")}${nTypes.final} final pickup${nTypes.final > 1 ? "s" : ""}</span>` : ""}</div>` : ""}
+      ${bad ? `<span style="color:var(--clay);font-size:13.5px;font-weight:600">${bad} row${bad > 1 ? "s" : ""} skipped because ${bad > 1 ? "they're" : "it's"} missing a name or address</span>` : ""}
+    </div>
+    ${useCol ? `<div class="infobox" style="background:var(--surface-2)">${ic("routes")}<div style="font-size:13.5px">Stops go on the route named in your Route column.${newRoutes.length ? ` <b>${esc(newRoutes.join(", "))}</b> ${newRoutes.length > 1 ? "are new routes" : "is a new route"} and will be assigned to you, so you can pick the driver after.` : ""}</div></div>` : ""}
+    ${needFallback ? `<div class="field"><label for="imp-target">${useCol ? "Rows with no route go to" : "Add these stops to"}</label>${routeSelect}</div>${newRouteFields}` : ""}
+    <div class="table-wrap"><table class="imp-table"><thead><tr><th>Name</th><th>Address</th><th>Gate code</th><th>Notes</th>${useCol ? "<th>Route</th>" : ""}<th>Stop type</th></tr></thead><tbody>
+      ${good.slice(0, 8).map(r => `<tr><td><b>${esc(r.name)}</b>${r.phone ? `<div class="muted">${esc(r.phone)}</div>` : ""}</td><td>${esc(r.address)}<div class="muted">${esc(r.city)}</div></td><td class="mono">${r.gate ? esc(r.gate) : '<span class="muted">None</span>'}</td><td>${r.notes ? esc(r.notes) : '<span class="muted">None</span>'}</td>${useCol ? `<td>${esc(r.route || "")}</td>` : ""}<td>${typeChip(r.type) || '<span class="muted">Pickup</span>'}</td></tr>`).join("")}
+    </tbody></table></div>
+    ${good.length > 8 ? `<p class="hint">and ${good.length - 8} more</p>` : ""}
+    <p class="hint">In the real app every address is placed on the map automatically. In this demo, new stops are placed in their route's area.</p>
+  </div>
+  <div class="drawer-foot"><button class="btn" type="button" data-act="close-drawer">Cancel</button><button class="btn primary" type="button" data-act="import-run" ${good.length ? "" : "disabled"}>${ic("upload")}Import ${good.length} customer${good.length === 1 ? "" : "s"}</button></div>`;
+}
+function runImport(){
+  const good = IMP.recs.filter(r => r.ok); if(!good.length) return;
+  const useCol = IMP.cols.route != null && good.some(r => r.route);
+  const needFallback = !useCol || good.some(r => !r.route);
+  if(needFallback && IMP.target === "__new" && !IMP.newName.trim()){ toast("Name the new route", "Type a name for the route these stops go on.", "alert"); const i = $("#imp-newname"); if(i) i.focus(); return; }
+  const byAddr = new Map(Object.values(S.customers).map(c => [addrKey(c.address), c]));
+  const known = new Map(S.routeList.map(id => [R(id).name.toLowerCase().trim(), id]));
+  const created = [], touched = new Set(); let added = 0, updated = 0;
+  const makeRoute = (name, driverId) => { const id = "r" + uid(); S.routes[id] = {id, name, driverId, status:"ready", bucketsLoaded:false, facilityDone:false, startedAt:null, endedAt:null, stops:[]}; S.routeList.push(id); known.set(name.toLowerCase().trim(), id); created.push(name); return id; };
+  let fallback = IMP.target;
+  if(needFallback && IMP.target === "__new") fallback = makeRoute(IMP.newName.trim(), IMP.newDriver || "d0");
+  good.forEach(r => {
+    const rid = useCol && r.route ? (known.get(r.route.toLowerCase().trim()) || makeRoute(r.route, "d0")) : fallback;
+    const rt = R(rid); const ex = byAddr.get(addrKey(r.address));
+    if(ex){
+      ex.name = r.name || ex.name; ex.city = r.city || ex.city; if(r.phone) ex.phone = r.phone; if(r.gate) ex.gate = r.gate; if(r.notes) ex.notes = r.notes; ex.freq = r.freq;
+      const old = R(ex.routeId); const st = old && old.stops.find(x => x.cid === ex.id);
+      if(st && st.status === "pending"){
+        st.type = r.type;
+        if(old.id !== rid && useCol && r.route){ old.stops = old.stops.filter(x => x.cid !== ex.id); touched.add(old.id); ex.routeId = rid; rt.stops.push(st); touched.add(rid); }
+      }
+      updated++; return;
+    }
+    const id = "c" + uid(); const pos = placeFor(rt, r.address + r.name);
+    S.customers[id] = {id, name:r.name, phone:r.phone, address:r.address, city:r.city, gate:r.gate, notes:r.notes, freq:r.freq, routeId:rid, lat:pos.lat, lng:pos.lng};
+    rt.stops.push({cid:id, type:r.type, status:"pending", photo:null, doneAt:null, issue:null});
+    byAddr.set(addrKey(r.address), S.customers[id]); touched.add(rid); added++;
+  });
+  touched.forEach(id => optimizeRoute(S, R(id)));
+  save(); closeDrawer();
+  const msg = [added ? added + " added" : "", updated ? updated + " updated" : "", created.length ? "new route: " + created.join(", ") : ""].filter(Boolean).join(" · ");
+  const one = touched.size === 1 ? [...touched][0] : null; IMP = null;
+  if(one) location.hash = "#route-" + one; else render();
+  toast("Spreadsheet imported", msg, "check");
 }
 
 /* ---------- toasts / drawer / lightbox ---------- */
@@ -1261,6 +1464,13 @@ function zoom(src, cap){
 function reoptimizeIfReady(rt){ if(rt.status === "ready") optimizeRoute(S, rt); else optimizeRoute(S, rt); }
 function sendText(kind, cid, driver, photo){ const t = makeText(S, kind, S.customers[cid], driver, Date.now(), photo); S.texts.push(t); return t; }
 const A = {
+  "import-open"(el){ IMP = {rows:null, error:null, target: (el && el.dataset.route) || S.routeList[0], newName:"", newDriver:"d0"}; openDrawer(importView()); },
+  "import-choose"(){ const f = $("#import-file"); if(f) f.click(); },
+  "import-paste"(){ const t = $("#import-paste"); if(!t || !t.value.trim()){ toast("Nothing pasted yet", "Copy the rows from Google Sheets, including the header row, then paste them in the box.", "alert"); return; } setImportRows(parseDelimited(t.value), "your pasted rows"); },
+  "import-sample"(){ setImportRows(SAMPLE_SHEET, "Sample sheet (North Las Vegas)"); },
+  "import-template"(){ downloadText("lv-compost-customer-template.csv", [IMPORT_HEAD, ["Jane Smith","1234 Example St","Las Vegas","(702) 555-0100","#1234","Bucket by the side gate","Summerlin","Regular pickup","Weekly"], ["John Doe","5678 Sample Ave","Henderson","(702) 555-0101","","First bucket","Henderson & Green Valley","New bucket drop-off","Every other week"]].map(r => r.map(csvCell).join(",")).join("\n"), "text/csv"); toast("Template downloaded", "Fill it in with Excel or Google Sheets, then upload it here.", "download"); },
+  "import-reset"(){ IMP.rows = null; IMP.recs = null; IMP.error = null; renderImport(); },
+  "import-run"(){ runImport(); },
   reset(){ try{ localStorage.removeItem(KEY); }catch(e){} S = seedState(); pendingPhoto = null; custQuery = ""; custFilter = "all"; closeDrawer(); location.hash = "#today"; render(); toast("Demo reset", "Everything is back to the starting sample data.", "refresh"); },
   "scroll-to"(el){ const t = document.getElementById(el.dataset.target); if(t) t.scrollIntoView({behavior:"smooth", block:"start"}); },
   role(el){ location.hash = el.dataset.role === "driver" ? "#driver" : "#today"; },
@@ -1284,7 +1494,7 @@ const A = {
     openDrawer(`<div class="drawer-head"><h2>Add stops to ${esc(rt.name)}</h2><button class="btn ghost sm" type="button" data-act="close-drawer" aria-label="Close">${ic("x")}</button></div>
     <form class="drawer-body" data-form="add-stops" data-id="${rt.id}" id="as-form"><p class="hint">Customers move from their current route. The order is re-planned for the shortest drive${rt.status!=="ready"?" (only stops not done yet)":""}.</p>
     <div class="picker">${options.map(c => { const o = S.routes[c.routeId]; const lock = o && o.status !== "ready"; return `<label><input type="checkbox" name="stops" value="${c.id}" ${lock?"disabled":""}><div><div>${esc(c.name)}</div><div class="sub">${esc(c.address)} · ${o?esc(o.name):"No route"}${lock?" (underway)":""}</div></div></label>`; }).join("")}</div>
-    <button class="btn" type="button" data-act="new-customer" data-route="${rt.id}">${ic("plus")}New customer instead</button></form>
+    <div class="row wrapflex"><button class="btn" type="button" data-act="new-customer" data-route="${rt.id}">${ic("plus")}New customer instead</button><button class="btn" type="button" data-act="import-open" data-route="${rt.id}">${ic("upload")}Import from a spreadsheet</button></div></form>
     <div class="drawer-foot"><button class="btn" type="button" data-act="close-drawer">Cancel</button><button class="btn primary" type="submit" form="as-form">Add stops</button></div>`);
   },
   "edit-customer"(el, e){ if(e) e.stopPropagation(); const c = S.customers[el.dataset.cid]; openDrawer(customerForm(c, false)); },
@@ -1320,8 +1530,10 @@ const A = {
     S.texts.push({id:uid(), kind:"reminder-batch", at:Date.now(), count:n, body: fill(S.settings.templates.reminder, {first_name:"{first name}"})});
     save(); render(); toast("Reminders sent", n + " customers got tonight's pickup reminder (demo).");
   },
-  "driver-login"(el){ S.driverId = el.dataset.id; save(); render(); window.scrollTo(0,0); },
-  "driver-logout"(){ S.driverId = null; pendingPhoto = null; save(); location.hash = "#driver"; render(); window.scrollTo(0,0); },
+  "driver-pick-route"(el){ S.driverRouteId = el.dataset.id; pendingPhoto = null; save(); render(); window.scrollTo(0,0); },
+  "driver-routes"(){ S.driverRouteId = "__pick"; pendingPhoto = null; save(); render(); window.scrollTo(0,0); },
+  "driver-login"(el){ S.driverId = el.dataset.id; S.driverRouteId = null; save(); render(); window.scrollTo(0,0); },
+  "driver-logout"(){ S.driverId = null; S.driverRouteId = null; pendingPhoto = null; save(); location.hash = "#driver"; render(); window.scrollTo(0,0); },
   "start-route"(el){
     const rt = R(el.dataset.id); const c = routeCounts(rt);
     if(c.new && !rt.bucketsLoaded){ toast("Load the new buckets first", "Check them off at the top.", "alert"); return; }
@@ -1367,11 +1579,23 @@ const A = {
     const c = routeCounts(rt), drv = S.drivers[rt.driverId];
     const livePhotos = rt.stops.filter(x => x.photo).map(x => ({photo: x.photo, cid: x.cid, at: x.doneAt}));
     S.confirmations.push({id:uid(), routeId:rt.id, routeName:rt.name, driverId:rt.driverId, date:Date.now(), endedAt:rt.endedAt, total:c.total, ok:c.done, issues:c.issue, miles: Math.round(routeMiles(S, rt)*10)/10, livePhotos: livePhotos.length > 24 ? livePhotos.slice(0, 24) : livePhotos});
-    S.texts.push({id:uid(), kind:"owner", at:Date.now(), body: `${firstName(drv.name)} finished ${rt.name}: ${c.done} of ${c.total} serviced${c.issue ? ", " + c.issue + " couldn't be serviced" : ""}, ${fmtMi(routeMiles(S, rt))} mi, dumped at the facility.`});
+    S.texts.push({id:uid(), kind:"owner", at:Date.now(), body: `${firstName(drv.name)} finished ${rt.name}: ${c.done} of ${c.total} serviced${c.issue ? ", " + c.issue + " couldn't be serviced" : ""}, ${fmtMi(routeMiles(S, rt))} mi, dumped at ${S.facility.short || "the facility"}.`});
     save(); render(); window.scrollTo(0,0);
   }
 };
 const CH = {
+  async "import-file"(el){
+    const f = el.files && el.files[0]; el.value = ""; if(!f || !IMP) return;
+    const ext = (f.name.split(".").pop() || "").toLowerCase();
+    try{
+      if(ext === "xlsx" || ext === "xls"){
+        const XLSX = await loadXLSX(); const wb = XLSX.read(await f.arrayBuffer(), {type:"array"});
+        setImportRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, raw:false, defval:""}), f.name);
+      } else setImportRows(parseDelimited(await f.text()), f.name);
+    }catch(err){ IMP.rows = null; IMP.error = "Couldn't read " + f.name + ". Save it as .xlsx or .csv and try again."; renderImport(); }
+  },
+  "imp-target"(el){ IMP.target = el.value; renderImport(); },
+  "imp-driver"(el){ IMP.newDriver = el.value; },
   assign(el){
     const rt = R(el.dataset.id); const before = routeMiles(S, rt);
     rt.driverId = el.value; optimizeRoute(S, rt); save(); render();
@@ -1463,6 +1687,7 @@ document.addEventListener("input", e => {
     const list = Object.values(S.customers).filter(c => (custFilter === "all" || c.routeId === custFilter) && (c.name + " " + c.address + " " + c.phone + " " + c.city).toLowerCase().includes(q)).sort((a, b) => a.name.localeCompare(b.name));
     $("#cust-list").innerHTML = custRows(list);
   }
+  if(el.dataset.input === "imp-newname" && IMP){ IMP.newName = el.value; }
   if(el.dataset.input === "tpl"){
     S.settings.templates[el.dataset.key] = el.value; save();
     const ex = S.customers[Object.keys(S.customers)[0]];
