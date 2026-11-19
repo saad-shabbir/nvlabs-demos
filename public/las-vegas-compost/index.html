@@ -1172,7 +1172,7 @@ function offsetPoint(o, miles, deg){
 }
 function testDriverId(){
   const cur = S.driverId;
-  if(cur && cur.startsWith("test-")) return cur;
+  if(cur && (cur.startsWith("test-") || /\(test\)/i.test((S.drivers[cur] || {}).name || ""))) return cur;
   const id = "test-" + (cur || "me");
   if(!S.drivers[id]){
     const base = cur && S.drivers[cur] ? firstName(S.drivers[cur].name) : "Test";
