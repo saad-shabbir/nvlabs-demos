@@ -1242,13 +1242,13 @@ function viewDriver(){
 }
 function driverSelect(){
   return `
-  <div><p class="eyebrow">Driver app</p><h1>Who's driving today?</h1><p class="muted" style="margin-top:4px">Each driver gets their own login. In this demo, just tap a name.</p></div>
+  <div><p class="eyebrow">Driver app</p><h1>Who's driving today?</h1><p class="muted" style="margin-top:4px">${LIVE ? "Tap a name to see the app as that driver." : "Each driver gets their own login. In this demo, just tap a name."}</p></div>
   <div class="driver-pick">
     ${Object.values(S.drivers).map(d => { const rts = S.routeList.map(R).filter(r => r.driverId === d.id); const rt = rts.find(r => r.status === "active") || rts[0]; const c = rt ? routeCounts(rt) : null;
       return `<button type="button" class="card" data-act="driver-login" data-id="${d.id}">${avatar(d, true)}<div class="who"><b>${esc(d.name)}${d.owner?" (owner)":""}</b><span class="sub">${rts.length > 1 ? rts.length + " routes · " + esc(rts.map(r => r.name).join(", ")) : rt ? esc(rt.name) + " · " + c.total + " stop" + (c.total === 1 ? "" : "s") : "No route today"}</span>${rt ? routeStatusPill(rt) : ""}</div>${ic("chev","go")}</button>`; }).join("")}
   </div>
   ${LIVE && canMakeTest() ? `<div class="card pad"><b>Want to test-drive?</b><div class="muted" style="font-size:13px;margin-top:2px">Tap a driver with "(test)" in the name, then press Test route near me. It makes fake TEST stops around where you are.</div></div>` : ""}
-  <div class="card howto"><h3>Try it as Marcus</h3><ol><li>See the new-bucket alert and load the buckets</li><li>Start the route and take a photo at each stop</li><li>Dump at the facility and end the route</li><li>Switch to Owner to see the texts and the route confirmation</li></ol></div>`;
+  ${LIVE ? "" : `<div class="card howto"><h3>Try it as Marcus</h3><ol><li>See the new-bucket alert and load the buckets</li><li>Start the route and take a photo at each stop</li><li>Dump at the facility and end the route</li><li>Switch to Owner to see the texts and the route confirmation</li></ol></div>`}`;
 }
 function driverPre(rt){
   const c = routeCounts(rt);
