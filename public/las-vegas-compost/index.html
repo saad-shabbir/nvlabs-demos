@@ -424,6 +424,8 @@ body.driver-mode .toasts{bottom:calc(128px + env(safe-area-inset-bottom,0px))}
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <input type="file" id="photo-input" accept="image/*" capture="environment" hidden>
 
+<script src="/las-vegas-compost/live-config.js"></script>
+<script src="/las-vegas-compost/live.js"></script>
 <script>
 (function(){
 "use strict";
@@ -594,8 +596,8 @@ function routePoints(s, route, driverId){
 }
 function routeMiles(s, route, driverId){
   const p = routePoints(s, route, driverId); let m = 0;
-  for(let i=1;i<p.length;i++) m += hav(p[i-1], p[i]);
-  return m * ROAD;
+  for(let i=1;i<p.length;i++){ const real = LIVE ? LIVE.legMiles(p[i-1], p[i]) : null; m += real != null ? real : hav(p[i-1], p[i]) * ROAD; }
+  return m;
 }
 function optimizeRoute(s, route){
   const start = startPoint(s, route.driverId), end = s.facility;
@@ -669,7 +671,7 @@ function samplePhoto(seed, stamp){
 }
 function photoSrc(photo, stamp){
   if(!photo) return "";
-  if(photo.kind === "data") return photo.src;
+  if(photo.kind === "data" || photo.kind === "url") return photo.src || "";
   return samplePhoto(photo.seed, stamp || "Sample photo");
 }
 function stampFor(s, cid, at){ const c = s.customers[cid]; return (at ? fmtTime(at) + " · " : "") + (c ? c.address : ""); }
@@ -696,12 +698,15 @@ function processUpload(file, stamp){
 
 /* ---------- state ---------- */
 const KEY = "lvc-route-demo-v4";
+const LIVE = window.LVC_LIVE || null; // set only when the page is opened with ?live (see live.js)
 let S;
 function load(){
+  if(LIVE) return;
   try{ const raw = localStorage.getItem(KEY); if(raw){ const p = JSON.parse(raw); if(p && p.v === 4){ S = p; return; } } }catch(e){}
   S = seedState(); save();
 }
 function save(){
+  if(LIVE){ LIVE.save(S); return; }
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }
   catch(e){
     try{ // storage full: keep uploaded photos only in memory
@@ -744,6 +749,7 @@ function gridLines(bounds, P, w, h){
   return out;
 }
 function routeMap(route, opts={}){
+  if(LIVE){ const slot = LIVE.mapSlot(route, opts); if(slot) return slot; }
   const w = 640, h = opts.h || 380, m = 26;
   const st = startPoint(S, route.driverId);
   const pts = routePoints(S, route);
@@ -828,6 +834,7 @@ function renderShell(v){
   tabs.innerHTML = OWNER_TABS.map(([id, label, icon]) => `<a href="#${id}" ${v.tab===id?'aria-current="page"':""}>${ic(icon)}${label}${id==="today" && n>0 ? '<i class="dot"></i>' : ""}</a>`).join("");
 }
 function render(){
+  if(!S) return;
   const v = currentView();
   renderShell(v);
   const el = $("#view");
@@ -836,6 +843,7 @@ function render(){
   else if(v.route) html = viewRoute(v.route);
   else html = ({today:viewToday, routes:viewRoutes, customers:viewCustomers, drivers:viewDrivers, texts:viewTexts})[v.tab]();
   el.innerHTML = html;
+  if(LIVE) LIVE.afterRender();
   if(v.mode === "owner" && v.tab === "today" && unseen() > 0){ /* marked seen after first render */ setTimeout(() => { S.seenConfirmations = S.confirmations.length; save(); renderShell(currentView()); }, 2500); }
 }
 
@@ -1114,7 +1122,7 @@ function driverForm(d){
 
 /* ---------- owner: texts ---------- */
 function viewTexts(){
-  const t = S.settings.templates, ex = S.customers[Object.keys(S.customers)[0]];
+  const t = S.settings.templates, ex = S.customers[Object.keys(S.customers)[0]] || {name:"Jane Smith"};
   const exVars = {first_name: firstName(ex.name), driver_name:"Marcus", photo_link: photoLink({kind:"sample", seed:42})};
   const times = []; for(let h=16; h<=21; h++) for(const m of [0,30]) times.push(String(h).padStart(2,"0") + ":" + (m?"30":"00"));
   const tpl = (key, title, when) => `
@@ -1424,6 +1432,7 @@ function runImport(){
     const rid = useCol && r.route ? (known.get(r.route.toLowerCase().trim()) || makeRoute(r.route, "d0")) : fallback;
     const rt = R(rid); const ex = byAddr.get(addrKey(r.address));
     if(ex){
+      if(LIVE && r.city && r.city !== ex.city) ex._geocode = true;
       ex.name = r.name || ex.name; ex.city = r.city || ex.city; if(r.phone) ex.phone = r.phone; if(r.gate) ex.gate = r.gate; if(r.notes) ex.notes = r.notes; ex.freq = r.freq;
       const old = R(ex.routeId); const st = old && old.stops.find(x => x.cid === ex.id);
       if(st && st.status === "pending"){
@@ -1434,6 +1443,7 @@ function runImport(){
     }
     const id = "c" + uid(); const pos = placeFor(rt, r.address + r.name);
     S.customers[id] = {id, name:r.name, phone:r.phone, address:r.address, city:r.city, gate:r.gate, notes:r.notes, freq:r.freq, routeId:rid, lat:pos.lat, lng:pos.lng};
+    if(LIVE) S.customers[id]._geocode = true;
     rt.stops.push({cid:id, type:r.type, status:"pending", photo:null, doneAt:null, issue:null});
     byAddr.set(addrKey(r.address), S.customers[id]); touched.add(rid); added++;
   });
@@ -1464,7 +1474,7 @@ function zoom(src, cap){
 function reoptimizeIfReady(rt){ if(rt.status === "ready") optimizeRoute(S, rt); else optimizeRoute(S, rt); }
 function sendText(kind, cid, driver, photo){ const t = makeText(S, kind, S.customers[cid], driver, Date.now(), photo); S.texts.push(t); return t; }
 const A = {
-  "import-open"(el){ IMP = {rows:null, error:null, target: (el && el.dataset.route) || S.routeList[0], newName:"", newDriver:"d0"}; openDrawer(importView()); },
+  "import-open"(el){ IMP = {rows:null, error:null, target: (el && el.dataset.route) || S.routeList[0] || "__new", newName:"", newDriver: S.drivers.d0 ? "d0" : Object.keys(S.drivers)[0]}; openDrawer(importView()); },
   "import-choose"(){ const f = $("#import-file"); if(f) f.click(); },
   "import-paste"(){ const t = $("#import-paste"); if(!t || !t.value.trim()){ toast("Nothing pasted yet", "Copy the rows from Google Sheets, including the header row, then paste them in the box.", "alert"); return; } setImportRows(parseDelimited(t.value), "your pasted rows"); },
   "import-sample"(){ setImportRows(SAMPLE_SHEET, "Sample sheet (North Las Vegas)"); },
@@ -1614,11 +1624,13 @@ const FORMS = {
     const isNew = !cid; const id = cid || ("c" + uid());
     const prev = S.customers[id];
     const routeId = fd.get("routeId") || (prev && prev.routeId);
+    if(!R(routeId)){ toast("Make a route first", "Add a route on the Routes page, then add customers to it.", "routes"); return; }
     const c = prev ? {...prev} : {id, lat:0, lng:0};
     c.name = String(fd.get("name")).trim(); c.phone = String(fd.get("phone")).trim(); c.address = String(fd.get("address")).trim(); c.city = String(fd.get("city")).trim() || "Las Vegas";
     c.gate = String(fd.get("gate")).trim(); c.notes = String(fd.get("notes")).trim(); c.freq = fd.get("freq");
+    if(LIVE && (isNew || prev.address !== c.address || prev.city !== c.city)) c._geocode = true;
     const type = fd.get("type") || null;
-    if(isNew || !prev.lat){ const rt = R(routeId); const pts = rt.stops.map(x => S.customers[x.cid]); const cx = pts.reduce((a,p) => a + p.lat, 0)/pts.length || 36.1, cy = pts.reduce((a,p) => a + p.lng, 0)/pts.length || -115.2; c.lat = cx + (Math.random()-0.5)*0.03; c.lng = cy + (Math.random()-0.5)*0.04; }
+    if(isNew || !prev.lat){ const rt = R(routeId); const pts = rt.stops.map(x => S.customers[x.cid]); const cx = pts.reduce((a,p) => a + p.lat, 0)/pts.length || S.facility.lat, cy = pts.reduce((a,p) => a + p.lng, 0)/pts.length || S.facility.lng; c.lat = cx + (Math.random()-0.5)*0.03; c.lng = cy + (Math.random()-0.5)*0.04; }
     if(prev && prev.routeId !== routeId){ const old = R(prev.routeId); if(old) old.stops = old.stops.filter(x => x.cid !== id); }
     c.routeId = routeId; S.customers[id] = c;
     const rt = R(routeId); let stop = rt.stops.find(x => x.cid === id);
@@ -1631,7 +1643,10 @@ const FORMS = {
     const fd = new FormData(form); const d = S.drivers[form.dataset.id];
     const kind = fd.get("kind");
     if(kind === "home"){
-      const lat = parseFloat(fd.get("lat")), lng = parseFloat(fd.get("lng"));
+      let lat = parseFloat(fd.get("lat")), lng = parseFloat(fd.get("lng"));
+      const addr = String(fd.get("address")).trim(), city = String(fd.get("city")).trim();
+      const lookUp = LIVE && addr && (!isFinite(lat) || addr !== d.start.address || city !== d.start.city);
+      if(lookUp){ if(!isFinite(lat)){ lat = S.facility.lat; lng = S.facility.lng; } d._geocode = true; }
       if(!isFinite(lat) || !isFinite(lng)){ toast("Place the start on the map", "Tap the map where they start from.", "pin"); return; }
       d.start = {kind:"home", address: String(fd.get("address")).trim() || "Pinned location", city: String(fd.get("city")).trim() || "Las Vegas", lat, lng};
     } else d.start = {kind:"facility"};
@@ -1642,7 +1657,7 @@ const FORMS = {
   },
   route(form){
     const fd = new FormData(form); const ids = fd.getAll("stops");
-    if(!ids.length){ toast("Pick at least one stop", "", "alert"); return; }
+    if(!ids.length && !(LIVE && String(fd.get("name") || "").trim())){ toast("Pick at least one stop", "", "alert"); return; }
     const id = "r" + uid();
     const rt = {id, name: String(fd.get("name")).trim(), driverId: fd.get("driverId"), status:"ready", bucketsLoaded:false, facilityDone:false, startedAt:null, endedAt:null, stops:[]};
     ids.forEach(cid => { const c = S.customers[cid]; const old = R(c.routeId); let st = {type:"regular"}; if(old){ st = old.stops.find(x => x.cid === cid) || st; old.stops = old.stops.filter(x => x.cid !== cid); } c.routeId = id; rt.stops.push({cid, type: st.type || "regular", status:"pending", photo:null, doneAt:null, issue:null}); });
@@ -1690,7 +1705,7 @@ document.addEventListener("input", e => {
   if(el.dataset.input === "imp-newname" && IMP){ IMP.newName = el.value; }
   if(el.dataset.input === "tpl"){
     S.settings.templates[el.dataset.key] = el.value; save();
-    const ex = S.customers[Object.keys(S.customers)[0]];
+    const ex = S.customers[Object.keys(S.customers)[0]] || {name:"Jane Smith"};
     const pv = $("#pv-" + el.dataset.key); if(pv) pv.textContent = fill(el.value, {first_name: firstName(ex.name), driver_name:"Marcus", photo_link: photoLink({kind:"sample", seed:42})});
   }
 });
@@ -1701,9 +1716,12 @@ $("#photo-input").addEventListener("change", async e => {
   try{ const src = await processUpload(f, stampFor(S, x.cid, Date.now())); pendingPhoto = {cid:x.cid, photo:{kind:"data", src, id: uid()}}; render(); }
   catch(err){ toast("Couldn't read that photo", "Try again, or use the sample photo.", "alert"); }
 });
-window.addEventListener("hashchange", () => { closeDrawer(); render(); window.scrollTo(0, 0); });
-window.addEventListener("storage", ev => { if(ev.key === KEY){ load(); render(); } });
-render();
+window.addEventListener("hashchange", () => { if(!S) return; closeDrawer(); render(); window.scrollTo(0, 0); });
+window.addEventListener("storage", ev => { if(!LIVE && ev.key === KEY){ load(); render(); } });
+if(LIVE){
+  LIVE.attach({S: () => S, setS: v => { S = v; }, render, toast, optimizeRoute, startPoint, closeDrawer});
+  LIVE.start().then(ok => { if(ok) render(); }).catch(err => console.error(err));
+} else render();
 })();
 </script>
 </body>
