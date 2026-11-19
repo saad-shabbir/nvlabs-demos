@@ -1192,13 +1192,12 @@ function makeTestRoute(origin, label, startName, city, far){
   const stops = plan.map((p, i) => {
     const pt = offsetPoint(origin, p.mi, p.deg), cid = "test-c" + tag + i;
     const dir = COMPASS[Math.round((((p.deg % 360) + 360) % 360)/45) % 8];
-    S.customers[cid] = {id:cid, name:"TEST stop " + (i+1), phone:"", address:"About " + p.mi.toFixed(1) + " mi " + dir + " of the start", city,
+    S.customers[cid] = {id:cid, name: i < 5 ? "TEST · nearby" : "TEST · a few miles out", phone:"", address:"About " + p.mi.toFixed(1) + " mi " + dir + " of the start", city,
       gate:"", notes:"Test stop. Nothing is here: drive to the pin, then take any photo to finish it.", freq:"Weekly", routeId:rid, lat:pt.lat, lng:pt.lng};
     return {cid, type:types[i], status:"pending", photo:null, doneAt:null, issue:null};
   });
   const rt = {id:rid, name:"TEST · " + label, driverId:did, status:"ready", bucketsLoaded:false, facilityDone:false, startedAt:null, endedAt:null, stops};
   S.routes[rid] = rt; S.routeList.push(rid); optimizeRoute(S, rt);
-  rt.stops.forEach((x, i) => { S.customers[x.cid].name = "TEST stop " + (i+1); }); // number them in driving order
   S.driverId = did; S.driverRouteId = rid; pendingPhoto = null;
   save(); render(); window.scrollTo(0,0);
   toast("Test route ready", "7 TEST stops: 5 close by, 2 a few miles out. No texts go out.", "routes");
