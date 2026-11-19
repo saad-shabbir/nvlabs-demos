@@ -1237,8 +1237,8 @@ function viewDriver(){
   if(list.length && !rt) return head + driverRoutePicker(list) + testBar();
   if(!rt) return head + `<div class="card empty">No route is assigned to you today. Yusuf can assign one from the Routes page.</div>` + testBar();
   if(rt.status === "ready") return head + driverPre(rt) + (isTestRoute(rt) || !list.some(isTestRoute) ? testBar() : "");
-  if(rt.status === "active") return head + driverActive(rt);
-  return head + driverDone(rt);
+  if(rt.status === "active") return head + driverActive(rt) + (isTestRoute(rt) ? testBar() : "");
+  return head + driverDone(rt) + (isTestRoute(rt) ? testBar() : "");
 }
 function driverSelect(){
   return `
