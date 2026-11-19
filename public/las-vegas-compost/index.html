@@ -1158,6 +1158,68 @@ function viewTexts(){
   </div>`;
 }
 
+/* ---------- test routes: try the driver app with fake stops ---------- */
+const TEST_AREAS = {
+  "spring-valley": {label:"Spring Valley", start:"Spring Valley (test start)", city:"Las Vegas", lat:36.1080, lng:-115.2450, far:[0, 360]},
+  "summerlin": {label:"Summerlin", start:"Downtown Summerlin (test start)", city:"Las Vegas", lat:36.1520, lng:-115.3320, far:[10, 170]}
+};
+const isTestRoute = rt => !!rt && /^TEST\b/.test(rt.name);
+const canMakeTest = () => !!LIVE && LIVE.role !== "driver"; // live mode only; drivers can't add stops, so owners and admins
+const COMPASS = ["N","NE","E","SE","S","SW","W","NW"];
+function offsetPoint(o, miles, deg){
+  const r = deg * Math.PI/180;
+  return {lat: o.lat + miles*Math.cos(r)/69.05, lng: o.lng + miles*Math.sin(r)/(69.05*Math.cos(o.lat*Math.PI/180))};
+}
+function testDriverId(){
+  const cur = S.driverId;
+  if(cur && cur.startsWith("test-")) return cur;
+  const id = "test-" + (cur || "me");
+  if(!S.drivers[id]){
+    const base = cur && S.drivers[cur] ? firstName(S.drivers[cur].name) : "Test";
+    S.drivers[id] = {id, name: base + " (test)", phone:"", color:DRIVER_COLORS[4], start:{kind:"facility"}};
+  }
+  return id;
+}
+// 5 stops a few blocks apart around the start, then 2 a few miles out, so a test drive covers both
+function makeTestRoute(origin, label, startName, city, far){
+  const did = testDriverId(), tag = uid(), rid = "test-r" + tag;
+  S.drivers[did].start = {kind:"home", address:startName, city, lat:origin.lat, lng:origin.lng};
+  const spin = Math.random()*360, plan = [];
+  for(let i=0;i<5;i++) plan.push({mi: 0.2 + Math.random()*0.4, deg: spin + i*72 + (Math.random()-0.5)*30});
+  const lo = far ? far[0] : 0, span = far ? far[1] - far[0] : 360;
+  for(let i=0;i<2;i++) plan.push({mi: 2.5 + Math.random()*1.5, deg: lo + span*(i === 0 ? 0.25 : 0.75) + (Math.random()-0.5)*span*0.2});
+  const types = ["regular","new","regular","regular","regular","final","regular"];
+  const stops = plan.map((p, i) => {
+    const pt = offsetPoint(origin, p.mi, p.deg), cid = "test-c" + tag + i;
+    const dir = COMPASS[Math.round((((p.deg % 360) + 360) % 360)/45) % 8];
+    S.customers[cid] = {id:cid, name:"TEST stop " + (i+1), phone:"", address:"About " + p.mi.toFixed(1) + " mi " + dir + " of the start", city,
+      gate:"", notes:"Test stop. Nothing is here: drive to the pin, then take any photo to finish it.", freq:"Weekly", routeId:rid, lat:pt.lat, lng:pt.lng};
+    return {cid, type:types[i], status:"pending", photo:null, doneAt:null, issue:null};
+  });
+  const rt = {id:rid, name:"TEST · " + label, driverId:did, status:"ready", bucketsLoaded:false, facilityDone:false, startedAt:null, endedAt:null, stops};
+  S.routes[rid] = rt; S.routeList.push(rid); optimizeRoute(S, rt);
+  S.driverId = did; S.driverRouteId = rid; pendingPhoto = null;
+  save(); render(); window.scrollTo(0,0);
+  toast("Test route ready", "7 TEST stops: 5 close by, 2 a few miles out. No texts go out.", "routes");
+}
+function clearTestRoutes(){
+  const rids = new Set(S.routeList.filter(id => isTestRoute(S.routes[id])));
+  rids.forEach(id => delete S.routes[id]);
+  S.routeList = S.routeList.filter(id => !rids.has(id));
+  Object.keys(S.customers).forEach(id => { if(id.startsWith("test-c")) delete S.customers[id]; });
+  S.texts = S.texts.filter(t => !(t.cid && String(t.cid).startsWith("test-c")));
+  S.history = S.history.filter(h => !rids.has(h.routeId) && !/^TEST\b/.test(h.routeName || ""));
+  S.confirmations = S.confirmations.filter(c => !rids.has(c.routeId) && !/^TEST\b/.test(c.routeName || ""));
+  if(rids.has(S.driverRouteId)) S.driverRouteId = null;
+  return rids.size;
+}
+function testBar(){
+  if(!canMakeTest()) return "";
+  const n = S.routeList.filter(id => isTestRoute(S.routes[id])).length;
+  return `<div class="card pad stack test-bar" style="gap:10px"><div><b>Try a test route</b><div class="muted" style="font-size:13px;margin-top:2px">Makes 7 TEST stops around you: 5 a few blocks apart and 2 a few miles out. Nothing is texted to anyone.</div></div>
+  <div class="row wrapflex" style="gap:6px"><button class="btn sm primary" type="button" data-act="test-route-near">${ic("pin")}Test route near me</button>${Object.entries(TEST_AREAS).map(([k, a]) => `<button class="btn sm" type="button" data-act="test-route-area" data-area="${k}">${esc(a.label)}</button>`).join("")}${n ? `<button class="btn sm" type="button" data-act="test-clear">${ic("trash")}Clear ${n} test route${n > 1 ? "s" : ""}</button>` : ""}</div></div>`;
+}
+
 /* ---------- driver ---------- */
 function driverRoutes(){ const d = S.driverId; return d ? S.routeList.map(R).filter(rt => rt.driverId === d) : []; }
 function driverRoute(){
@@ -1172,9 +1234,9 @@ function viewDriver(){
   if(!S.driverId || !S.drivers[S.driverId]) return driverSelect();
   const list = driverRoutes(), rt = driverRoute(), d = S.drivers[S.driverId];
   const head = `<div class="row between wrapflex"><div class="row">${avatar(d)}<div><b>${esc(d.name)}</b><div class="muted" style="font-size:12.5px">Signed in</div></div></div><div class="row" style="gap:6px">${list.length > 1 && rt ? `<button class="btn sm" type="button" data-act="driver-routes">${ic("routes")}My routes</button>` : ""}<button class="btn sm" type="button" data-act="driver-logout">Switch driver</button></div></div>`;
-  if(list.length && !rt) return head + driverRoutePicker(list);
-  if(!rt) return head + `<div class="card empty">No route is assigned to you today. Yusuf can assign one from the Routes page.</div>`;
-  if(rt.status === "ready") return head + driverPre(rt);
+  if(list.length && !rt) return head + driverRoutePicker(list) + testBar();
+  if(!rt) return head + `<div class="card empty">No route is assigned to you today. Yusuf can assign one from the Routes page.</div>` + testBar();
+  if(rt.status === "ready") return head + driverPre(rt) + (isTestRoute(rt) || !list.some(isTestRoute) ? testBar() : "");
   if(rt.status === "active") return head + driverActive(rt);
   return head + driverDone(rt);
 }
@@ -1185,6 +1247,7 @@ function driverSelect(){
     ${Object.values(S.drivers).map(d => { const rts = S.routeList.map(R).filter(r => r.driverId === d.id); const rt = rts.find(r => r.status === "active") || rts[0]; const c = rt ? routeCounts(rt) : null;
       return `<button type="button" class="card" data-act="driver-login" data-id="${d.id}">${avatar(d, true)}<div class="who"><b>${esc(d.name)}${d.owner?" (owner)":""}</b><span class="sub">${rts.length > 1 ? rts.length + " routes · " + esc(rts.map(r => r.name).join(", ")) : rt ? esc(rt.name) + " · " + c.total + " stop" + (c.total === 1 ? "" : "s") : "No route today"}</span>${rt ? routeStatusPill(rt) : ""}</div>${ic("chev","go")}</button>`; }).join("")}
   </div>
+  ${LIVE && canMakeTest() ? `<div class="card pad"><b>Want to test-drive?</b><div class="muted" style="font-size:13px;margin-top:2px">Tap a driver with "(test)" in the name, then press Test route near me. It makes fake TEST stops around where you are.</div></div>` : ""}
   <div class="card howto"><h3>Try it as Marcus</h3><ol><li>See the new-bucket alert and load the buckets</li><li>Start the route and take a photo at each stop</li><li>Dump at the facility and end the route</li><li>Switch to Owner to see the texts and the route confirmation</li></ol></div>`;
 }
 function driverPre(rt){
@@ -1243,7 +1306,7 @@ function driverActive(rt){
     <div class="now-type ${x.type}">${ic(T.icon)}${T.label.toUpperCase()}${x.type!=="regular" ? " · " + esc(T.hint) : ""}</div>
     <div class="now-top">
       <div class="row between" style="align-items:flex-start"><div style="min-width:0"><p class="eyebrow">Stop ${idx+1} of ${c.total}</p><div class="now-name">${esc(cu.name)}</div><div class="now-addr">${esc(cu.address)}, ${esc(cu.city)}</div></div></div>
-      <div class="now-btns"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cu.lat.toFixed(5) + "," + cu.lng.toFixed(5))}" target="_blank" rel="noopener">${ic("nav")}Navigate</a><a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a></div>
+      <div class="now-btns"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cu.lat.toFixed(5) + "," + cu.lng.toFixed(5))}" target="_blank" rel="noopener">${ic("nav")}Navigate</a>${cu.phone ? `<a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a>` : ""}</div>
       ${cu.gate ? `<div class="infobox gate">${ic("key")}<div><div class="lbl">Gate code</div><div class="code">${esc(cu.gate)}</div></div></div>` : ""}
       ${cu.notes ? `<div class="infobox notes">${ic("note")}<div><div class="lbl">Notes</div><div style="font-weight:600">${esc(cu.notes)}</div></div></div>` : ""}
       <div class="photo-drop">
@@ -1543,6 +1606,16 @@ const A = {
   "driver-pick-route"(el){ S.driverRouteId = el.dataset.id; pendingPhoto = null; save(); render(); window.scrollTo(0,0); },
   "driver-routes"(){ S.driverRouteId = "__pick"; pendingPhoto = null; save(); render(); window.scrollTo(0,0); },
   "driver-login"(el){ S.driverId = el.dataset.id; S.driverRouteId = null; save(); render(); window.scrollTo(0,0); },
+  "test-route-near"(el){
+    if(!navigator.geolocation){ toast("Location isn't available", "Use the Spring Valley or Summerlin button instead.", "alert"); return; }
+    el.disabled = true; el.textContent = "Finding you…";
+    navigator.geolocation.getCurrentPosition(
+      pos => makeTestRoute({lat:pos.coords.latitude, lng:pos.coords.longitude}, "Near me", "Where you made this test route", "Las Vegas"),
+      () => { el.disabled = false; render(); toast("Couldn't get your location", "Allow location for this site, or use the Spring Valley or Summerlin button.", "alert"); },
+      {enableHighAccuracy:true, timeout:15000, maximumAge:60000});
+  },
+  "test-route-area"(el){ const a = TEST_AREAS[el.dataset.area]; if(a) makeTestRoute({lat:a.lat, lng:a.lng}, a.label, a.start, a.city, a.far); },
+  "test-clear"(){ const n = clearTestRoutes(); save(); render(); window.scrollTo(0,0); toast("Test routes cleared", n + " test route" + (n === 1 ? "" : "s") + " and their TEST stops removed.", "trash"); },
   "driver-logout"(){ S.driverId = null; S.driverRouteId = null; pendingPhoto = null; save(); location.hash = "#driver"; render(); window.scrollTo(0,0); },
   "start-route"(el){
     const rt = R(el.dataset.id); const c = routeCounts(rt);
