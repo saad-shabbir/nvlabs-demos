@@ -438,7 +438,7 @@ function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; 
 const fmtTime = d => new Date(d).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
 const fmtMi = m => (Math.round(m * 10) / 10).toFixed(1);
 const firstName = n => String(n).split(" ")[0];
-const initials = n => String(n).split(" ").map(p => p[0]).slice(0,2).join("").toUpperCase();
+const initials = n => String(n).replace(/\([^)]*\)/g, "").trim().split(/\s+/).map(p => p[0] || "").slice(0,2).join("").toUpperCase();
 const uid = () => Math.random().toString(36).slice(2, 8);
 
 const ICON = {
@@ -1198,6 +1198,7 @@ function makeTestRoute(origin, label, startName, city, far){
   });
   const rt = {id:rid, name:"TEST · " + label, driverId:did, status:"ready", bucketsLoaded:false, facilityDone:false, startedAt:null, endedAt:null, stops};
   S.routes[rid] = rt; S.routeList.push(rid); optimizeRoute(S, rt);
+  rt.stops.forEach((x, i) => { S.customers[x.cid].name = "TEST stop " + (i+1); }); // number them in driving order
   S.driverId = did; S.driverRouteId = rid; pendingPhoto = null;
   save(); render(); window.scrollTo(0,0);
   toast("Test route ready", "7 TEST stops: 5 close by, 2 a few miles out. No texts go out.", "routes");
