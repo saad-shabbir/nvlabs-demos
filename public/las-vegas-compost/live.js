@@ -81,7 +81,7 @@ function setupMissing(){
 
 function signInScreen(){
   return new Promise(resolve => {
-    screen(`<h2>Sign in</h2><p class="muted">We'll email you a sign-in code. You can also tap the link in that email on this device.</p>
+    screen(`<h2>Sign in</h2><p class="muted">We'll email you a sign-in code. Enter it here to sign in.</p>
       <form id="lv-email" class="stack"><div class="field"><label for="lv-em">Email</label><input class="input" id="lv-em" type="email" required autocomplete="email" inputmode="email"></div><button class="btn primary" type="submit">Email me a code</button></form>
       <form id="lv-code" class="stack" hidden><div class="field"><label for="lv-otp">Code from the email</label><input class="input" id="lv-otp" required autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,10}" maxlength="10"></div><button class="btn primary" type="submit">Sign in</button><button class="btn ghost" type="button" id="lv-back">Use a different email</button></form>
       <p class="hint" id="lv-msg" aria-live="polite"></p>`);
