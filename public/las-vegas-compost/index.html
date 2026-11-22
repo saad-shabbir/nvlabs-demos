@@ -230,6 +230,18 @@ body.driver-mode .tabs{display:none!important}
 .driver-pick .pill{white-space:normal}
 .now-btns{display:flex;flex-wrap:wrap;gap:8px}
 .now-btns > *{flex:1 1 130px}
+.now-btns > .nav-alt{flex:1 1 100%;font-size:12.5px;color:var(--muted);text-align:center;font-weight:600}
+.nav-alt a{color:var(--brand-strong);font-weight:700}
+.addr-line{display:flex;align-items:flex-start;gap:8px;margin-top:2px}
+.addr-line .addr{flex:1;min-width:0}
+.addr,.now-addr{user-select:text;-webkit-user-select:text}
+.copy-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 11px;font-size:12.5px;font-weight:700;min-height:32px;cursor:pointer;flex:none}
+.copy-btn svg{width:14px;height:14px}
+.copy-btn:active{background:var(--surface-2)}
+.now-addr-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.now-addr-row .copy-btn{margin-top:1px}
+.start-hint{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;color:var(--muted);font-weight:600}
+.start-hint svg{flex:none;color:var(--brand);margin-top:1px}
 .thumb{width:46px;height:36px;border-radius:7px;object-fit:cover;cursor:zoom-in;border:1px solid var(--line)}
 .select-sm{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 6px;font-size:12.5px;font-weight:600}
 
@@ -470,7 +482,9 @@ const ICON = {
   edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
   refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',
   upload:'<path d="M12 16V5m-4.5 4.5L12 5l4.5 4.5M5 20h14"/>',
-  sheet:'<path d="M5 3h14v18H5zM5 9h14M5 15h14M11 3v18"/>'
+  sheet:'<path d="M5 3h14v18H5zM5 9h14M5 15h14M11 3v18"/>',
+  copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+  here:'<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>'
 };
 const ic = (n, cls="") => `<svg class="${cls}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]||""}</svg>`;
 const BRAND_MARK = `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#2C6B3E"/><circle cx="20" cy="20" r="15.5" fill="none" stroke="#DCEADB" stroke-width="1.2" opacity=".7"/><path d="M12.5 27.5c0-9 6-14.5 15-15.5-.6 9.3-6.2 15.4-15 15.5z" fill="#DCEADB"/><path d="M12.5 27.5c3.2-4.6 6.6-8 10.8-10.6" stroke="#2C6B3E" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`;
@@ -590,8 +604,14 @@ function startLabel(s, driverId){
   if(d.start.kind === "facility") return "Starts at " + s.facility.name;
   return (d.owner ? "Your" : firstName(d.name) + "'s") + " home · " + d.start.address;
 }
+// Where a route starts: the driver's location when they pressed Start route (live mode), otherwise
+// the driver's saved start (home or the facility).
+function routeStart(s, route){
+  if(route && route.liveStart && isFinite(route.liveStart.lat) && isFinite(route.liveStart.lng)) return route.liveStart;
+  return startPoint(s, route && route.driverId);
+}
 function routePoints(s, route, driverId){
-  const st = startPoint(s, driverId || route.driverId);
+  const st = driverId && driverId !== route.driverId ? startPoint(s, driverId) : routeStart(s, route);
   return [st, ...route.stops.map(x => s.customers[x.cid]), s.facility];
 }
 function routeMiles(s, route, driverId){
@@ -600,7 +620,7 @@ function routeMiles(s, route, driverId){
   return m;
 }
 function optimizeRoute(s, route){
-  const start = startPoint(s, route.driverId), end = s.facility;
+  const start = routeStart(s, route), end = s.facility;
   const fixed = route.stops.filter(x => x.status !== "pending");
   const free = route.stops.filter(x => x.status === "pending");
   let cur = fixed.length ? s.customers[fixed[fixed.length-1].cid] : start;
@@ -751,7 +771,7 @@ function gridLines(bounds, P, w, h){
 function routeMap(route, opts={}){
   if(LIVE){ const slot = LIVE.mapSlot(route, opts); if(slot) return slot; }
   const w = 640, h = opts.h || 380, m = 26;
-  const st = startPoint(S, route.driverId);
+  const st = routeStart(S, route);
   const pts = routePoints(S, route);
   const b = boundsOf(pts, 0.06), P = projector(b, w, h, m);
   const xy = pts.map(p => P.p(p.lat, p.lng));
@@ -814,6 +834,34 @@ const avatar = (d, lg) => `<span class="avatar${lg?" lg":""}" style="background:
 const typeChip = t => t === "regular" ? "" : `<span class="chip ${TYPE[t].chip}">${ic(TYPE[t].icon)}${TYPE[t].short}</span>`;
 const unseen = () => S.confirmations.length - (S.seenConfirmations || 0);
 
+/* ---------- addresses and map apps ---------- */
+const fullAddr = c => [c.address, c.city].filter(Boolean).join(", ");
+const isStreet = a => /^\s*\d/.test(a || "");
+// Navigation links. A street address goes to the map app as text (it finds the door better);
+// anything else goes as coordinates.
+function navLinks(p){
+  const ll = Number(p.lat).toFixed(6) + "," + Number(p.lng).toFixed(6);
+  const d = encodeURIComponent(isStreet(p.address) ? fullAddr(p) : ll);
+  return {
+    google: "https://www.google.com/maps/dir/?api=1&destination=" + d + "&travelmode=driving&dir_action=navigate",
+    apple: "https://maps.apple.com/?daddr=" + d + "&dirflg=d",
+    waze: "https://waze.com/ul?ll=" + encodeURIComponent(ll) + "&navigate=yes"
+  };
+}
+const copyBtn = text => `<button class="copy-btn" type="button" data-act="copy" data-text="${esc(text)}" aria-label="Copy address: ${esc(text)}">${ic("copy")}<span>Copy</span></button>`;
+function navButtons(p){
+  const L = navLinks(p);
+  return `<a class="btn primary" href="${L.google}" target="_blank" rel="noopener">${ic("nav")}Navigate in Google Maps</a>
+  <div class="nav-alt">Or open in <a href="${L.apple}" target="_blank" rel="noopener">Apple Maps</a> · <a href="${L.waze}" target="_blank" rel="noopener">Waze</a></div>`;
+}
+async function copyText(t){
+  try{ if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(t); return true; } }catch(e){}
+  try{
+    const ta = document.createElement("textarea"); ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, t.length); const ok = document.execCommand("copy"); ta.remove(); return ok;
+  }catch(e){ return false; }
+}
+
 /* ---------- shell ---------- */
 const OWNER_TABS = [["today","Today","today"],["routes","Routes","routes"],["customers","Customers","users"],["drivers","Drivers","truck"],["texts","Texts","chat"]];
 function currentView(){
@@ -843,7 +891,7 @@ function render(){
   else if(v.route) html = viewRoute(v.route);
   else html = ({today:viewToday, routes:viewRoutes, customers:viewCustomers, drivers:viewDrivers, texts:viewTexts})[v.tab]();
   el.innerHTML = html;
-  if(LIVE) LIVE.afterRender();
+  if(LIVE){ const dr = v.mode === "driver" && S.driverId ? driverRoute() : null; watchHere(!!dr && dr.status !== "done"); LIVE.afterRender(); }
   if(v.mode === "owner" && v.tab === "today" && unseen() > 0){ /* marked seen after first render */ setTimeout(() => { S.seenConfirmations = S.confirmations.length; save(); renderShell(currentView()); }, 2500); }
 }
 
@@ -1180,27 +1228,48 @@ function testDriverId(){
   }
   return id;
 }
-// 5 stops a few blocks apart around the start, then 2 a few miles out, so a test drive covers both
-function makeTestRoute(origin, label, startName, city, far){
+// 7 stops spread 1.3 to 4.6 miles from the start and kept about a mile apart, so a test drive
+// feels like a real route. In live mode each one is moved onto the nearest real street address.
+function testPlan(origin, far){
+  const n = 7, lo = far ? far[0] : 0, span = far ? far[1] - far[0] : 360;
+  let best = null, bestSep = -1;
+  for(let t = 0; t < 80; t++){
+    const dists = [1.3, 1.9, 2.4, 2.9, 3.4, 4.0, 4.6].sort(() => Math.random() - 0.5), spin = Math.random() * 360;
+    const plan = dists.map((mi, i) => ({mi: mi + (Math.random() - 0.5) * 0.3,
+      deg: far ? lo + span * (i + 0.5) / n + (Math.random() - 0.5) * span / n * 0.5 : spin + i * 360 / n + (Math.random() - 0.5) * 18}));
+    const pts = plan.map(p => offsetPoint(origin, p.mi, p.deg));
+    let sep = Infinity; for(let i = 0; i < n; i++) for(let k = i + 1; k < n; k++) sep = Math.min(sep, hav(pts[i], pts[k]));
+    if(sep > bestSep){ best = plan; bestSep = sep; }
+    if(sep >= 0.9) break;
+  }
+  return best;
+}
+async function makeTestRoute(origin, label, startName, city, far){
+  const plan = testPlan(origin, far), pts = plan.map(p => offsetPoint(origin, p.mi, p.deg));
+  let real = [];
+  if(LIVE && LIVE.reverseGeocode){
+    toast("Making your test route", "Finding real street addresses for 7 stops…", "routes");
+    real = await Promise.all(pts.map(pt => LIVE.reverseGeocode(pt).catch(() => null)));
+  }
+  // change the data only after the lookups, since it can reload while we wait
   const did = testDriverId(), tag = uid(), rid = "test-r" + tag;
   S.drivers[did].start = {kind:"home", address:startName, city, lat:origin.lat, lng:origin.lng};
-  const spin = Math.random()*360, plan = [];
-  for(let i=0;i<5;i++) plan.push({mi: 0.2 + Math.random()*0.4, deg: spin + i*72 + (Math.random()-0.5)*30});
-  const lo = far ? far[0] : 0, span = far ? far[1] - far[0] : 360;
-  for(let i=0;i<2;i++) plan.push({mi: 2.5 + Math.random()*1.5, deg: lo + span*(i === 0 ? 0.25 : 0.75) + (Math.random()-0.5)*span*0.2});
-  const types = ["regular","new","regular","regular","regular","final","regular"];
+  const types = ["regular","new","regular","regular","regular","final","regular"], seen = new Set();
   const stops = plan.map((p, i) => {
-    const pt = offsetPoint(origin, p.mi, p.deg), cid = "test-c" + tag + i;
+    const r = real[i] && !seen.has(real[i].address) ? real[i] : null; if(r) seen.add(r.address);
+    const pt = r ? {lat:r.lat, lng:r.lng} : pts[i], cid = "test-c" + tag + i;
     const dir = COMPASS[Math.round((((p.deg % 360) + 360) % 360)/45) % 8];
-    S.customers[cid] = {id:cid, name: i < 5 ? "TEST · nearby" : "TEST · a few miles out", phone:"", address:"About " + p.mi.toFixed(1) + " mi " + dir + " of the start", city,
-      gate:"", notes:"Test stop. Nothing is here: drive to the pin, then take any photo to finish it.", freq:"Weekly", routeId:rid, lat:pt.lat, lng:pt.lng};
+    S.customers[cid] = {id:cid, name:"TEST · " + hav(origin, pt).toFixed(1) + " mi out", phone:"",
+      address: r ? r.address : "About " + p.mi.toFixed(1) + " mi " + dir + " of the start", city: r ? r.city : city,
+      gate:"", notes: r ? "Test stop at a real address. Drive there, then take any photo to finish it (not of the house, and don't knock)." : "Test stop. Nothing is here: drive to the pin, then take any photo to finish it.",
+      freq:"Weekly", routeId:rid, lat:pt.lat, lng:pt.lng};
     return {cid, type:types[i], status:"pending", photo:null, doneAt:null, issue:null};
   });
   const rt = {id:rid, name:"TEST · " + label, driverId:did, status:"ready", bucketsLoaded:false, facilityDone:false, startedAt:null, endedAt:null, stops};
   S.routes[rid] = rt; S.routeList.push(rid); optimizeRoute(S, rt);
   S.driverId = did; S.driverRouteId = rid; pendingPhoto = null;
   save(); render(); window.scrollTo(0,0);
-  toast("Test route ready", "7 TEST stops: 5 close by, 2 a few miles out. No texts go out.", "routes");
+  toast("Test route ready", "7 TEST stops about a mile or more apart" + (real.some(Boolean) ? ", at real street addresses" : "") + ". No texts go out.", "routes");
 }
 function clearTestRoutes(){
   const rids = new Set(S.routeList.filter(id => isTestRoute(S.routes[id])));
@@ -1216,7 +1285,7 @@ function clearTestRoutes(){
 function testBar(){
   if(!canMakeTest()) return "";
   const n = S.routeList.filter(id => isTestRoute(S.routes[id])).length;
-  return `<div class="card pad stack test-bar" style="gap:10px"><div><b>Try a test route</b><div class="muted" style="font-size:13px;margin-top:2px">Makes 7 TEST stops around you: 5 a few blocks apart and 2 a few miles out. Nothing is texted to anyone.</div></div>
+  return `<div class="card pad stack test-bar" style="gap:10px"><div><b>Try a test route</b><div class="muted" style="font-size:13px;margin-top:2px">Makes 7 TEST stops at real street addresses, 1 to 5 miles around you and about a mile apart. Nothing is texted to anyone.</div></div>
   <div class="row wrapflex" style="gap:6px"><button class="btn sm primary" type="button" data-act="test-route-near">${ic("pin")}Test route near me</button>${Object.entries(TEST_AREAS).map(([k, a]) => `<button class="btn sm" type="button" data-act="test-route-area" data-area="${k}">${esc(a.label)}</button>`).join("")}${n ? `<button class="btn sm" type="button" data-act="test-clear">${ic("trash")}Clear ${n} test route${n > 1 ? "s" : ""}</button>` : ""}</div></div>`;
 }
 
@@ -1262,6 +1331,7 @@ function driverPre(rt){
     <ul>${drops.map(x => { const cu = S.customers[x.cid]; return `<li><span class="chip new">Stop ${x.i+1}</span>${esc(cu.name)} · ${esc(cu.address)}</li>`; }).join("")}</ul>
     <label class="check-row"><input type="checkbox" data-change="buckets-loaded" data-id="${rt.id}" ${rt.bucketsLoaded?"checked":""}>I loaded ${drops.length} new bucket${drops.length>1?"s":""}</label>
   </div>` : ""}
+  ${LIVE ? `<div class="start-hint">${ic("here")}<span>${rt.liveStart ? "Starts from where you were when you pressed Start route." : "When you press Start route, the stops are put in order from where you are right then."}</span></div>` : ""}
   ${finals.length ? `<div class="final-note">${ic("flag")}<div>${finals.length} final pickup${finals.length>1?"s":""} today: ${finals.map(x => "stop " + (x.i+1)).join(", ")}. Take the bucket and don't leave a clean one.</div></div>` : ""}
   <div class="card pad">${routeMap(rt, {h:340})}<div class="map-legend"><span><i></i>Pickup</span><span><i class="n"></i>New bucket</span><span><i class="f"></i>Final pickup</span></div></div>
   <div class="card" style="overflow:hidden"><ol class="stops">${rt.stops.map((x, i) => driverStopRow(rt, x, i)).join("")}<li class="stop endpoint"><span class="n">F</span><div><div class="who">${esc(S.facility.name)}</div><div class="addr">Dump everything at the end of the day</div></div><div></div></li></ol></div>
@@ -1274,12 +1344,26 @@ function driverStopRow(rt, x, i, isCurrent){
   const c = S.customers[x.cid];
   return `<li class="stop t-${x.type} s-${x.status}" ${rt.status==="active" && x.status==="pending" && !isCurrent ? `data-act="jump-stop" data-id="${rt.id}" data-cid="${x.cid}" title="Do this stop next"` : ""}>
     <span class="n">${x.status==="done" ? "✓" : i+1}</span>
-    <div style="min-width:0"><div class="who">${esc(c.name)}</div><div class="addr">${esc(c.address)}</div>
+    <div style="min-width:0"><div class="who">${esc(c.name)}</div><div class="addr-line"><span class="addr">${esc(fullAddr(c))}</span>${copyBtn(fullAddr(c))}</div>
     ${(x.type!=="regular"||c.gate) ? `<div class="extra">${typeChip(x.type)}${c.gate?`<span class="chip gate">${ic("key")}${esc(c.gate)}</span>`:""}</div>` : ""}</div>
     <div class="right">${x.status==="done" ? fmtTime(x.doneAt) : x.status==="issue" ? `<span class="chip final">Skipped</span>` : ""}</div>
   </li>`;
 }
 let pendingPhoto = null; // {cid, photo}
+// Turn-by-turn style map to the next stop (live mode with Mapbox). Empty in the sample demo.
+const navBlock = (rt, target) => (LIVE && LIVE.navSlot ? LIVE.navSlot(rt, target) || "" : "");
+// The driver's location, watched while a route is open in the driver app (live mode only).
+let HERE = null, geoWatch = null;
+function watchHere(on){
+  if(!LIVE || !navigator.geolocation) return;
+  if(on && geoWatch === null){
+    geoWatch = navigator.geolocation.watchPosition(p => {
+      const c = p.coords, num = v => (v == null || isNaN(v)) ? null : v;
+      HERE = {lat:c.latitude, lng:c.longitude, acc:num(c.accuracy), heading:num(c.heading), speed:num(c.speed), at:Date.now()};
+      if(LIVE.onHere) LIVE.onHere(HERE);
+    }, err => { if(LIVE.onHereError) LIVE.onHereError(err.code); }, {enableHighAccuracy:true, maximumAge:5000, timeout:30000});
+  } else if(!on && geoWatch !== null){ navigator.geolocation.clearWatch(geoWatch); geoWatch = null; }
+}
 function driverActive(rt){
   const c = routeCounts(rt);
   const idx = rt.stops.findIndex(x => x.status === "pending");
@@ -1288,10 +1372,11 @@ function driverActive(rt){
     <div class="progress"><span style="width:${c.handled/c.total*100}%"></span></div>
   </div>`;
   if(idx === -1){
-    return top + `
+    const lastDone = rt.stops.length ? S.customers[rt.stops[rt.stops.length-1].cid] : null;
+    return top + navBlock(rt, {key:"facility", lat:S.facility.lat, lng:S.facility.lng, label:"F", type:"facility", name:"Dump at " + (S.facility.short || S.facility.name), address:fullAddr(S.facility), from: lastDone ? {lat:lastDone.lat, lng:lastDone.lng} : null}) + `
     <div class="now-card"><div class="now-type regular">${ic("factory")}LAST STOP</div><div class="now-top">
-      <div class="now-name">Dump at ${esc(S.facility.name)}</div><div class="now-addr">${esc(S.facility.address + ", " + S.facility.city)}</div>
-      <a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(S.facility.lat + "," + S.facility.lng)}" target="_blank" rel="noopener">${ic("nav")}Navigate</a>
+      <div class="now-name">Dump at ${esc(S.facility.name)}</div><div class="now-addr-row"><div class="now-addr">${esc(fullAddr(S.facility))}</div>${copyBtn(fullAddr(S.facility))}</div>
+      <div class="now-btns">${navButtons(S.facility)}</div>
       <label class="check-row" style="border-color:var(--line)"><input type="checkbox" data-change="facility-done" data-id="${rt.id}" ${rt.facilityDone?"checked":""}>I dumped everything at ${esc(S.facility.short || "the facility")}</label>
     </div></div>
     <div class="dock" id="dock"><div class="dock-inner">${!rt.facilityDone ? `<div class="hint">Check off the facility to end your route</div>` : ""}
@@ -1301,12 +1386,14 @@ function driverActive(rt){
   const pp = pendingPhoto && pendingPhoto.cid === x.cid ? pendingPhoto : null;
   const upcoming = rt.stops.map((s, i) => ({s, i})).filter(o => o.i !== idx && o.s.status === "pending");
   const doneList = rt.stops.map((s, i) => ({s, i})).filter(o => o.s.status !== "pending");
-  return top + `
+  const prev = idx > 0 ? S.customers[rt.stops[idx-1].cid] : routeStart(S, rt);
+  return top + navBlock(rt, {key:x.cid, lat:cu.lat, lng:cu.lng, label:String(idx+1), type:x.type, name:cu.name, address:fullAddr(cu), from: prev ? {lat:prev.lat, lng:prev.lng} : null}) + `
   <div class="now-card t-${x.type}">
     <div class="now-type ${x.type}">${ic(T.icon)}${T.label.toUpperCase()}${x.type!=="regular" ? " · " + esc(T.hint) : ""}</div>
     <div class="now-top">
-      <div class="row between" style="align-items:flex-start"><div style="min-width:0"><p class="eyebrow">Stop ${idx+1} of ${c.total}</p><div class="now-name">${esc(cu.name)}</div><div class="now-addr">${esc(cu.address)}, ${esc(cu.city)}</div></div></div>
-      <div class="now-btns"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cu.lat.toFixed(5) + "," + cu.lng.toFixed(5))}" target="_blank" rel="noopener">${ic("nav")}Navigate</a>${cu.phone ? `<a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a>` : ""}</div>
+      <div class="row between" style="align-items:flex-start"><div style="min-width:0"><p class="eyebrow">Stop ${idx+1} of ${c.total}</p><div class="now-name">${esc(cu.name)}</div></div></div>
+      <div class="now-addr-row"><div class="now-addr">${esc(fullAddr(cu))}</div>${copyBtn(fullAddr(cu))}</div>
+      <div class="now-btns">${navButtons(cu)}${cu.phone ? `<a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a>` : ""}</div>
       ${cu.gate ? `<div class="infobox gate">${ic("key")}<div><div class="lbl">Gate code</div><div class="code">${esc(cu.gate)}</div></div></div>` : ""}
       ${cu.notes ? `<div class="infobox notes">${ic("note")}<div><div class="lbl">Notes</div><div style="font-weight:600">${esc(cu.notes)}</div></div></div>` : ""}
       <div class="photo-drop">
@@ -1610,21 +1697,45 @@ const A = {
     if(!navigator.geolocation){ toast("Location isn't available", "Use the Spring Valley or Summerlin button instead.", "alert"); return; }
     el.disabled = true; el.textContent = "Finding you…";
     navigator.geolocation.getCurrentPosition(
-      pos => makeTestRoute({lat:pos.coords.latitude, lng:pos.coords.longitude}, "Near me", "Where you made this test route", "Las Vegas"),
+      pos => makeTestRoute({lat:pos.coords.latitude, lng:pos.coords.longitude}, "Near me", "Where you made this test route", "Las Vegas").catch(err => { console.error(err); render(); toast("Couldn't make the test route", "Try again in a minute.", "alert"); }),
       () => { el.disabled = false; render(); toast("Couldn't get your location", "Allow location for this site, or use the Spring Valley or Summerlin button.", "alert"); },
       {enableHighAccuracy:true, timeout:15000, maximumAge:60000});
   },
-  "test-route-area"(el){ const a = TEST_AREAS[el.dataset.area]; if(a) makeTestRoute({lat:a.lat, lng:a.lng}, a.label, a.start, a.city, a.far); },
+  "test-route-area"(el){
+    const a = TEST_AREAS[el.dataset.area]; if(!a || el.disabled) return;
+    el.disabled = true; el.textContent = "Making it…";
+    makeTestRoute({lat:a.lat, lng:a.lng}, a.label, a.start, a.city, a.far).catch(err => { console.error(err); render(); toast("Couldn't make the test route", "Try again in a minute.", "alert"); });
+  },
   "test-clear"(){ const n = clearTestRoutes(); save(); render(); window.scrollTo(0,0); toast("Test routes cleared", n + " test route" + (n === 1 ? "" : "s") + " and their TEST stops removed.", "trash"); },
   "driver-logout"(){ S.driverId = null; S.driverRouteId = null; pendingPhoto = null; save(); location.hash = "#driver"; render(); window.scrollTo(0,0); },
   "start-route"(el){
     const rt = R(el.dataset.id); const c = routeCounts(rt);
     if(c.new && !rt.bucketsLoaded){ toast("Load the new buckets first", "Check them off at the top.", "alert"); return; }
-    rt.status = "active"; rt.startedAt = Date.now();
-    const drv = S.drivers[rt.driverId];
-    if(S.settings.onTheWay === "all"){ rt.stops.forEach(x => sendText("onway", x.cid, drv)); toast("Route started", "On-the-way text sent to all " + rt.stops.length + " customers."); }
-    else { const first = rt.stops[0]; sendText("onway", first.cid, drv); toast("Route started", "Texted " + S.customers[first.cid].name + ": " + firstName(drv.name) + " is on the way."); }
-    save(); render(); window.scrollTo(0,0);
+    if(rt.status !== "ready" || el.dataset.busy) return;
+    const rid = rt.id;
+    const go = from => {
+      const r = R(rid); if(!r || r.status !== "ready" || !r.stops.length) return; // the data may have reloaded while we waited
+      if(from){ r.liveStart = {lat:from.lat, lng:from.lng, here:true, at:Date.now()}; optimizeRoute(S, r); }
+      r.status = "active"; r.startedAt = Date.now();
+      const drv = S.drivers[r.driverId], why = from ? " Stops are in order from where you are." : "";
+      if(S.settings.onTheWay === "all"){ r.stops.forEach(x => sendText("onway", x.cid, drv)); toast("Route started", "On-the-way text sent to all " + r.stops.length + " customers." + why); }
+      else { const first = r.stops[0]; sendText("onway", first.cid, drv); toast("Route started", "Texted " + S.customers[first.cid].name + ": " + firstName(drv.name) + " is on the way." + why); }
+      save(); render(); window.scrollTo(0,0);
+    };
+    if(!LIVE || !navigator.geolocation){ go(null); return; }
+    if(HERE && Date.now() - HERE.at < 60000){ go(HERE); return; }
+    el.dataset.busy = "1"; el.disabled = true; el.innerHTML = ic("here") + "Finding your location…";
+    navigator.geolocation.getCurrentPosition(
+      p => go({lat:p.coords.latitude, lng:p.coords.longitude}),
+      () => { toast("Couldn't get your location", "Started from " + (startPoint(S, rt.driverId) === S.facility ? "the facility" : "your saved start") + " instead. Allow location for this site to start from where you are.", "alert"); go(null); },
+      {enableHighAccuracy:true, timeout:10000, maximumAge:30000});
+  },
+  async copy(el){
+    const t = el.dataset.text || ""; if(!t) return;
+    if(await copyText(t)){
+      const sp = el.querySelector("span"); if(sp){ sp.textContent = "Copied"; setTimeout(() => { if(sp.isConnected) sp.textContent = "Copy"; }, 1800); }
+      toast("Address copied", t, "pin");
+    } else toast("Couldn't copy", "Press and hold the address to copy it instead.", "alert");
   },
   "take-photo"(){ $("#photo-input").click(); },
   "sample-photo"(el){ pendingPhoto = {cid: el.dataset.cid, photo:{kind:"sample", seed: Math.floor(Math.random()*100000)}}; render(); },
@@ -1792,7 +1903,7 @@ $("#photo-input").addEventListener("change", async e => {
 window.addEventListener("hashchange", () => { if(!S) return; closeDrawer(); render(); window.scrollTo(0, 0); });
 window.addEventListener("storage", ev => { if(!LIVE && ev.key === KEY){ load(); render(); } });
 if(LIVE){
-  LIVE.attach({S: () => S, setS: v => { S = v; }, render, toast, optimizeRoute, startPoint, closeDrawer});
+  LIVE.attach({S: () => S, setS: v => { S = v; }, render, toast, optimizeRoute, startPoint, routeStart, closeDrawer, fullAddr, navLinks});
   LIVE.start().then(ok => { if(ok) render(); }).catch(err => console.error(err));
 } else render();
 })();

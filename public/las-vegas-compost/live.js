@@ -18,6 +18,8 @@ const SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/u
 const GL_JS = "https://cdn.jsdelivr.net/npm/mapbox-gl@3.34.1/dist/mapbox-gl.js";
 const GL_CSS = "https://cdn.jsdelivr.net/npm/mapbox-gl@3.34.1/dist/mapbox-gl.css";
 const MAP_STYLE = "mapbox://styles/mapbox/streets-v12";
+const NAV_STYLE = "mapbox://styles/mapbox/navigation-day-v1";
+const PIN = {regular:"#1E8E3E", new:"#E37400", final:"#D93025", done:"#9AA0A6", issue:"#A50E0E", dark:"#202124", blue:"#1A73E8"};
 const VEGAS = {lng:-115.15, lat:36.17};
 const BUCKET = "stop-photos";
 const COLORS = {brand:"#2C6B3E", ink:"#152018", amber:"#9A6500", amberSoft:"#FCEBC4", clay:"#A5412A", claySoft:"#F7DDD5", white:"#FFFFFF"};
@@ -60,7 +62,37 @@ function injectStyle(){
   .live-bar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
   .live-bar button{margin-left:4px}
   .live-sync{opacity:.85;font-variant-numeric:tabular-nums}
-  .live-card{max-width:440px;margin:24px auto}`;
+  .live-card{max-width:440px;margin:24px auto}
+  .gpin{position:relative;width:28px;height:38px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+  .gpin svg{width:100%;height:100%;display:block}
+  .gpin span{position:absolute;left:0;right:0;top:5px;text-align:center;color:#fff;font:700 12px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .gpin.cur{width:38px;height:51px}
+  .gpin.cur span{top:8px;font-size:15px}
+  .gsq{width:24px;height:24px;border-radius:7px;color:#fff;font:700 12px/20px system-ui,-apple-system,sans-serif;text-align:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  .gsq.start{border-radius:50%}
+  .me-dot{width:20px;height:20px;border-radius:50%;background:#1A73E8;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 1px 5px rgba(0,0,0,.35);position:relative}
+  .me-dot::after{content:"";position:absolute;inset:-14px;border-radius:50%;background:rgba(26,115,232,.22);animation:lvc-pulse 2s ease-out infinite}
+  @keyframes lvc-pulse{0%{transform:scale(.35);opacity:1}100%{transform:scale(1.3);opacity:0}}
+  @media (prefers-reduced-motion:reduce){.me-dot::after{animation:none;opacity:.6}}
+  .navbox{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+  .nav-banner{display:flex;gap:12px;align-items:center;background:#0B6E3A;color:#fff;padding:12px 14px;min-height:78px}
+  .navbox.arrived .nav-banner{background:#1A73E8}
+  .nb-icon{flex:none;width:58px;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .nb-icon svg{width:38px;height:38px}
+  .nb-dist{font-size:14px;font-weight:800;white-space:nowrap}
+  .nb-text{min-width:0}
+  .nb-instr{font-size:19px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+  .nb-sub{font-size:13px;opacity:.92;margin-top:3px;font-weight:600;overflow-wrap:anywhere}
+  .nav-map-wrap{position:relative}
+  .navbox .gl-map.nav-map{height:min(52vh,440px);border-radius:0}
+  .nav-recenter{position:absolute;left:10px;bottom:34px;z-index:2;display:flex;gap:6px;align-items:center;background:#fff;color:#1A73E8;border:0;border-radius:999px;padding:9px 15px;font-weight:800;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.3);cursor:pointer}
+  .nav-recenter[hidden]{display:none}
+  .nav-recenter svg{width:16px;height:16px}
+  .nav-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px}
+  .nf-eta{display:flex;flex-direction:column;min-width:0}
+  .nf-eta b{font-size:21px;color:var(--brand-strong);line-height:1.15}
+  .nf-eta span{font-size:13px;color:var(--muted);font-weight:600}
+  .nf-go{flex:none}`;
   document.head.appendChild(st);
 }
 function banner(){
@@ -178,6 +210,8 @@ function buildState(rows){
   if(!S.driverId || !S.drivers[S.driverId]){ const mine = rows.drivers.find(d => d.user_id === user.id); S.driverId = mine && role === "driver" ? mine.id : null; }
   rows.customers.forEach(c => { S.customers[c.id] = {id:c.id, name:c.name, phone:c.phone || "", address:c.address || "", city:c.city || "", lat:c.lat ?? VEGAS.lat, lng:c.lng ?? VEGAS.lng, gate:c.gate_code || "", notes:c.notes || "", freq:c.frequency || "Weekly", routeId:c.route_id || null}; });
   rows.routes.forEach(r => { S.routes[r.id] = {id:r.id, name:r.name, driverId:r.driver_id, status:r.status, bucketsLoaded:r.buckets_loaded, facilityDone:r.facility_done, startedAt:ms(r.started_at), endedAt:ms(r.ended_at), stops:[]}; S.routeList.push(r.id); });
+  const starts = ui.routeStarts || {}; // where a route was started from, saved on this device only
+  Object.keys(starts).forEach(id => { const p = starts[id]; if(S.routes[id] && p && isFinite(p.lat) && isFinite(p.lng)) S.routes[id].liveStart = p; });
   rows.route_stops.forEach(x => { const rt = S.routes[x.route_id]; if(rt && S.customers[x.customer_id]) rt.stops.push({cid:x.customer_id, type:x.stop_type, status:x.status, photo:photoIn(x.photo), doneAt:ms(x.done_at), issue:x.issue}); });
   rows.messages.slice().reverse().forEach(m => { const t = {id:m.id, kind:m.kind, at:ms(m.at), body:m.body || ""}; if(m.customer_id) t.cid = m.customer_id; t.photo = photoIn(m.photo); if(m.recipient_count != null) t.count = m.recipient_count; S.texts.push(t); });
   rows.route_runs.slice().reverse().forEach(r => {
@@ -201,7 +235,10 @@ async function reload(first){
   const next = buildState(rows);
   const cur = api.S();
   if(!first && cur && JSON.stringify(dataOnly(cur)) === JSON.stringify(dataOnly(next))) return;
-  if(cur && !first){ next.seenConfirmations = cur.seenConfirmations; next.driverId = cur.driverId; next.driverRouteId = cur.driverRouteId; }
+  if(cur && !first){
+    next.seenConfirmations = cur.seenConfirmations; next.driverId = cur.driverId; next.driverRouteId = cur.driverRouteId;
+    Object.keys(next.routes).forEach(id => { const o = cur.routes && cur.routes[id]; if(o && o.liveStart && !next.routes[id].liveStart) next.routes[id].liveStart = o.liveStart; });
+  }
   api.setS(next); snapshot(next);
   if(!first){ const a = document.activeElement; if(!(a && a.closest && a.closest("#view") && /INPUT|TEXTAREA|SELECT/.test(a.tagName))) api.render(); }
 }
@@ -289,6 +326,21 @@ async function geocodePending(S){
   if(missed.length) toast("Couldn't place " + missed.length + " address" + (missed.length > 1 ? "es" : "") + " on the map", missed.slice(0, 3).join(", ") + (missed.length > 3 ? "…" : "") + ". Check the street and city.", "pin");
   return true;
 }
+// Nearest real street address to a point (used for test routes).
+async function reverseGeocode(p){
+  if(!CFG.mapboxToken) return null;
+  const qs = new URLSearchParams({longitude: Number(p.lng).toFixed(6), latitude: Number(p.lat).toFixed(6), types:"address", limit:"1", country:"us"});
+  if(CFG.permanentGeocoding) qs.set("permanent", "true");
+  const j = await mbx("https://api.mapbox.com/search/geocode/v6/reverse?" + qs);
+  const f = j.features && j.features[0]; if(!f || !f.properties) return null;
+  const pr = f.properties, cx = pr.context || {};
+  const xy = pr.coordinates && isFinite(pr.coordinates.longitude) ? [pr.coordinates.longitude, pr.coordinates.latitude] : (f.geometry && f.geometry.coordinates);
+  const address = pr.name || String(pr.full_address || "").split(",")[0];
+  if(!xy || !address) return null;
+  const place = cx.place && cx.place.name, region = cx.region && (cx.region.region_code || cx.region.name), zip = cx.postcode && cx.postcode.name;
+  const city = place ? place + (region ? ", " + region : "") + (zip ? " " + zip : "") : String(pr.place_formatted || "").replace(/, United States$/, "");
+  return {address, city, lat: xy[1], lng: xy[0]};
+}
 // Drive-time matrix for any number of points, asked for in blocks of up to 24 coordinates.
 async function matrix(points){
   const n = points.length, C = 12;
@@ -309,7 +361,7 @@ async function matrix(points){
 async function refineRoute(S, rt){
   const fixed = rt.stops.filter(x => x.status !== "pending"), free = rt.stops.filter(x => x.status === "pending");
   if(free.length < 3) return false;
-  const anchor = fixed.length ? S.customers[fixed[fixed.length-1].cid] : api.startPoint(S, rt.driverId);
+  const anchor = fixed.length ? S.customers[fixed[fixed.length-1].cid] : api.routeStart(S, rt);
   // points in a fixed order (by customer id) so a cached matrix lines up whatever the stop order is
   const canon = free.slice().sort((a, b) => a.cid < b.cid ? -1 : a.cid > b.cid ? 1 : 0);
   const pts = [anchor, ...canon.map(x => S.customers[x.cid]), S.facility];
@@ -373,7 +425,7 @@ async function fixRunMiles(S){
     if(last.route_runs.has(c.id) || c._miles) continue;
     c._miles = true;
     const rt = S.routes[c.routeId]; if(!rt) continue;
-    const pts = [api.startPoint(S, c.driverId || rt.driverId), ...rt.stops.filter(x => x.status !== "pending").map(x => S.customers[x.cid]).filter(Boolean), S.facility];
+    const pts = [(rt.liveStart ? api.routeStart(S, rt) : api.startPoint(S, c.driverId || rt.driverId)), ...rt.stops.filter(x => x.status !== "pending").map(x => S.customers[x.cid]).filter(Boolean), S.facility];
     try{ const r = await directions(pts); c.miles = Math.round(r.meters / 1609.344 * 10) / 10; changed = true; }catch(e){ console.warn("mileage kept as estimate", e); }
   }
   return changed;
@@ -393,32 +445,57 @@ function mapSlot(route, opts){
   return `<div class="map gl-map" data-gl-route="${esc(route.id)}" style="aspect-ratio:640/${h}" role="img" aria-label="Map of ${esc(route.name)} route with ${route.stops.length} stops"></div>`;
 }
 function routeGeo(S, rt){
-  const st = api.startPoint(S, rt.driverId);
+  const st = api.routeStart(S, rt);
   const cur = rt.status === "active" ? rt.stops.findIndex(x => x.status === "pending") : -1;
-  const feats = rt.stops.map((x, i) => {
-    const c = S.customers[x.cid]; if(!c) return null;
-    let fill = COLORS.white, stroke = COLORS.brand, text = COLORS.brand;
-    if(x.type === "new"){ fill = COLORS.amberSoft; stroke = COLORS.amber; text = COLORS.amber; }
-    if(x.type === "final"){ fill = COLORS.claySoft; stroke = COLORS.clay; text = COLORS.clay; }
-    if(x.status === "done"){ fill = COLORS.brand; stroke = COLORS.brand; text = COLORS.white; }
-    if(x.status === "issue"){ fill = COLORS.clay; stroke = COLORS.clay; text = COLORS.white; }
-    return {type:"Feature", geometry:{type:"Point", coordinates:[c.lng, c.lat]}, properties:{label:String(i + 1), fill, stroke, text, r: i === cur ? 12 : 9}};
-  }).filter(Boolean);
-  feats.push({type:"Feature", geometry:{type:"Point", coordinates:[S.facility.lng, S.facility.lat]}, properties:{label:"F", fill:COLORS.ink, stroke:COLORS.ink, text:COLORS.white, r:10, name:S.facility.short || "Facility"}});
-  if(st !== S.facility) feats.push({type:"Feature", geometry:{type:"Point", coordinates:[st.lng, st.lat]}, properties:{label:"S", fill:COLORS.ink, stroke:COLORS.ink, text:COLORS.white, r:10, name:"Start"}});
+  const pins = [];
+  rt.stops.forEach((x, i) => {
+    const c = S.customers[x.cid]; if(!c || !isFinite(c.lat) || !isFinite(c.lng)) return;
+    const color = x.status === "done" ? PIN.done : x.status === "issue" ? PIN.issue : (PIN[x.type] || PIN.regular);
+    pins.push({kind:"stop", lng:c.lng, lat:c.lat, label: x.status === "done" ? "✓" : x.status === "issue" ? "!" : String(i + 1), color, cur: i === cur, title: c.name + (c.address ? " · " + c.address : "")});
+  });
+  pins.push({kind:"facility", lng:S.facility.lng, lat:S.facility.lat, label:"F", color:PIN.dark, title:S.facility.name});
+  if(st !== S.facility) pins.push({kind:"start", lng:st.lng, lat:st.lat, label:"S", color: st.here ? PIN.blue : PIN.dark, title: st.here ? "Where you started" : "Start"});
   const pts = [st, ...rt.stops.map(x => S.customers[x.cid]).filter(Boolean), S.facility];
-  return {points:{type:"FeatureCollection", features:feats}, pts};
+  return {pins, pts};
 }
 function lineFeature(coords){ return {type:"Feature", geometry:{type:"LineString", coordinates:coords}, properties:{}}; }
+function pinEl(p){
+  const el = document.createElement("div");
+  el.title = p.title || "";
+  if(p.kind !== "stop"){ el.className = "gsq " + p.kind; el.style.background = p.color; el.textContent = p.label; return el; }
+  el.className = "gpin" + (p.cur ? " cur" : "");
+  el.innerHTML = `<svg viewBox="0 0 30 40" aria-hidden="true"><path d="M15 38.6S27.6 24.7 27.6 14.6A12.6 12.6 0 0 0 2.4 14.6C2.4 24.7 15 38.6 15 38.6z" fill="${p.color}" stroke="#fff" stroke-width="2"/></svg><span>${esc(p.label)}</span>`;
+  return el;
+}
+// Draws map pins as HTML markers (teardrop pins with the stop number, like Google Maps).
+function setPins(m, pins){
+  const sig = JSON.stringify(pins.map(p => [p.kind, p.label, p.color, !!p.cur, +Number(p.lat).toFixed(5), +Number(p.lng).toFixed(5)]));
+  if(m.pinSig === sig) return; m.pinSig = sig;
+  (m.markers || []).forEach(mk => mk.remove());
+  m.markers = pins.slice().sort((a, b) => (a.cur ? 1 : 0) - (b.cur ? 1 : 0))
+    .map(p => new window.mapboxgl.Marker({element: pinEl(p), anchor: p.kind === "stop" ? "bottom" : "center"}).setLngLat([p.lng, p.lat]).addTo(m.map));
+}
+// The driver's own location: a blue dot, like Google Maps.
+let here = null, geoErr = 0;
+function placeMe(m){
+  if(!m.map || !here) return;
+  if(!m.me){ const el = document.createElement("div"); el.className = "me-dot"; el.title = "You"; m.me = new window.mapboxgl.Marker({element: el}); }
+  m.me.setLngLat([here.lng, here.lat]);
+  if(!m.meOn){ m.me.addTo(m.map); m.meOn = true; }
+}
+function addLineLayers(map, src){
+  map.addLayer({id:src + "-case", type:"line", source:src, layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":"#1557B0", "line-width":9, "line-opacity":0.95}});
+  map.addLayer({id:src + "-line", type:"line", source:src, layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":"#4285F4", "line-width":5.5}});
+}
 function drawRoute(m, rt){
   const S = api.S(); if(!m.ready || !rt) return;
   const g = routeGeo(S, rt);
-  m.map.getSource("pts").setData(g.points);
+  setPins(m, g.pins); placeMe(m);
   const fitSig = g.pts.map(ptKey).sort().join(";");
   if(m.fitSig !== fitSig){
     m.fitSig = fitSig;
     const b = new window.mapboxgl.LngLatBounds(); g.pts.forEach(p => b.extend([p.lng, p.lat]));
-    m.map.fitBounds(b, {padding:36, duration:0, maxZoom:15});
+    m.map.fitBounds(b, {padding:{top:50, bottom:30, left:36, right:36}, duration:0, maxZoom:15});
   }
   const lineSig = g.pts.map(ptKey).join(";");
   if(m.lineSig !== lineSig){
@@ -435,23 +512,234 @@ async function mount(slot){
   await loadGL();
   const map = new window.mapboxgl.Map({container: slot, style: MAP_STYLE, center:[VEGAS.lng, VEGAS.lat], zoom:10, attributionControl:true, cooperativeGestures:true});
   map.addControl(new window.mapboxgl.NavigationControl({showCompass:false}), "top-right");
-  const m = {el: slot, map, ready:false, fitSig:"", lineSig:""};
+  const m = {el: slot, map, ready:false, fitSig:"", lineSig:"", pinSig:"", markers:[]};
   maps.set(id, m);
   while(maps.size > 6){ const [oldId, old] = maps.entries().next().value; old.map.remove(); maps.delete(oldId); }
   map.on("load", () => {
     map.addSource("line", {type:"geojson", data: lineFeature([])});
-    map.addSource("pts", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
-    map.addLayer({id:"line", type:"line", source:"line", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":COLORS.brand, "line-width":4, "line-opacity":0.75}});
-    map.addLayer({id:"dots", type:"circle", source:"pts", paint:{"circle-radius":["get","r"], "circle-color":["get","fill"], "circle-stroke-color":["get","stroke"], "circle-stroke-width":2}});
-    map.addLayer({id:"nums", type:"symbol", source:"pts", layout:{"text-field":["get","label"], "text-size":11, "text-font":["DIN Pro Medium","Arial Unicode MS Regular"], "text-allow-overlap":true, "text-ignore-placement":true}, paint:{"text-color":["get","text"]}});
-    map.addLayer({id:"names", type:"symbol", source:"pts", filter:["has","name"], layout:{"text-field":["get","name"], "text-size":12, "text-offset":[0,1.5], "text-anchor":"top", "text-font":["DIN Pro Medium","Arial Unicode MS Regular"]}, paint:{"text-color":COLORS.ink, "text-halo-color":COLORS.white, "text-halo-width":1.5}});
+    addLineLayers(map, "line");
     m.ready = true;
     drawRoute(m, api.S().routes[id]);
   });
 }
+
+/* ---------- driving view: Google Maps-style directions to the next stop ---------- */
+const navs = new Map(); // route id -> nav state (one live map per route, kept across re-renders)
+const SVG = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const TURN = {
+  straight:'<path d="M12 21V4M6 10l6-6 6 6"/>',
+  right:'<path d="M6 21v-8a4 4 0 0 1 4-4h10M15 4l5 5-5 5"/>',
+  left:'<path d="M18 21v-8a4 4 0 0 0-4-4H4M9 4 4 9l5 5"/>',
+  slightRight:'<path d="M8 21v-7l9-9M10 5h7v7"/>',
+  slightLeft:'<path d="M16 21v-7L7 5M14 5H7v7"/>',
+  uturn:'<path d="M7 21V9a5 5 0 0 1 10 0v6M13 11l4 4 4-4"/>',
+  round:'<circle cx="12" cy="10" r="5"/><path d="M12 15v6M17 10h3"/>',
+  arrive:'<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>'
+};
+const RECENTER = SVG('<path d="M12 2 4.5 20.5 12 17l7.5 3.5z"/>');
+function turnIcon(st){
+  const m = st.mod || "", t = st.type || "";
+  if(t === "arrive") return SVG(TURN.arrive);
+  if(t === "roundabout" || t === "rotary" || t === "roundabout turn") return SVG(TURN.round);
+  if(/uturn/.test(m)) return SVG(TURN.uturn);
+  if(m === "right" || m === "sharp right") return SVG(TURN.right);
+  if(m === "left" || m === "sharp left") return SVG(TURN.left);
+  if(m === "slight right") return SVG(TURN.slightRight);
+  if(m === "slight left") return SVG(TURN.slightLeft);
+  return SVG(TURN.straight);
+}
+function shortSt(t){
+  return String(t || "")
+    .replace(/\b(West|East|North|South)\b(?= [A-Z0-9])/g, w => w[0])
+    .replace(/ (Road|Street|Avenue|Boulevard|Drive|Lane|Parkway|Court|Highway|Circle|Place|Terrace)\b/g, (x, w) => " " + ({Road:"Rd", Street:"St", Avenue:"Ave", Boulevard:"Blvd", Drive:"Dr", Lane:"Ln", Parkway:"Pkwy", Court:"Ct", Highway:"Hwy", Circle:"Cir", Place:"Pl", Terrace:"Ter"})[w]);
+}
+function havM(a, b){
+  const R = 6371000, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
+  const x = Math.sin(dLat/2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng/2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+// How far (meters) a point is from a route line.
+function offLine(line, p){
+  if(!line || line.length < 2) return 0;
+  const kx = 111320 * Math.cos(p.lat * Math.PI / 180), ky = 110540;
+  let best = Infinity;
+  for(let i = 0; i < line.length - 1; i++){
+    const ax = (line[i][0] - p.lng) * kx, ay = (line[i][1] - p.lat) * ky, bx = (line[i+1][0] - p.lng) * kx, by = (line[i+1][1] - p.lat) * ky;
+    const dx = bx - ax, dy = by - ay, L = dx*dx + dy*dy;
+    const t = L ? Math.max(0, Math.min(1, -(ax*dx + ay*dy) / L)) : 0;
+    best = Math.min(best, Math.hypot(ax + t*dx, ay + t*dy));
+  }
+  return best;
+}
+function fmtDist(m){
+  const ft = m * 3.28084;
+  if(ft < 1000) return (ft < 100 ? Math.max(10, Math.round(ft / 10) * 10) : Math.round(ft / 50) * 50) + " ft";
+  const mi = m / 1609.344;
+  return (mi < 10 ? mi.toFixed(1) : Math.round(mi)) + " mi";
+}
+async function navDirections(from, to){
+  const coords = `${from.lng.toFixed(6)},${from.lat.toFixed(6)};${Number(to.lng).toFixed(6)},${Number(to.lat).toFixed(6)}`;
+  const j = await mbx(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${coords}?steps=true&geometries=geojson&overview=full`);
+  if(j.code !== "Ok" || !j.routes || !j.routes[0]) throw new Error("Directions " + j.code);
+  const r = j.routes[0], leg = r.legs[0] || {steps:[]};
+  const steps = leg.steps.map(x => ({instr: x.maneuver.instruction || "", type: x.maneuver.type || "", mod: x.maneuver.modifier || "", dist: x.distance || 0, loc: {lng: x.maneuver.location[0], lat: x.maneuver.location[1]}}));
+  return {duration: r.duration, distance: r.distance, line: r.geometry.coordinates, steps, from: {lat: from.lat, lng: from.lng}};
+}
+// Meters and seconds left, from where the driver is now.
+function remaining(n){
+  const st = n.res.steps, k = Math.min(n.k, st.length - 1);
+  let m = here ? havM(here, st[k].loc) : 0;
+  for(let i = k; i < st.length; i++) m += st[i].dist;
+  m = Math.min(m, n.res.distance || m);
+  const secs = n.res.distance ? n.res.duration * (m / n.res.distance) : n.res.duration;
+  return {m, secs};
+}
+function bannerHtml(n, t){
+  const where = esc(t.address || t.name || "the next stop");
+  if(n && n.arrived) return `<div class="nb-icon">${SVG(TURN.arrive)}</div><div class="nb-text"><div class="nb-instr">You're here</div><div class="nb-sub">${where}. Take the photo below.</div></div>`;
+  if(!here) return `<div class="nb-icon">${SVG(TURN.straight)}</div><div class="nb-text"><div class="nb-instr">Head to ${esc(shortSt(t.address ? t.address.split(",")[0] : t.name))}</div><div class="nb-sub">${geoErr === 1 ? "Location is off. Allow it for this site to see your turns here." : "Finding your location…"}</div></div>`;
+  if(!n || !n.res || !n.res.fromHere) return `<div class="nb-icon">${SVG(TURN.straight)}</div><div class="nb-text"><div class="nb-instr">Getting directions…</div><div class="nb-sub">${where}</div></div>`;
+  const st = n.res.steps, k = Math.min(n.k, st.length - 1), s = st[k], then = st[k + 1];
+  const instr = s.type === "arrive" ? "Arrive at " + (t.address ? t.address.split(",")[0] : "the stop") : s.instr;
+  return `<div class="nb-icon">${turnIcon(s)}<div class="nb-dist">${fmtDist(havM(here, s.loc))}</div></div>
+    <div class="nb-text"><div class="nb-instr">${esc(shortSt(instr))}</div><div class="nb-sub">${then && then.type !== "arrive" ? "Then " + esc(shortSt(then.instr)).replace(/^\w/, c => c.toLowerCase()) : where}</div></div>`;
+}
+function footHtml(n, t){
+  const L = api.navLinks(t);
+  let left = `<div class="nf-eta"><b>${esc(t.name || "Next stop")}</b><span>${esc(t.address || "")}</span></div>`;
+  if(n && n.res && n.res.fromHere && !n.arrived && here){
+    const r = remaining(n), mins = Math.max(1, Math.round(r.secs / 60)), mi = r.m / 1609.344;
+    const at = new Date(Date.now() + r.secs * 1000).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+    left = `<div class="nf-eta"><b>${mins} min</b><span>${mi < 0.1 ? "under 0.1" : mi.toFixed(1)} mi · arrive ${esc(at)}</span></div>`;
+  }
+  return left + `<a class="btn primary nf-go" href="${esc(L.google)}" target="_blank" rel="noopener">${RECENTER}Google Maps</a>`;
+}
+function navSlot(rt, t){
+  if(!CFG.mapboxToken || !t || !isFinite(t.lat) || !isFinite(t.lng)) return null;
+  const n = navs.get(rt.id), same = n && n.target && n.target.key === t.key ? n : null;
+  return `<div class="navbox" data-gl-nav="${esc(rt.id)}" data-target="${esc(JSON.stringify(t))}">
+    <div class="nav-banner" data-nav="banner" aria-live="polite">${bannerHtml(same, t)}</div>
+    <div class="nav-map-wrap"><div class="gl-map nav-map" data-nav="map" role="img" aria-label="Map with directions to ${esc(t.name || "the next stop")}"></div><button type="button" class="nav-recenter" data-nav="recenter" hidden>${RECENTER}Re-center</button></div>
+    <div class="nav-foot" data-nav="foot">${footHtml(same, t)}</div>
+  </div>`;
+}
+function setTarget(n, t){
+  if(!n.target || n.target.key !== t.key){ n.res = null; n.k = 1; n.userMoved = false; n.fitKey = ""; n.arrived = false; n.failAt = 0; }
+  n.target = t;
+}
+function updateNavUI(n){
+  if(!n.el || !n.target) return;
+  const b = n.el.querySelector('[data-nav="banner"]'), f = n.el.querySelector('[data-nav="foot"]');
+  if(b) b.innerHTML = bannerHtml(n, n.target);
+  if(f) f.innerHTML = footHtml(n, n.target);
+  n.el.classList.toggle("arrived", !!n.arrived);
+}
+function drawNav(n){
+  if(!n.ready) return;
+  const t = n.target;
+  setPins(n, [t.key === "facility" ? {kind:"facility", lng:t.lng, lat:t.lat, label:"F", color:PIN.dark, title:t.name} : {kind:"stop", lng:t.lng, lat:t.lat, label:t.label, color:PIN[t.type] || PIN.regular, cur:true, title:t.name}]);
+  n.map.getSource("nav").setData(lineFeature(n.res ? n.res.line : []));
+  placeMe(n);
+}
+function wantRoute(n){
+  if(n.busy || n.arrived) return false;
+  if(n.failAt && Date.now() - n.failAt < 15000) return false;
+  if(!n.res || n.res.key !== n.target.key) return !!(here || n.target.from);
+  if(!here) return false;
+  if(!n.res.fromHere) return true;
+  const since = Date.now() - n.reqAt, moved = havM(here, n.res.from);
+  if(moved > 500) return true;
+  if(since > 30000 && moved > 50) return true;
+  if(since > 8000 && offLine(n.res.line, here) > 70) return true;
+  return false;
+}
+async function fetchNav(n){
+  const t = n.target, from = here ? {lat:here.lat, lng:here.lng} : t.from;
+  if(!from) return;
+  n.busy = true; n.reqAt = Date.now();
+  try{
+    const r = await navDirections(from, t);
+    if(!n.target || n.target.key !== t.key) return;
+    r.key = t.key; r.fromHere = !!here; n.res = r; n.k = 1; n.failAt = 0;
+    drawNav(n); updateNavUI(n); navCamera(n, false);
+  }catch(e){ console.warn("directions", e); n.failAt = Date.now(); }
+  finally{ n.busy = false; }
+}
+// Camera: while driving it follows you, pointed the way you're going; stopped, it shows you and the stop.
+function navCamera(n, force){
+  if(!n.ready || (n.userMoved && !force)) return;
+  const t = n.target, map = n.map;
+  if(here && here.speed != null && here.speed > 3 && !n.arrived){
+    map.easeTo({center:[here.lng, here.lat], zoom:16.3, pitch:50, bearing: here.heading != null ? here.heading : map.getBearing(), duration:1000, essential:true});
+    n.fitKey = ""; return;
+  }
+  const pts = [t]; if(here) pts.push(here); else if(t.from) pts.push(t.from);
+  const key = pts.map(p => Number(p.lat).toFixed(3) + "," + Number(p.lng).toFixed(3)).join(";") + (n.res ? "|" + n.res.line.length : "");
+  if(!force && key === n.fitKey) return;
+  n.fitKey = key;
+  const b = new window.mapboxgl.LngLatBounds(); pts.forEach(p => b.extend([p.lng, p.lat]));
+  if(n.res && n.res.line) n.res.line.forEach(c => b.extend(c));
+  const cam = map.cameraForBounds(b, {padding:{top:60, bottom:40, left:40, right:40}, maxZoom:16});
+  if(cam) map.easeTo(Object.assign(cam, {pitch:0, bearing:0, duration: force ? 700 : 450, essential:true}));
+}
+function navTick(n, force){
+  if(!n.ready || !n.el || !n.el.isConnected) return;
+  placeMe(n);
+  if(here && n.res && n.res.fromHere){ while(n.k < n.res.steps.length - 1 && havM(here, n.res.steps[n.k].loc) < 30) n.k++; }
+  n.arrived = !!(here && havM(here, n.target) < 60);
+  updateNavUI(n);
+  if(wantRoute(n)) fetchNav(n);
+  navCamera(n, force);
+}
+async function mountNav(slot){
+  const id = slot.dataset.glNav;
+  let t; try{ t = JSON.parse(slot.dataset.target); }catch(e){ return; }
+  let n = navs.get(id);
+  if(n){
+    slot.replaceWith(n.el); setTarget(n, t);
+    if(n.ready){ n.map.resize(); drawNav(n); navTick(n, true); } else updateNavUI(n);
+    return;
+  }
+  slot.dataset.glMounted = "1";
+  n = {id, el: slot, target: null, res: null, busy:false, reqAt:0, k:1, userMoved:false, ready:false, fitKey:"", pinSig:"", markers:[]};
+  navs.set(id, n);
+  while(navs.size > 3){ const [oid, o] = navs.entries().next().value; if(o.map) o.map.remove(); navs.delete(oid); }
+  setTarget(n, t);
+  await loadGL();
+  const map = new window.mapboxgl.Map({container: slot.querySelector('[data-nav="map"]'), style: NAV_STYLE, center:[t.lng, t.lat], zoom:13, attributionControl:true, cooperativeGestures:true});
+  n.map = map;
+  map.addControl(new window.mapboxgl.NavigationControl({showCompass:true, visualizePitch:true}), "top-right");
+  const rc = slot.querySelector('[data-nav="recenter"]');
+  rc.addEventListener("click", () => { n.userMoved = false; rc.hidden = true; navCamera(n, true); });
+  const userMove = e => { if(e && e.originalEvent){ n.userMoved = true; rc.hidden = false; } };
+  ["dragstart", "zoomstart", "rotatestart", "pitchstart"].forEach(ev => map.on(ev, userMove));
+  map.on("load", () => {
+    map.addSource("nav", {type:"geojson", data: lineFeature([])});
+    addLineLayers(map, "nav");
+    n.ready = true;
+    drawNav(n); navTick(n, true);
+  });
+}
+// Keep the screen on while the driving view is open (like a GPS app).
+let wake = null;
+async function keepAwake(on){
+  try{
+    if(on && !wake && navigator.wakeLock && document.visibilityState === "visible"){ wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); }
+    else if(!on && wake){ const w = wake; wake = null; await w.release(); }
+  }catch(e){}
+}
+document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible" && document.querySelector(".navbox")) keepAwake(true); });
+function onHere(pos){
+  here = pos; geoErr = 0;
+  maps.forEach(m => { if(m.ready && m.el.isConnected) placeMe(m); });
+  navs.forEach(n => navTick(n, false));
+}
+function onHereError(code){ geoErr = code; navs.forEach(n => { if(n.el && n.el.isConnected) updateNavUI(n); }); }
 function afterRender(){
   if(!CFG.mapboxToken) return;
   document.querySelectorAll("[data-gl-route]:not([data-gl-mounted])").forEach(slot => { mount(slot).catch(e => { console.warn(e); slot.innerHTML = `<p class="muted" style="padding:16px">Map didn't load.</p>`; }); });
+  document.querySelectorAll("[data-gl-nav]:not([data-gl-mounted])").forEach(slot => { mountNav(slot).catch(e => { console.warn(e); const box = slot.querySelector('[data-nav="map"]'); if(box) box.innerHTML = `<p class="muted" style="padding:16px">Map didn't load.</p>`; }); });
+  keepAwake(!!document.querySelector(".navbox"));
 }
 
 /* ---------- save ---------- */
@@ -535,14 +823,16 @@ async function runSync(){
 }
 function schedule(delay){ clearTimeout(timer); timer = setTimeout(runSync, delay); }
 function save(S){
-  try{ localStorage.setItem(localKey(), JSON.stringify({seenConfirmations:S.seenConfirmations, driverId:S.driverId, driverRouteId:S.driverRouteId})); }catch(e){}
+  const routeStarts = {};
+  S.routeList.forEach(id => { const r = S.routes[id]; if(r && r.liveStart && r.status !== "done") routeStarts[id] = r.liveStart; });
+  try{ localStorage.setItem(localKey(), JSON.stringify({seenConfirmations:S.seenConfirmations, driverId:S.driverId, driverRouteId:S.driverRouteId, routeStarts})); }catch(e){}
   if(!biz) return;
   dirty = true; schedule(500);
 }
 async function flush(){ if(timer){ clearTimeout(timer); await runSync(); } let n = 0; while(syncing && n++ < 50) await sleep(100); }
 
 window.LVC_LIVE = {
-  attach(a){ api = a; }, start, save, mapSlot, afterRender, legMiles, flush,
+  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, onHere, onHereError,
   get ready(){ return !!biz; }, get role(){ return role; }
 };
 })();
