@@ -26,7 +26,7 @@ const COLORS = {brand:"#2C6B3E", ink:"#152018", amber:"#9A6500", amberSoft:"#FCE
 const TABLES = ["facilities","drivers","routes","customers","route_stops","messages","route_runs"];
 const PK = {facilities:["id"], drivers:["id"], routes:["id"], customers:["id"], route_stops:["route_id","customer_id"], messages:["id"], route_runs:["id"]};
 
-let api = null, sb = null, user = null, biz = null, role = null;
+let api = null, sb = null, user = null, biz = null, role = null, myDriverId = null;
 let last = {};                 // table -> Map(key -> JSON of the row as last saved)
 let lastSettings = "";
 let timer = null, syncing = false, dirty = false, failCount = 0, reloadTimer = null, lastLoad = 0;
@@ -207,7 +207,8 @@ function buildState(rows){
     seenConfirmations: ui.seenConfirmations || 0, driverId: ui.driverId || null, driverRouteId: ui.driverRouteId || null
   };
   rows.drivers.forEach(d => { S.drivers[d.id] = {id:d.id, name:d.name, phone:d.phone || "", color:d.color || COLORS.brand, owner:!!d.is_owner, start:d.start || {kind:"facility"}}; });
-  if(!S.driverId || !S.drivers[S.driverId]){ const mine = rows.drivers.find(d => d.user_id === user.id); S.driverId = mine && role === "driver" ? mine.id : null; }
+  const mine = rows.drivers.find(d => d.user_id === user.id); myDriverId = mine ? mine.id : null;
+  if(!S.driverId || !S.drivers[S.driverId]) S.driverId = mine && role === "driver" ? mine.id : null;
   rows.customers.forEach(c => { S.customers[c.id] = {id:c.id, name:c.name, phone:c.phone || "", address:c.address || "", city:c.city || "", lat:c.lat ?? VEGAS.lat, lng:c.lng ?? VEGAS.lng, gate:c.gate_code || "", notes:c.notes || "", freq:c.frequency || "Weekly", routeId:c.route_id || null}; });
   rows.routes.forEach(r => { S.routes[r.id] = {id:r.id, name:r.name, driverId:r.driver_id, status:r.status, bucketsLoaded:r.buckets_loaded, facilityDone:r.facility_done, startedAt:ms(r.started_at), endedAt:ms(r.ended_at), stops:[]}; S.routeList.push(r.id); });
   const starts = ui.routeStarts || {}; // where a route was started from, saved on this device only
@@ -507,14 +508,17 @@ function drawRoute(m, rt){
 async function mount(slot){
   const id = slot.dataset.glRoute;
   const have = maps.get(id);
-  if(have){ slot.replaceWith(have.el); have.map.resize(); drawRoute(have, api.S().routes[id]); maps.delete(id); maps.set(id, have); return; }
+  if(have){ slot.replaceWith(have.el); if(have.map) have.map.resize(); drawRoute(have, api.S().routes[id]); maps.delete(id); maps.set(id, have); return; }
   slot.dataset.glMounted = "1";
+  // registered before the map library loads, so a re-render in the meantime reuses this one
+  const m = {el: slot, map:null, ready:false, fitSig:"", lineSig:"", pinSig:"", markers:[]};
+  maps.set(id, m);
+  while(maps.size > 6){ const [oldId, old] = maps.entries().next().value; if(old.map) old.map.remove(); maps.delete(oldId); }
   await loadGL();
+  if(maps.get(id) !== m) return;
   const map = new window.mapboxgl.Map({container: slot, style: MAP_STYLE, center:[VEGAS.lng, VEGAS.lat], zoom:10, attributionControl:true, cooperativeGestures:true});
   map.addControl(new window.mapboxgl.NavigationControl({showCompass:false}), "top-right");
-  const m = {el: slot, map, ready:false, fitSig:"", lineSig:"", pinSig:"", markers:[]};
-  maps.set(id, m);
-  while(maps.size > 6){ const [oldId, old] = maps.entries().next().value; old.map.remove(); maps.delete(oldId); }
+  m.map = map;
   map.on("load", () => {
     map.addSource("line", {type:"geojson", data: lineFeature([])});
     addLineLayers(map, "line");
@@ -706,6 +710,7 @@ async function mountNav(slot){
   while(navs.size > 3){ const [oid, o] = navs.entries().next().value; if(o.map) o.map.remove(); navs.delete(oid); }
   setTarget(n, t);
   await loadGL();
+  if(navs.get(id) !== n) return;
   const map = new window.mapboxgl.Map({container: slot.querySelector('[data-nav="map"]'), style: NAV_STYLE, center:[t.lng, t.lat], zoom:13, attributionControl:true, cooperativeGestures:true});
   n.map = map;
   map.addControl(new window.mapboxgl.NavigationControl({showCompass:true, visualizePitch:true}), "top-right");
@@ -832,7 +837,7 @@ function save(S){
 async function flush(){ if(timer){ clearTimeout(timer); await runSync(); } let n = 0; while(syncing && n++ < 50) await sleep(100); }
 
 window.LVC_LIVE = {
-  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, onHere, onHereError,
-  get ready(){ return !!biz; }, get role(){ return role; }
+  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, geocode, onHere, onHereError,
+  get ready(){ return !!biz; }, get role(){ return role; }, get myDriverId(){ return myDriverId; }
 };
 })();
