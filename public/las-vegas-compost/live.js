@@ -92,7 +92,36 @@ function injectStyle(){
   .nf-eta{display:flex;flex-direction:column;min-width:0}
   .nf-eta b{font-size:21px;color:var(--brand-strong);line-height:1.15}
   .nf-eta span{font-size:13px;color:var(--muted);font-weight:600}
-  .nf-go{flex:none}`;
+  .nf-go{flex:none}
+  html.lvc-driving,html.lvc-driving body{overflow:hidden;overscroll-behavior:none}
+  .nav-expand{position:absolute;left:10px;top:10px;z-index:2;display:flex;gap:6px;align-items:center;background:#fff;color:#202124;border:0;border-radius:999px;padding:9px 14px;font-weight:800;font-size:14px;box-shadow:0 1px 6px rgba(0,0,0,.3);cursor:pointer}
+  .nav-expand svg{width:16px;height:16px}
+  .nav-fabs{display:none}
+  .nav-fab{width:50px;height:50px;border-radius:50%;background:#fff;color:#202124;border:0;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .nav-fab svg{width:22px;height:22px}
+  .nav-fab.off{color:#9AA0A6}
+  .me-arrow{width:44px;height:44px}
+  .me-arrow svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+  .navbox.full{position:fixed;inset:0;z-index:50;border-radius:0;border:0;box-shadow:none;background:#E8EAED}
+  .navbox.full .nav-map-wrap{position:absolute;inset:0}
+  .navbox.full .gl-map.nav-map{height:100%;width:100%}
+  .navbox.full .nav-banner{position:absolute;z-index:3;top:calc(8px + env(safe-area-inset-top,0px));left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.35);min-height:88px;padding:14px 16px}
+  .navbox.full .nb-instr{font-size:23px}
+  .navbox.full .nb-icon{width:64px}
+  .navbox.full .nb-icon svg{width:44px;height:44px}
+  .navbox.full .nb-dist{font-size:16px}
+  .navbox.full .nav-expand{display:none}
+  .navbox.full .nav-fabs{display:flex;flex-direction:column;gap:12px;position:absolute;z-index:3;right:max(12px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-60%)}
+  .navbox.full .mapboxgl-ctrl-top-right{display:none}
+  .navbox.full .nav-recenter{bottom:calc(var(--foot-h,150px) + 14px)}
+  .navbox.full .nav-foot{position:absolute;z-index:3;left:0;right:0;bottom:0;border-radius:22px 22px 0 0;background:var(--surface);box-shadow:0 -6px 22px rgba(0,0,0,.28);padding:16px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));flex-direction:column;align-items:stretch;gap:12px}
+  .df-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .df-eta b{font-size:26px;color:var(--brand-strong);line-height:1.1;display:block}
+  .df-eta span{font-size:14px;color:var(--muted);font-weight:700}
+  .df-stop{font-size:14px;color:var(--ink);font-weight:700;min-width:0}
+  .df-stop span{display:block;color:var(--muted);font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .df-btns{display:flex;gap:10px}
+  .df-btns > *{flex:1;justify-content:center}`;
   document.head.appendChild(st);
 }
 function banner(){
@@ -583,10 +612,11 @@ function fmtDist(m){
 }
 async function navDirections(from, to){
   const coords = `${from.lng.toFixed(6)},${from.lat.toFixed(6)};${Number(to.lng).toFixed(6)},${Number(to.lat).toFixed(6)}`;
-  const j = await mbx(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${coords}?steps=true&geometries=geojson&overview=full`);
+  const j = await mbx(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${coords}?steps=true&geometries=geojson&overview=full&voice_instructions=true&voice_units=imperial&language=en`);
   if(j.code !== "Ok" || !j.routes || !j.routes[0]) throw new Error("Directions " + j.code);
   const r = j.routes[0], leg = r.legs[0] || {steps:[]};
-  const steps = leg.steps.map(x => ({instr: x.maneuver.instruction || "", type: x.maneuver.type || "", mod: x.maneuver.modifier || "", dist: x.distance || 0, loc: {lng: x.maneuver.location[0], lat: x.maneuver.location[1]}}));
+  const steps = leg.steps.map(x => ({instr: x.maneuver.instruction || "", type: x.maneuver.type || "", mod: x.maneuver.modifier || "", dist: x.distance || 0, loc: {lng: x.maneuver.location[0], lat: x.maneuver.location[1]},
+    voice: (x.voiceInstructions || []).map(v => ({d: v.distanceAlongGeometry, text: v.announcement})).filter(v => v.text)}));
   return {duration: r.duration, distance: r.distance, line: r.geometry.coordinates, steps, from: {lat: from.lat, lng: from.lng}};
 }
 // Meters and seconds left, from where the driver is now.
@@ -610,6 +640,19 @@ function bannerHtml(n, t){
 }
 function footHtml(n, t){
   const L = api.navLinks(t);
+  if(n && n.full){
+    let eta = `<div class="df-eta"><b>${esc(t.key === "facility" ? "Last stop" : "Stop " + t.label)}</b><span>${here ? "Getting directions…" : "Waiting for your location…"}</span></div>`;
+    if(n.res && n.res.fromHere && here && !n.arrived){
+      const r = remaining(n), mins = Math.max(1, Math.round(r.secs / 60)), mi = r.m / 1609.344;
+      const at = new Date(Date.now() + r.secs * 1000).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+      eta = `<div class="df-eta"><b>${mins} min</b><span>${mi < 0.1 ? "under 0.1" : mi.toFixed(1)} mi · arrive ${esc(at)}</span></div>`;
+    } else if(n.arrived) eta = `<div class="df-eta"><b>You're here</b><span>${esc(t.key === "facility" ? "Dump everything" : "Take the photo")}</span></div>`;
+    const done = t.key === "facility"
+      ? `<button type="button" class="btn primary" data-nav="here">${SVG('<path d="M5 12l5 5 9-10"/>')}I'm here</button>`
+      : `<button type="button" class="btn primary" data-nav="photo">${SVG('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>')}${n.arrived ? "Take the photo" : "I'm here · photo"}</button>`;
+    return `<div class="df-row">${eta}<div class="df-stop" style="text-align:right">${esc(t.name || "")}<span>${esc(t.address ? t.address.split(",")[0] : "")}</span></div></div>
+      <div class="df-btns">${done}<a class="btn" href="${esc(L.google)}" target="_blank" rel="noopener">${RECENTER}Google Maps</a></div>`;
+  }
   let left = `<div class="nf-eta"><b>${esc(t.name || "Next stop")}</b><span>${esc(t.address || "")}</span></div>`;
   if(n && n.res && n.res.fromHere && !n.arrived && here){
     const r = remaining(n), mins = Math.max(1, Math.round(r.secs / 60)), mi = r.m / 1609.344;
@@ -623,19 +666,28 @@ function navSlot(rt, t){
   const n = navs.get(rt.id), same = n && n.target && n.target.key === t.key ? n : null;
   return `<div class="navbox" data-gl-nav="${esc(rt.id)}" data-target="${esc(JSON.stringify(t))}">
     <div class="nav-banner" data-nav="banner" aria-live="polite">${bannerHtml(same, t)}</div>
-    <div class="nav-map-wrap"><div class="gl-map nav-map" data-nav="map" role="img" aria-label="Map with directions to ${esc(t.name || "the next stop")}"></div><button type="button" class="nav-recenter" data-nav="recenter" hidden>${RECENTER}Re-center</button></div>
+    <div class="nav-map-wrap"><div class="gl-map nav-map" data-nav="map" role="img" aria-label="Map with directions to ${esc(t.name || "the next stop")}"></div>
+      <button type="button" class="nav-expand" data-nav="full">${SVG('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>')}Full screen</button>
+      <div class="nav-fabs">
+        <button type="button" class="nav-fab" data-nav="exit" aria-label="Exit full screen">${SVG('<path d="M6 6l12 12M18 6 6 18"/>')}</button>
+        <button type="button" class="nav-fab${voiceOn() ? "" : " off"}" data-nav="voice" aria-label="Voice directions" aria-pressed="${voiceOn()}">${voiceOn() ? SPEAKER_ON : SPEAKER_OFF}</button>
+        <button type="button" class="nav-fab" data-nav="overview" aria-label="Show the whole drive">${SVG('<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h6"/>')}</button>
+      </div>
+      <button type="button" class="nav-recenter" data-nav="recenter" hidden>${RECENTER}Re-center</button></div>
     <div class="nav-foot" data-nav="foot">${footHtml(same, t)}</div>
   </div>`;
 }
 function setTarget(n, t){
-  if(!n.target || n.target.key !== t.key){ n.res = null; n.k = 1; n.userMoved = false; n.fitKey = ""; n.arrived = false; n.failAt = 0; }
+  const changed = !n.target || n.target.key !== t.key;
+  if(changed){ n.res = null; n.k = 1; n.userMoved = false; n.fitKey = ""; n.arrived = false; n.failAt = 0; n.spoken = new Set(); }
   n.target = t;
+  if(changed && driveWanted && !n.full && n.ready) enterFull(n, false);
 }
 function updateNavUI(n){
   if(!n.el || !n.target) return;
   const b = n.el.querySelector('[data-nav="banner"]'), f = n.el.querySelector('[data-nav="foot"]');
   if(b) b.innerHTML = bannerHtml(n, n.target);
-  if(f) f.innerHTML = footHtml(n, n.target);
+  if(f){ f.innerHTML = footHtml(n, n.target); if(n.full) n.el.style.setProperty("--foot-h", f.offsetHeight + "px"); }
   n.el.classList.toggle("arrived", !!n.arrived);
 }
 function drawNav(n){
@@ -643,7 +695,7 @@ function drawNav(n){
   const t = n.target;
   setPins(n, [t.key === "facility" ? {kind:"facility", lng:t.lng, lat:t.lat, label:"F", color:PIN.dark, title:t.name} : {kind:"stop", lng:t.lng, lat:t.lat, label:t.label, color:PIN[t.type] || PIN.regular, cur:true, title:t.name}]);
   n.map.getSource("nav").setData(lineFeature(n.res ? n.res.line : []));
-  placeMe(n);
+  placeNavMe(n);
 }
 function wantRoute(n){
   if(n.busy || n.arrived) return false;
@@ -664,14 +716,16 @@ async function fetchNav(n){
   try{
     const r = await navDirections(from, t);
     if(!n.target || n.target.key !== t.key) return;
-    r.key = t.key; r.fromHere = !!here; n.res = r; n.k = 1; n.failAt = 0;
-    drawNav(n); updateNavUI(n); navCamera(n, false);
+    r.key = t.key; r.fromHere = !!here; r.at = Date.now(); n.res = r; n.k = 1; n.failAt = 0;
+    n.course = courseOf(n);
+    drawNav(n); updateNavUI(n); voiceTick(n); navCamera(n, false);
   }catch(e){ console.warn("directions", e); n.failAt = Date.now(); }
   finally{ n.busy = false; }
 }
 // Camera: while driving it follows you, pointed the way you're going; stopped, it shows you and the stop.
 function navCamera(n, force){
   if(!n.ready || (n.userMoved && !force)) return;
+  if(n.full && here){ driveCamera(n); return; }
   const t = n.target, map = n.map;
   if(here && here.speed != null && here.speed > 3 && !n.arrived){
     map.easeTo({center:[here.lng, here.lat], zoom:16.3, pitch:50, bearing: here.heading != null ? here.heading : map.getBearing(), duration:1000, essential:true});
@@ -688,10 +742,14 @@ function navCamera(n, force){
 }
 function navTick(n, force){
   if(!n.ready || !n.el || !n.el.isConnected) return;
-  placeMe(n);
   if(here && n.res && n.res.fromHere){ while(n.k < n.res.steps.length - 1 && havM(here, n.res.steps[n.k].loc) < 30) n.k++; }
+  const was = n.arrived;
   n.arrived = !!(here && havM(here, n.target) < 60);
+  n.course = courseOf(n);
+  placeNavMe(n);
   updateNavUI(n);
+  voiceTick(n);
+  if(n.arrived && !was && n.full) say("You've arrived" + (n.target.address ? " at " + n.target.address.split(",")[0] : "") + ".");
   if(wantRoute(n)) fetchNav(n);
   navCamera(n, force);
 }
@@ -716,15 +774,132 @@ async function mountNav(slot){
   map.addControl(new window.mapboxgl.NavigationControl({showCompass:true, visualizePitch:true}), "top-right");
   const rc = slot.querySelector('[data-nav="recenter"]');
   rc.addEventListener("click", () => { n.userMoved = false; rc.hidden = true; navCamera(n, true); });
+  slot.addEventListener("click", e => {
+    const b = e.target.closest("[data-nav]"); if(!b) return;
+    const what = b.dataset.nav;
+    if(what === "full"){ primeVoice(); driveWanted = true; enterFull(n, true); }
+    else if(what === "exit"){ driveWanted = false; exitFull(n); }
+    else if(what === "voice"){
+      const on = !voiceOn(); try{ localStorage.setItem(VOICE_KEY, on ? "on" : "off"); }catch(err){}
+      if(on){ primeVoice(); say("Voice directions on."); } else if(window.speechSynthesis) window.speechSynthesis.cancel();
+      b.classList.toggle("off", !on); b.setAttribute("aria-pressed", String(on)); b.innerHTML = on ? SPEAKER_ON : SPEAKER_OFF;
+    }
+    else if(what === "overview"){ overview(n); }
+    else if(what === "photo"){ exitFull(n); const inp = document.getElementById("photo-input"); if(inp) inp.click(); setTimeout(() => { const c = document.querySelector(".now-card"); if(c) c.scrollIntoView({block:"start"}); }, 50); }
+    else if(what === "here"){ exitFull(n); setTimeout(() => { const c = document.querySelector(".now-card"); if(c) c.scrollIntoView({block:"start"}); }, 50); }
+  });
   const userMove = e => { if(e && e.originalEvent){ n.userMoved = true; rc.hidden = false; } };
   ["dragstart", "zoomstart", "rotatestart", "pitchstart"].forEach(ev => map.on(ev, userMove));
   map.on("load", () => {
     map.addSource("nav", {type:"geojson", data: lineFeature([])});
     addLineLayers(map, "nav");
     n.ready = true;
-    drawNav(n); navTick(n, true);
+    drawNav(n);
+    if(driveWanted && n.el.isConnected) enterFull(n, false); else navTick(n, true);
   });
 }
+/* full-screen drive mode */
+let driveWanted = false; // the driver is driving in full screen; reopen it for the next stop
+const VOICE_KEY = "lvc-voice";
+const SPEAKER_ON = SVG('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>');
+const SPEAKER_OFF = SVG('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/>');
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function voiceOn(){ try{ return localStorage.getItem(VOICE_KEY) !== "off"; }catch(e){ return true; } }
+let lastSaid = {text:"", at:0};
+function say(text){
+  if(!text || !voiceOn() || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+  if(lastSaid.text === text && Date.now() - lastSaid.at < 20000) return;
+  lastSaid = {text, at:Date.now()};
+  try{ const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = 1; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }catch(e){}
+}
+// iPhones only allow speech after a tap, so this runs inside the tap that starts driving.
+function primeVoice(){ try{ if(window.speechSynthesis && window.SpeechSynthesisUtterance){ const u = new SpeechSynthesisUtterance(" "); u.volume = 0; window.speechSynthesis.speak(u); } }catch(e){} }
+// Speaks Mapbox's announcements ("In a quarter mile, turn right onto ...") as the driver gets close.
+function voiceTick(n){
+  if(!n.full || !here || !n.res || !n.res.fromHere || n.arrived) return;
+  const st = n.res.steps, k = Math.min(n.k, st.length - 1), prev = st[k - 1];
+  if(!prev || !prev.voice || !prev.voice.length) return;
+  const d = havM(here, st[k].loc);
+  let pick = null;
+  prev.voice.forEach((v, i) => {
+    const key = n.res.at + ":" + k + ":" + i;
+    if(n.spoken.has(key) || d > v.d + 20) return;
+    n.spoken.add(key);
+    if(!pick || v.d < pick.d) pick = v;
+  });
+  if(pick) say(pick.text);
+}
+function bearingBetween(a, b){
+  const r = Math.PI / 180, dl = (b[0] - a[0]) * r;
+  const y = Math.sin(dl) * Math.cos(b[1] * r), x = Math.cos(a[1] * r) * Math.sin(b[1] * r) - Math.sin(a[1] * r) * Math.cos(b[1] * r) * Math.cos(dl);
+  return (Math.atan2(y, x) / r + 360) % 360;
+}
+// Which way the driver is going: the phone's heading when moving, otherwise the direction of the route where they are.
+function courseOf(n){
+  if(!here) return null;
+  if(here.heading != null && here.speed != null && here.speed > 1.5) return here.heading;
+  const line = n.res && n.res.fromHere ? n.res.line : null;
+  if(!line || line.length < 2) return null;
+  const kx = 111320 * Math.cos(here.lat * Math.PI / 180), ky = 110540;
+  let best = Infinity, bi = 0;
+  for(let i = 0; i < line.length - 1; i++){
+    const ax = (line[i][0] - here.lng) * kx, ay = (line[i][1] - here.lat) * ky, bx = (line[i+1][0] - here.lng) * kx, by = (line[i+1][1] - here.lat) * ky;
+    const dx = bx - ax, dy = by - ay, L = dx*dx + dy*dy, t = L ? Math.max(0, Math.min(1, -(ax*dx + ay*dy) / L)) : 0;
+    const d = Math.hypot(ax + t*dx, ay + t*dy); if(d < best){ best = d; bi = i; }
+  }
+  let j = bi; while(j < line.length - 2 && havM({lng:line[j][0], lat:line[j][1]}, {lng:line[j+1][0], lat:line[j+1][1]}) < 5) j++;
+  return bearingBetween(line[j], line[j+1]);
+}
+function placeNavMe(n){
+  if(!n.map || !here) return;
+  if(!n.full){ if(n.arrowOn){ n.arrow.remove(); n.arrowOn = false; } placeMe(n); if(n.me && n.me.getElement()) n.me.getElement().style.display = ""; return; }
+  if(n.me && n.me.getElement()) n.me.getElement().style.display = "none";
+  if(!n.arrow){
+    const el = document.createElement("div"); el.className = "me-arrow"; el.title = "You";
+    el.innerHTML = '<svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="rgba(26,115,232,.18)"/><path d="M22 8 32 33 22 27 12 33z" fill="#1A73E8" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>';
+    n.arrow = new window.mapboxgl.Marker({element: el, rotationAlignment:"map", pitchAlignment:"map"});
+  }
+  n.arrow.setLngLat([here.lng, here.lat]).setRotation(n.course == null ? 0 : n.course);
+  if(!n.arrowOn){ n.arrow.addTo(n.map); n.arrowOn = true; }
+}
+// Google Maps-style camera: tilted, pointed the way you're going, you in the lower part of the screen.
+function driveCamera(n){
+  const b = n.el.querySelector('[data-nav="banner"]'), f = n.el.querySelector('[data-nav="foot"]');
+  const H = window.innerHeight, top = b ? b.getBoundingClientRect().bottom : 100, bot = f ? H - f.getBoundingClientRect().top : 150;
+  const vis = Math.max(120, H - top - bot);
+  n.map.easeTo({center:[here.lng, here.lat], zoom:16.6, pitch:55, bearing: n.course != null ? n.course : n.map.getBearing(),
+    padding:{top: Math.round(top + vis * 0.45), bottom: Math.round(bot), left:0, right:0}, duration:1000, essential:true});
+}
+function overview(n){
+  if(!n.ready) return;
+  n.userMoved = true; const rc = n.el.querySelector('[data-nav="recenter"]'); if(rc) rc.hidden = false;
+  const b = new window.mapboxgl.LngLatBounds(), t = n.target; b.extend([t.lng, t.lat]); if(here) b.extend([here.lng, here.lat]);
+  if(n.res && n.res.line) n.res.line.forEach(c => b.extend(c));
+  const bn = n.el.querySelector('[data-nav="banner"]'), f = n.el.querySelector('[data-nav="foot"]');
+  const pad = {top: (bn ? bn.getBoundingClientRect().bottom : 60) + 30, bottom: (f ? window.innerHeight - f.getBoundingClientRect().top : 40) + 30, left:40, right:80};
+  const cam = n.map.cameraForBounds(b, {padding: n.full ? pad : 40, maxZoom:16});
+  if(cam) n.map.easeTo(Object.assign(cam, {pitch:0, bearing:0, duration:700, essential:true}));
+}
+function enterFull(n, tapped){
+  if(!n.el || !n.el.isConnected) return;
+  n.full = true; n.userMoved = false;
+  n.el.classList.add("full"); document.documentElement.classList.add("lvc-driving");
+  const rc = n.el.querySelector('[data-nav="recenter"]'); if(rc) rc.hidden = true;
+  if(tapped && !isIOS() && document.documentElement.requestFullscreen && !document.fullscreenElement){ document.documentElement.requestFullscreen({navigationUI:"hide"}).catch(() => {}); }
+  keepAwake(true);
+  updateNavUI(n);
+  requestAnimationFrame(() => { if(n.map){ n.map.resize(); navTick(n, true); } });
+}
+function exitFull(n){
+  n.full = false; n.userMoved = false;
+  n.el.classList.remove("full"); n.el.style.removeProperty("--foot-h");
+  if(!document.querySelector(".navbox.full")) document.documentElement.classList.remove("lvc-driving");
+  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  updateNavUI(n);
+  requestAnimationFrame(() => { if(n.map){ n.map.resize(); placeNavMe(n); navCamera(n, true); } });
+}
+// Called from the Start route tap: open full screen for the first stop and allow speech.
+function drive(){ driveWanted = true; primeVoice(); }
 // Keep the screen on while the driving view is open (like a GPS app).
 let wake = null;
 async function keepAwake(on){
@@ -744,6 +919,11 @@ function afterRender(){
   if(!CFG.mapboxToken) return;
   document.querySelectorAll("[data-gl-route]:not([data-gl-mounted])").forEach(slot => { mount(slot).catch(e => { console.warn(e); slot.innerHTML = `<p class="muted" style="padding:16px">Map didn't load.</p>`; }); });
   document.querySelectorAll("[data-gl-nav]:not([data-gl-mounted])").forEach(slot => { mountNav(slot).catch(e => { console.warn(e); const box = slot.querySelector('[data-nav="map"]'); if(box) box.innerHTML = `<p class="muted" style="padding:16px">Map didn't load.</p>`; }); });
+  navs.forEach(n => { if(n.full && n.el && !n.el.isConnected){ n.full = false; n.el.classList.remove("full"); } });
+  if(!document.querySelector(".navbox.full")){
+    document.documentElement.classList.remove("lvc-driving");
+    if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  }
   keepAwake(!!document.querySelector(".navbox"));
 }
 
@@ -837,7 +1017,7 @@ function save(S){
 async function flush(){ if(timer){ clearTimeout(timer); await runSync(); } let n = 0; while(syncing && n++ < 50) await sleep(100); }
 
 window.LVC_LIVE = {
-  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, geocode, onHere, onHereError,
+  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, geocode, onHere, onHereError, drive,
   get ready(){ return !!biz; }, get role(){ return role; }, get myDriverId(){ return myDriverId; }
 };
 })();

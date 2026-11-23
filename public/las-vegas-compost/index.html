@@ -7,6 +7,12 @@
 <title>Las Vegas Compost Routes</title>
 <meta name="description" content="Demo app for Las Vegas Compost: driver routes, bucket drop-off flags, photo confirmations, mileage and automatic customer texts.">
 <meta name="theme-color" content="#1F5230">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LV Compost">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="Las Vegas Compost Routes (demo)">
 <meta property="og:description" content="Driver routes, bucket flags, photo confirmations, mileage and automatic customer texts. Built by Saad Shabbir.">
@@ -249,6 +255,7 @@ body.driver-mode .tabs{display:none!important}
 .start-opt.on{border-color:var(--brand);background:var(--brand-soft)}
 .start-opt.on > svg{color:var(--brand-strong)}
 .start-opt .so-tick{color:var(--brand-strong);margin-left:auto}
+.home-tip{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
 .gmaps-btns{display:flex;flex-direction:column;gap:8px}
 .gmaps-btns .btn{justify-content:center}
 .gmaps-card .hint{font-size:12px;color:var(--muted);font-weight:600}
@@ -912,6 +919,15 @@ function startText(rt){
   if(ls.kind === "address") return "From " + ls.label;
   return "From your location";
 }
+// iPhone Safari keeps its address bar; the Home Screen version opens full screen like an app.
+function homeTip(){
+  if(!LIVE) return "";
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const standalone = window.navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  let hidden = false; try{ hidden = localStorage.getItem("lvc-home-tip") === "off"; }catch(e){}
+  if(!ios || standalone || hidden) return "";
+  return `<div class="card pad home-tip"><div><b>Make it a full-screen app</b><div class="muted" style="font-size:13px;margin-top:2px">In Safari, tap the Share button, then <b>Add to Home Screen</b>. Open it from your Home Screen and the driving view fills the whole screen. You'll sign in once more there.</div></div><button class="btn ghost sm" type="button" data-act="hide-home-tip" aria-label="Hide this tip">${ic("x")}</button></div>`;
+}
 let startBusy = null; // route id while we're finding the driver's location for the start
 function startCard(rt){
   const sel = rt.liveStart ? rt.liveStart.kind : null;
@@ -1446,6 +1462,7 @@ function driverPre(rt){
     <label class="check-row"><input type="checkbox" data-change="buckets-loaded" data-id="${rt.id}" ${rt.bucketsLoaded?"checked":""}>I loaded ${drops.length} new bucket${drops.length>1?"s":""}</label>
   </div>` : ""}
   ${startCard(rt)}
+  ${homeTip()}
   ${finals.length ? `<div class="final-note">${ic("flag")}<div>${finals.length} final pickup${finals.length>1?"s":""} today: ${finals.map(x => "stop " + (x.i+1)).join(", ")}. Take the bucket and don't leave a clean one.</div></div>` : ""}
   ${gmapsCard(rt, 0)}
   <div class="card" style="overflow:hidden"><ol class="stops">${rt.stops.map((x, i) => driverStopRow(rt, x, i)).join("")}<li class="stop endpoint"><span class="n">F</span><div><div class="who">${esc(S.facility.name)}</div><div class="addr-line"><span class="addr">${esc(fullAddr(S.facility))}</span>${copyBtn(fullAddr(S.facility))}</div></div><div></div></li></ol></div>
@@ -1828,6 +1845,7 @@ const A = {
     if(c.new && !rt.bucketsLoaded){ toast("Load the new buckets first", "Check them off at the top.", "alert"); return; }
     if(rt.status !== "ready" || el.dataset.busy) return;
     if(!rt.liveStart){ toast("Pick where you're starting from", "Choose it at the top so your stops are in the right order.", "pin"); return; }
+    if(LIVE && LIVE.drive) LIVE.drive();
     const rid = rt.id;
     const go = from => {
       const r = R(rid); if(!r || r.status !== "ready" || !r.stops.length) return; // the data may have reloaded while we waited
@@ -1856,6 +1874,7 @@ const A = {
       <div class="drawer-foot"><button class="btn" type="button" data-act="close-drawer">Cancel</button><button class="btn primary" type="submit" form="start-form">Use this address</button></div>`);
     }
   },
+  "hide-home-tip"(){ try{ localStorage.setItem("lvc-home-tip", "off"); }catch(e){} render(); },
   async copy(el){
     const t = el.dataset.text || ""; if(!t) return;
     if(await copyText(t)){
