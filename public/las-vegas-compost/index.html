@@ -313,6 +313,8 @@ body.driver-mode .tabs{display:none!important}
 .toggle span::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}
 .toggle input:checked + span{background:var(--brand)}
 .toggle input:checked + span::after{transform:translateX(18px)}
+.login-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:11px}
+.login-email{display:block;overflow-wrap:anywhere}
 .radio-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid var(--line);border-radius:11px;cursor:pointer}
 .radio-row:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
 .radio-row input{margin-top:3px;accent-color:var(--brand)}
@@ -428,6 +430,7 @@ body.driver-mode .toasts{bottom:calc(128px + env(safe-area-inset-bottom,0px))}
 <div class="demo-banner" role="note">
   <span class="long">Demo app built for Las Vegas Compost by Saad Shabbir. Sample customers only, no real texts are sent. Questions? Call or text <a href="tel:+15014133386">(501) 413-3386</a>.</span>
   <span class="short">Demo for Las Vegas Compost by Saad Shabbir · sample data · <a href="tel:+15014133386">(501) 413-3386</a></span>
+  <button type="button" data-act="tour">Tutorial</button>
   <button type="button" data-act="reset">Reset demo</button>
 </div>
 <div class="shell">
@@ -455,6 +458,7 @@ body.driver-mode .toasts{bottom:calc(128px + env(safe-area-inset-bottom,0px))}
 
 <script src="/las-vegas-compost/live-config.js"></script>
 <script src="/las-vegas-compost/live.js"></script>
+<script src="/las-vegas-compost/tour.js"></script>
 <script>
 (function(){
 "use strict";
@@ -925,7 +929,7 @@ function startText(rt){
 }
 // iPhone Safari keeps its address bar; the Home Screen version opens full screen like an app.
 function homeTip(){
-  if(!LIVE) return "";
+  if(!LIVE || LIVE.practice) return "";
   const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const standalone = window.navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
   let hidden = false; try{ hidden = localStorage.getItem("lvc-home-tip") === "off"; }catch(e){}
@@ -1024,6 +1028,7 @@ function render(){
   else if(v.route) html = viewRoute(v.route);
   else html = ({today:viewToday, routes:viewRoutes, customers:viewCustomers, drivers:viewDrivers, texts:viewTexts})[v.tab]();
   el.innerHTML = html;
+  if(v.mode === "owner" && v.tab === "drivers" && INVITES === null) refreshInvites();
   if(LIVE){ const dr = v.mode === "driver" && S.driverId ? driverRoute() : null; watchHere(!!dr && dr.status !== "done"); LIVE.afterRender(); }
   if(v.mode === "owner" && v.tab === "today" && unseen() > 0){ /* marked seen after first render */ setTimeout(() => { S.seenConfirmations = S.confirmations.length; save(); renderShell(currentView()); }, 2500); }
 }
@@ -1268,7 +1273,7 @@ function viewDrivers(){
       const hist = S.history.filter(h => h.driverId === d.id && h.date >= week).concat(S.confirmations.filter(h => h.driverId === d.id));
       const miles = hist.reduce((a, h) => a + h.miles, 0);
       return `<div class="card pad stack">
-        <div class="row between"><div class="row">${avatar(d, true)}<div><b style="font-size:16px">${esc(d.name)}${d.owner ? " <span class='chip neutral'>Owner</span>" : ""}</b><div class="muted" style="font-size:13.5px">${esc(d.phone)}</div></div></div>
+        <div class="row between"><div class="row">${avatar(d, true)}<div><b style="font-size:16px">${esc(d.name)}${d.owner ? " <span class='chip neutral'>Owner</span>" : ""}${d.hasLogin ? " <span class='chip neutral'>Has a login</span>" : ""}</b><div class="muted" style="font-size:13.5px">${esc(d.phone)}</div></div></div>
         <button class="btn sm" type="button" data-act="edit-driver" data-id="${d.id}">${ic("pin")}Edit start</button></div>
         <div class="infobox" style="background:var(--surface-2)">${ic("pin")}<div><div class="lbl muted">Start location</div><b>${esc(d.start.kind === "facility" ? S.facility.name + ", " + S.facility.address : d.start.address + ", " + d.start.city)}</b></div></div>
         <div class="row wrapflex" style="gap:18px;font-size:13.5px">
@@ -1278,10 +1283,43 @@ function viewDrivers(){
       </div>`;
     }).join("")}
   </div>
+  ${loginsCard()}
   <div class="card pad row between wrapflex">
     <div><h3>Mileage log</h3><p class="muted" style="font-size:13.5px">Every finished route with its miles, for reimbursement or taxes.</p></div>
     <button class="btn" type="button" data-act="mileage-csv">${ic("download")}Download CSV</button>
   </div>`;
+}
+// Logins: an owner adds someone's email; it turns into a login the first time that email signs in.
+let INVITES = null, invitesBusy = false;
+const canManageLogins = () => !!LIVE && !LIVE.practice && !!LIVE.addInvite && LIVE.isManager;
+function refreshInvites(){
+  if(!canManageLogins() || invitesBusy) return;
+  invitesBusy = true;
+  LIVE.invites().then(list => { INVITES = list || []; }).catch(err => { console.warn(err); INVITES = INVITES || []; })
+    .finally(() => { invitesBusy = false; const el = $('[data-tour="logins"]'); if(el) el.outerHTML = loginsCard(); });
+}
+function loginsCard(){
+  if(!canManageLogins()) return "";
+  const role = r => r === "driver" ? "Driver" : r === "admin" ? "Admin" : "Owner";
+  const list = INVITES;
+  return `<div class="card pad stack" style="gap:12px" data-tour="logins">
+    <div class="row between wrapflex" style="align-items:flex-start"><div><h3>Logins</h3><p class="muted" style="font-size:13.5px;max-width:52ch">Add someone's email so they can sign in. They open the app, type that email, and get a 6-digit code.</p></div>
+    <button class="btn primary" type="button" data-act="add-login">${ic("plus")}Add a login</button></div>
+    ${list === null ? `<p class="muted" style="font-size:13.5px">Loading…</p>` : list.length ? `<div class="stack" style="gap:8px">${list.map(iv => `<div class="login-row"><div style="min-width:0"><b class="login-email">${esc(iv.email)}</b><div class="muted" style="font-size:12.5px">${role(iv.role)}${iv.driver_id && S.drivers[iv.driver_id] ? " · drives as " + esc(S.drivers[iv.driver_id].name) : ""} · hasn't signed in yet</div></div><button class="btn ghost sm" type="button" data-act="remove-login" data-email="${esc(iv.email)}">Remove</button></div>`).join("")}</div>` : `<p class="muted" style="font-size:13.5px">No one is waiting to sign in. People drop off this list once they've signed in for the first time.</p>`}
+  </div>`;
+}
+function loginForm(){
+  const drivers = Object.values(S.drivers).filter(d => !d.id.startsWith("test-") && !/\(test\)/i.test(d.name));
+  return `<div class="drawer-head"><h2>Add a login</h2><button class="btn ghost sm" type="button" data-act="close-drawer" aria-label="Close">${ic("x")}</button></div>
+  <form class="drawer-body" data-form="add-login" id="login-form">
+    <div class="field"><label for="lg-email">Email</label><input class="input" id="lg-email" name="email" type="email" required inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@example.com"></div>
+    <div class="stack" style="gap:8px"><span class="label">What can they do?</span>
+      <label class="radio-row"><input type="radio" name="role" value="owner"><div><b>Owner</b><div class="hint">Everything: routes, customers, drivers, texts, and the driver app</div></div></label>
+      <label class="radio-row"><input type="radio" name="role" value="driver" checked><div><b>Driver</b><div class="hint">The driver app for their own routes</div></div></label>
+    </div>
+    <div class="field"><label for="lg-driver">Which driver are they?</label><select class="select" id="lg-driver" name="driver"><option value="">Not a driver</option>${drivers.map(d => `<option value="${esc(d.id)}">${esc(d.name)}${d.owner ? " (owner)" : ""}</option>`).join("")}</select><span class="hint">Their routes open for them when they sign in.</span></div>
+  </form>
+  <div class="drawer-foot"><button class="btn" type="button" data-act="close-drawer">Cancel</button><button class="btn primary" type="submit" form="login-form">Add login</button></div>`;
 }
 function driverForm(d){
   return `
@@ -1459,7 +1497,7 @@ function driverPre(rt){
   const finals = rt.stops.map((x, i) => ({...x, i})).filter(x => x.type === "final");
   const needs = drops.length > 0;
   return `
-  <div><p class="eyebrow">Today's route</p><h1>${esc(rt.name)}</h1><p class="muted" style="margin-top:4px">${c.total} stop${c.total === 1 ? "" : "s"} · ${fmtMi(routeMiles(S, rt))} mi · ${esc(startText(rt))}</p></div>
+  <div data-tour="route-head" data-id="${esc(rt.id)}" data-test="${isTestRoute(rt) ? 1 : 0}"><p class="eyebrow">Today's route</p><h1>${esc(rt.name)}</h1><p class="muted" style="margin-top:4px">${c.total} stop${c.total === 1 ? "" : "s"} · ${fmtMi(routeMiles(S, rt))} mi · ${esc(startText(rt))}</p></div>
   ${needs ? `<div class="alert-buckets" role="alert">
     <div class="big">${ic("bucket")}<div><h2>Grab ${drops.length} new bucket${drops.length>1?"s":""} before you leave</h2><p style="font-size:14px;font-weight:600">For new customers on today's route</p></div></div>
     <ul>${drops.map(x => { const cu = S.customers[x.cid]; return `<li><span class="chip new">Stop ${x.i+1}</span>${esc(cu.name)} · ${esc(cu.address)}</li>`; }).join("")}</ul>
@@ -1529,8 +1567,8 @@ function driverActive(rt){
   <div class="now-card t-${x.type}">
     <div class="now-type ${x.type}">${ic(T.icon)}${T.label.toUpperCase()}${x.type!=="regular" ? " · " + esc(T.hint) : ""}</div>
     <div class="now-top">
-      <div class="row between" style="align-items:flex-start"><div style="min-width:0"><p class="eyebrow">Stop ${idx+1} of ${c.total}</p><div class="now-name">${esc(cu.name)}</div></div></div>
-      <div class="now-addr-row"><div class="now-addr">${esc(fullAddr(cu))}</div>${copyBtn(fullAddr(cu))}</div>
+      <div class="stack" style="gap:10px" data-tour="stop-head"><div class="row between" style="align-items:flex-start"><div style="min-width:0"><p class="eyebrow">Stop ${idx+1} of ${c.total}</p><div class="now-name">${esc(cu.name)}</div></div></div>
+      <div class="now-addr-row"><div class="now-addr">${esc(fullAddr(cu))}</div>${copyBtn(fullAddr(cu))}</div></div>
       <div class="now-btns">${navButtons(cu, !!nb)}${(() => { const g = gmapsGroups(rt, idx)[0]; return g && g.count > 1 ? `<a class="btn" href="${g.url}" target="_blank" rel="noopener">${ic("routes")}${esc(g.label)} in Google Maps</a>` : ""; })()}${cu.phone ? `<a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a>` : ""}</div>
       ${cu.gate ? `<div class="infobox gate">${ic("key")}<div><div class="lbl">Gate code</div><div class="code">${esc(cu.gate)}</div></div></div>` : ""}
       ${cu.notes ? `<div class="infobox notes">${ic("note")}<div><div class="lbl">Notes</div><div style="font-weight:600">${esc(cu.notes)}</div></div></div>` : ""}
@@ -1745,6 +1783,10 @@ function runImport(){
 
 /* ---------- toasts / drawer / lightbox ---------- */
 function toast(title, body, icon="chat"){
+  if(S && S.practice){ // practice mode never texts anyone, so say what would have happened
+    if(/^Texted /.test(title)){ const who = title.replace(/^Texted /, ""); title = "Practice: no text sent"; body = "In the real app, " + who + " gets a text. " + (body || ""); }
+    else if(/^Texted |text sent/.test(body || "")) body = "Practice, so no text was sent. In the real app: " + body;
+  }
   const el = document.createElement("div"); el.className = "toast";
   el.innerHTML = `${ic(icon)}<div style="min-width:0"><b>${esc(title)}</b>${body ? `<span>${esc(body)}</span>` : ""}</div>`;
   $("#toasts").appendChild(el);
@@ -1889,6 +1931,14 @@ const A = {
     } else toast("Couldn't copy", "Press and hold the address to copy it instead.", "alert");
   },
   "take-photo"(){ $("#photo-input").click(); },
+  tour(){ if(window.LVC_TOUR) window.LVC_TOUR.menu(false); },
+  "add-login"(){ if(canManageLogins()) openDrawer(loginForm()); },
+  async "remove-login"(el){
+    const em = el.dataset.email; el.disabled = true;
+    try{ await LIVE.removeInvite(em); INVITES = (INVITES || []).filter(iv => iv.email !== em); toast("Removed " + em, "They can't sign in unless you add them again.", "trash"); }
+    catch(err){ el.disabled = false; toast("Couldn't remove that login", err.message || "Try again.", "alert"); return; }
+    const c = $('[data-tour="logins"]'); if(c) c.outerHTML = loginsCard();
+  },
   navigate(el){
     if(LIVE && LIVE.navigate && LIVE.navigate()) return;
     window.open(el.dataset.href, "_blank", "noopener");
@@ -1958,6 +2008,15 @@ const CH = {
   otw(el){ S.settings.onTheWay = el.value; save(); toast("Saved", el.value === "next" ? "Customers are texted as the driver heads to them." : "Every customer is texted when the route starts.", "chat"); }
 };
 const FORMS = {
+  async "add-login"(f){
+    const fd = new FormData(f), btn = $('#drawer [type="submit"]');
+    if(btn) btn.disabled = true;
+    try{
+      const em = await LIVE.addInvite(fd.get("email"), fd.get("role"), fd.get("driver"));
+      closeDrawer(); INVITES = null; refreshInvites();
+      toast(em + " can sign in now", "They open the app, type that email, and enter the 6-digit code we email them.", "check");
+    }catch(err){ if(btn) btn.disabled = false; toast("Couldn't add that login", err.message || "Try again.", "alert"); }
+  },
   async "start-address"(form){
     const rt = R(form.dataset.id), addr = (new FormData(form).get("address") || "").trim(), msg = $("#st-msg");
     if(!rt || !addr) return;
@@ -2065,10 +2124,12 @@ $("#photo-input").addEventListener("change", async e => {
 });
 window.addEventListener("hashchange", () => { if(!S) return; closeDrawer(); render(); window.scrollTo(0, 0); });
 window.addEventListener("storage", ev => { if(!LIVE && ev.key === KEY){ load(); render(); } });
+const TOUR = window.LVC_TOUR || null;
+if(TOUR) TOUR.attach({S: () => S, live: LIVE, ic, esc, render});
 if(LIVE){
-  LIVE.attach({S: () => S, setS: v => { S = v; }, render, toast, optimizeRoute, startPoint, routeStart, closeDrawer, fullAddr, navLinks});
-  LIVE.start().then(ok => { if(ok) render(); }).catch(err => console.error(err));
-} else render();
+  LIVE.attach({S: () => S, setS: v => { S = v; }, seed: seedState, render, toast, optimizeRoute, startPoint, routeStart, closeDrawer, fullAddr, navLinks});
+  LIVE.start().then(ok => { if(ok){ render(); if(TOUR) TOUR.ready(); } }).catch(err => console.error(err));
+} else { render(); if(TOUR) TOUR.ready(); }
 })();
 </script>
 </body>

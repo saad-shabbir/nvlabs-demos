@@ -24,7 +24,16 @@ Stop photos go to the private `stop-photos` storage bucket, one folder per busin
 
 ### Adding people
 
-Add an invite in the SQL editor. It turns into a membership the first time that email signs in.
+Owners add logins in the app: **Drivers** page, **Logins**, **Add a login** (email, owner or
+driver, and which driver they are). That writes a row to `business_invites`, which turns into a
+membership the first time that email signs in.
+
+Sign-in codes are emailed by Supabase Auth. Its built-in sender only delivers to members of the
+NV Labs Supabase organization (and only a few emails an hour), so anyone else gets "Email address
+not authorized" until a custom SMTP sender (for example Resend) is set under Authentication >
+SMTP Settings.
+
+Or add an invite in the SQL editor:
 
 ```sql
 insert into public.business_invites (business_id, email, role, driver_id)
@@ -37,6 +46,14 @@ select id, 'someone@example.com', 'driver', 'd1' from public.businesses where sl
 
 Insert a row in `businesses` (with a new `slug`), a `facilities` row and an owner invite, the
 same way the seed file does. Open the app with `?live=<slug>`.
+
+### Practice mode and walkthroughs
+
+`?live&practice` opens the driver app on the sample customers with no sign-in: nothing is saved,
+uploaded or texted. `tour.js` has two walkthroughs that highlight the real buttons and wait for a
+tap: a new-driver one (runs in practice mode) and an owner one (makes a TEST route and drives it).
+The menu opens by itself the first time the live app opens on a device, and from **Tutorial** in
+the top bar after that.
 
 ## Keys (never in the repo)
 

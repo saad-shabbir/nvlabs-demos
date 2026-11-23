@@ -12,6 +12,8 @@
 "use strict";
 const params = new URLSearchParams(location.search);
 if(!params.has("live")) return;
+// ?live&practice: the driver app on pretend customers, for training. No sign-in, nothing is saved or sent.
+const PRACTICE = params.has("practice");
 
 const CFG = Object.assign({supabaseUrl:"", supabaseKey:"", mapboxToken:"", permanentGeocoding:false}, window.LVC_CONFIG || {});
 const SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js";
@@ -56,7 +58,7 @@ function toast(t, b, i){ if(api) api.toast(t, b || "", i || "alert"); }
 function injectStyle(){
   const st = document.createElement("style");
   st.textContent = `
-  body.live [data-act="sample-photo"], body.live [data-act="import-sample"], body.live [data-act="reset"]{display:none!important}
+  body.live:not(.practice) [data-act="sample-photo"], body.live [data-act="import-sample"], body.live [data-act="reset"]{display:none!important}
   .gl-map{width:100%;border-radius:var(--r-sm);overflow:hidden;background:var(--map-bg)}
   .gl-map .mapboxgl-ctrl-logo{transform:scale(.85);transform-origin:left bottom}
   .live-bar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
@@ -127,7 +129,7 @@ function injectStyle(){
 function banner(){
   const el = $(".demo-banner"); if(!el) return;
   if(!user){ el.innerHTML = `<span>Las Vegas Compost routes</span>`; return; }
-  el.innerHTML = `<div class="live-bar"><span>${esc(biz ? biz.name : "Las Vegas Compost")} · signed in as ${esc(user.email || "")}</span><span class="live-sync" id="live-sync"></span><button type="button" id="live-out">Sign out</button></div>`;
+  el.innerHTML = `<div class="live-bar"><span>${esc(biz ? biz.name : "Las Vegas Compost")} · signed in as ${esc(user.email || "")}</span><span class="live-sync" id="live-sync"></span><button type="button" data-act="tour">Tutorial</button><button type="button" id="live-out">Sign out</button></div>`;
   $("#live-out").onclick = async () => { await flush(); await sb.auth.signOut(); location.hash = ""; location.reload(); };
 }
 function syncLabel(t){ const el = $("#live-sync"); if(el) el.textContent = t ? "· " + t : ""; }
@@ -152,7 +154,11 @@ function signInScreen(){
       e.preventDefault(); email = $("#lv-em").value.trim().toLowerCase(); if(!email) return;
       msg("Sending…");
       const {error} = await sb.auth.signInWithOtp({email, options:{shouldCreateUser:true, emailRedirectTo: location.origin + location.pathname + location.search}});
-      if(error){ msg(error.message || "Couldn't send the email. Try again in a minute."); return; }
+      if(error){
+        // Supabase's built-in email sender only mails the project's own team until a custom email sender is set up.
+        msg(/not.?authori[sz]ed/i.test(error.message || "") ? "We can't email a sign-in code to this address yet. Let the person who set up your account know, and they can turn it on." : (error.message || "Couldn't send the email. Try again in a minute."));
+        return;
+      }
       $("#lv-email").hidden = true; $("#lv-code").hidden = false; msg("Check " + email + " for the code."); $("#lv-otp").focus();
     };
     $("#lv-back").onclick = () => { $("#lv-email").hidden = false; $("#lv-code").hidden = true; msg(""); };
@@ -168,7 +174,9 @@ function signInScreen(){
 
 /* ---------- start ---------- */
 async function start(){
-  injectStyle(); document.body.classList.add("live"); banner();
+  injectStyle(); document.body.classList.add("live");
+  if(PRACTICE) return startPractice();
+  banner();
   if(!CFG.supabaseUrl || !CFG.supabaseKey){ setupMissing(); return false; }
   screen(`<p class="muted">Loading…</p>`);
   try{ await loadScript(SB_JS); }catch(e){ screen(`<h2>Couldn't load</h2><p class="muted">Check the connection and reload.</p>`); return false; }
@@ -197,6 +205,61 @@ async function start(){
   document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible" && Date.now() - lastLoad > 30000) scheduleReload(0); });
   window.addEventListener("beforeunload", e => { if(syncing || dirty || timer){ e.preventDefault(); e.returnValue = ""; } });
   return true;
+}
+
+/* ---------- practice mode ---------- */
+// A pretend route on the sample customers, for a new driver to tap through. It never touches the
+// database: nothing is saved, no photo is uploaded and no text is logged or sent.
+function startPractice(){
+  document.body.classList.add("practice");
+  role = "driver";
+  const s = api.seed();
+  const ready = s.routeList.filter(id => { const r = s.routes[id]; return r.status === "ready" && s.drivers[r.driverId] && !s.drivers[r.driverId].owner; });
+  const rid = ready.find(id => s.routes[id].stops.some(x => x.type === "new")) || ready[0] || s.routeList[0];
+  const d = s.drivers[s.routes[rid].driverId];
+  d.name = "Practice Driver";
+  s.practice = true; s.driverId = d.id; s.driverRouteId = rid; myDriverId = d.id;
+  api.setS(s);
+  const el = $(".demo-banner");
+  if(el){
+    el.innerHTML = `<div class="live-bar"><span><b>Practice mode</b> · pretend customers, nothing is saved or texted</span><button type="button" data-act="tour">Tutorial</button><button type="button" id="practice-exit">Exit practice</button></div>`;
+    $("#practice-exit").onclick = exitPractice;
+  }
+  if(location.hash !== "#driver") history.replaceState(null, "", location.pathname + location.search + "#driver");
+  return true;
+}
+function cleanQuery(p){ return p.toString().replace(/=(?=&|$)/g, ""); }
+function exitPractice(){
+  const p = new URLSearchParams(location.search); p.delete("practice"); p.delete("tour");
+  location.href = location.pathname + "?" + cleanQuery(p) + "#driver";
+}
+// Address of a fresh practice session, optionally starting a walkthrough.
+function practiceUrl(tour){
+  const p = new URLSearchParams(location.search);
+  if(!p.has("live")) p.set("live", ""); p.set("practice", ""); if(tour) p.set("tour", tour); else p.delete("tour");
+  return location.pathname + "?" + cleanQuery(p) + "#driver";
+}
+
+/* ---------- logins (owners add an email; it becomes a login the first time that email signs in) ---------- */
+async function invites(){
+  if(!biz || !isManager()) return null;
+  const {data, error} = await sb.from("business_invites").select("email,role,driver_id,created_at").eq("business_id", biz.id).order("created_at");
+  if(error) throw error;
+  return data || [];
+}
+async function addInvite(email, r, driverId){
+  if(!biz || !isManager()) throw new Error("Only an owner can add logins.");
+  const em = String(email || "").trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) throw new Error("That email doesn't look right.");
+  if(!["owner","admin","driver"].includes(r)) r = "driver";
+  const {error} = await sb.from("business_invites").upsert({business_id:biz.id, email:em, role:r, driver_id:driverId || null});
+  if(error) throw error;
+  return em;
+}
+async function removeInvite(email){
+  if(!biz || !isManager()) return;
+  const {error} = await sb.from("business_invites").delete().eq("business_id", biz.id).eq("email", email);
+  if(error) throw error;
 }
 
 /* ---------- load ---------- */
@@ -235,7 +298,7 @@ function buildState(rows){
     settings: {reminderOn: set.reminderOn !== false, reminderTime: set.reminderTime || "19:00", onTheWay: set.onTheWay || "next", templates: Object.assign({}, set.templates || {})},
     seenConfirmations: ui.seenConfirmations || 0, driverId: ui.driverId || null, driverRouteId: ui.driverRouteId || null
   };
-  rows.drivers.forEach(d => { S.drivers[d.id] = {id:d.id, name:d.name, phone:d.phone || "", color:d.color || COLORS.brand, owner:!!d.is_owner, start:d.start || {kind:"facility"}}; });
+  rows.drivers.forEach(d => { S.drivers[d.id] = {id:d.id, name:d.name, phone:d.phone || "", color:d.color || COLORS.brand, owner:!!d.is_owner, start:d.start || {kind:"facility"}, hasLogin:!!d.user_id}; });
   const mine = rows.drivers.find(d => d.user_id === user.id); myDriverId = mine ? mine.id : null;
   if(!S.driverId || !S.drivers[S.driverId]) S.driverId = mine && role === "driver" ? mine.id : null;
   rows.customers.forEach(c => { S.customers[c.id] = {id:c.id, name:c.name, phone:c.phone || "", address:c.address || "", city:c.city || "", lat:c.lat ?? VEGAS.lat, lng:c.lng ?? VEGAS.lng, gate:c.gate_code || "", notes:c.notes || "", freq:c.frequency || "Weekly", routeId:c.route_id || null}; });
@@ -1018,6 +1081,7 @@ async function runSync(){
 }
 function schedule(delay){ clearTimeout(timer); timer = setTimeout(runSync, delay); }
 function save(S){
+  if(PRACTICE) return;
   const routeStarts = {};
   S.routeList.forEach(id => { const r = S.routes[id]; if(r && r.liveStart && r.status !== "done") routeStarts[id] = r.liveStart; });
   try{ localStorage.setItem(localKey(), JSON.stringify({seenConfirmations:S.seenConfirmations, driverId:S.driverId, driverRouteId:S.driverRouteId, routeStarts})); }catch(e){}
@@ -1028,6 +1092,8 @@ async function flush(){ if(timer){ clearTimeout(timer); await runSync(); } let n
 
 window.LVC_LIVE = {
   attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, geocode, onHere, onHereError, drive, navigate,
-  get ready(){ return !!biz; }, get role(){ return role; }, get myDriverId(){ return myDriverId; }
+  invites, addInvite, removeInvite, practiceUrl, exitPractice,
+  get ready(){ return !!biz; }, get role(){ return role; }, get myDriverId(){ return myDriverId; },
+  get practice(){ return PRACTICE; }, get isManager(){ return isManager(); }, get email(){ return user ? user.email : ""; }
 };
 })();
