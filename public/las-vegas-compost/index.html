@@ -868,8 +868,12 @@ function navLinks(p){
   };
 }
 const copyBtn = text => `<button class="copy-btn" type="button" data-act="copy" data-text="${esc(text)}" aria-label="Copy address: ${esc(text)}">${ic("copy")}<span>Copy</span></button>`;
-function navButtons(p){
+// inApp: the live app has its own directions map on the page, so Navigate opens that full screen
+// and the map apps become the backup links.
+function navButtons(p, inApp){
   const L = navLinks(p);
+  if(inApp) return `<button class="btn primary" type="button" data-act="navigate" data-href="${esc(L.google)}">${ic("nav")}Navigate to this stop</button>
+  <div class="nav-alt">Or open in <a href="${L.google}" target="_blank" rel="noopener">Google Maps</a> · <a href="${L.apple}" target="_blank" rel="noopener">Apple Maps</a> · <a href="${L.waze}" target="_blank" rel="noopener">Waze</a></div>`;
   return `<a class="btn primary" href="${L.google}" target="_blank" rel="noopener">${ic("nav")}Navigate to this stop</a>
   <div class="nav-alt">Or open in <a href="${L.apple}" target="_blank" rel="noopener">Apple Maps</a> · <a href="${L.waze}" target="_blank" rel="noopener">Waze</a></div>`;
 }
@@ -1505,10 +1509,11 @@ function driverActive(rt){
   </div>`;
   if(idx === -1){
     const lastDone = rt.stops.length ? S.customers[rt.stops[rt.stops.length-1].cid] : null;
-    return top + navBlock(rt, {key:"facility", lat:S.facility.lat, lng:S.facility.lng, label:"F", type:"facility", name:"Dump at " + (S.facility.short || S.facility.name), address:fullAddr(S.facility), from: lastDone ? {lat:lastDone.lat, lng:lastDone.lng} : null}) + `
+    const nb = navBlock(rt, {key:"facility", lat:S.facility.lat, lng:S.facility.lng, label:"F", type:"facility", name:"Dump at " + (S.facility.short || S.facility.name), address:fullAddr(S.facility), from: lastDone ? {lat:lastDone.lat, lng:lastDone.lng} : null});
+    return top + nb + `
     <div class="now-card"><div class="now-type regular">${ic("factory")}LAST STOP</div><div class="now-top">
       <div class="now-name">Dump at ${esc(S.facility.name)}</div><div class="now-addr-row"><div class="now-addr">${esc(fullAddr(S.facility))}</div>${copyBtn(fullAddr(S.facility))}</div>
-      <div class="now-btns">${navButtons(S.facility)}</div>
+      <div class="now-btns">${navButtons(S.facility, !!nb)}</div>
       <label class="check-row" style="border-color:var(--line)"><input type="checkbox" data-change="facility-done" data-id="${rt.id}" ${rt.facilityDone?"checked":""}>I dumped everything at ${esc(S.facility.short || "the facility")}</label>
     </div></div>
     <div class="dock" id="dock"><div class="dock-inner">${!rt.facilityDone ? `<div class="hint">Check off the facility to end your route</div>` : ""}
@@ -1519,13 +1524,14 @@ function driverActive(rt){
   const upcoming = rt.stops.map((s, i) => ({s, i})).filter(o => o.i !== idx && o.s.status === "pending");
   const doneList = rt.stops.map((s, i) => ({s, i})).filter(o => o.s.status !== "pending");
   const prev = idx > 0 ? S.customers[rt.stops[idx-1].cid] : routeStart(S, rt);
-  return top + navBlock(rt, {key:x.cid, lat:cu.lat, lng:cu.lng, label:String(idx+1), type:x.type, name:cu.name, address:fullAddr(cu), from: prev ? {lat:prev.lat, lng:prev.lng} : null}) + `
+  const nb = navBlock(rt, {key:x.cid, lat:cu.lat, lng:cu.lng, label:String(idx+1), type:x.type, name:cu.name, address:fullAddr(cu), from: prev ? {lat:prev.lat, lng:prev.lng} : null});
+  return top + nb + `
   <div class="now-card t-${x.type}">
     <div class="now-type ${x.type}">${ic(T.icon)}${T.label.toUpperCase()}${x.type!=="regular" ? " · " + esc(T.hint) : ""}</div>
     <div class="now-top">
       <div class="row between" style="align-items:flex-start"><div style="min-width:0"><p class="eyebrow">Stop ${idx+1} of ${c.total}</p><div class="now-name">${esc(cu.name)}</div></div></div>
       <div class="now-addr-row"><div class="now-addr">${esc(fullAddr(cu))}</div>${copyBtn(fullAddr(cu))}</div>
-      <div class="now-btns">${navButtons(cu)}${(() => { const g = gmapsGroups(rt, idx)[0]; return g && g.count > 1 ? `<a class="btn" href="${g.url}" target="_blank" rel="noopener">${ic("routes")}${esc(g.label)} in Google Maps</a>` : ""; })()}${cu.phone ? `<a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a>` : ""}</div>
+      <div class="now-btns">${navButtons(cu, !!nb)}${(() => { const g = gmapsGroups(rt, idx)[0]; return g && g.count > 1 ? `<a class="btn" href="${g.url}" target="_blank" rel="noopener">${ic("routes")}${esc(g.label)} in Google Maps</a>` : ""; })()}${cu.phone ? `<a class="btn" href="tel:${esc(cu.phone.replace(/[^0-9+]/g, ""))}">${ic("phone")}${esc(cu.phone)}</a>` : ""}</div>
       ${cu.gate ? `<div class="infobox gate">${ic("key")}<div><div class="lbl">Gate code</div><div class="code">${esc(cu.gate)}</div></div></div>` : ""}
       ${cu.notes ? `<div class="infobox notes">${ic("note")}<div><div class="lbl">Notes</div><div style="font-weight:600">${esc(cu.notes)}</div></div></div>` : ""}
       <div class="photo-drop">
@@ -1883,6 +1889,10 @@ const A = {
     } else toast("Couldn't copy", "Press and hold the address to copy it instead.", "alert");
   },
   "take-photo"(){ $("#photo-input").click(); },
+  navigate(el){
+    if(LIVE && LIVE.navigate && LIVE.navigate()) return;
+    window.open(el.dataset.href, "_blank", "noopener");
+  },
   "sample-photo"(el){ pendingPhoto = {cid: el.dataset.cid, photo:{kind:"sample", seed: Math.floor(Math.random()*100000)}}; render(); },
   "jump-stop"(el){
     const rt = R(el.dataset.id); const i = rt.stops.findIndex(x => x.cid === el.dataset.cid); const cur = rt.stops.findIndex(x => x.status === "pending");

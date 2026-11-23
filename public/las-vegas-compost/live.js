@@ -659,7 +659,7 @@ function footHtml(n, t){
     const at = new Date(Date.now() + r.secs * 1000).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
     left = `<div class="nf-eta"><b>${mins} min</b><span>${mi < 0.1 ? "under 0.1" : mi.toFixed(1)} mi · arrive ${esc(at)}</span></div>`;
   }
-  return left + `<a class="btn primary nf-go" href="${esc(L.google)}" target="_blank" rel="noopener">${RECENTER}Google Maps</a>`;
+  return left + `<button type="button" class="btn primary nf-go" data-nav="full">${RECENTER}Navigate</button>`;
 }
 function navSlot(rt, t){
   if(!CFG.mapboxToken || !t || !isFinite(t.lat) || !isFinite(t.lng)) return null;
@@ -900,6 +900,16 @@ function exitFull(n){
 }
 // Called from the Start route tap: open full screen for the first stop and allow speech.
 function drive(){ driveWanted = true; primeVoice(); }
+// Called from the "Navigate to this stop" tap: open the in-app directions full screen right away.
+// Returns false when there is no directions map on the page (no Mapbox key), so the caller opens Google Maps.
+function navigate(){
+  const el = document.querySelector(".navbox[data-gl-nav]"); if(!el) return false;
+  const n = navs.get(el.dataset.glNav); if(!n || n.el !== el) return false;
+  driveWanted = true; primeVoice();
+  if(!isIOS() && document.documentElement.requestFullscreen && !document.fullscreenElement){ document.documentElement.requestFullscreen({navigationUI:"hide"}).catch(() => {}); }
+  if(n.ready) enterFull(n, false);
+  return true; // not loaded yet: the map opens full screen when it finishes loading
+}
 // Keep the screen on while the driving view is open (like a GPS app).
 let wake = null;
 async function keepAwake(on){
@@ -1017,7 +1027,7 @@ function save(S){
 async function flush(){ if(timer){ clearTimeout(timer); await runSync(); } let n = 0; while(syncing && n++ < 50) await sleep(100); }
 
 window.LVC_LIVE = {
-  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, geocode, onHere, onHereError, drive,
+  attach(a){ api = a; }, start, save, mapSlot, navSlot, afterRender, legMiles, flush, reverseGeocode, geocode, onHere, onHereError, drive, navigate,
   get ready(){ return !!biz; }, get role(){ return role; }, get myDriverId(){ return myDriverId; }
 };
 })();
